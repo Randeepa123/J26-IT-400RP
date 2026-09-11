@@ -1,18 +1,12 @@
 """
 main.py
 -------
-Runs the full pipeline end to end:
-  1. (Assumes pucsl_scraper.py and enrich_calendar_weather.py already ran)
-  2. Load enriched dataset + event table
-  3. Train baseline, compute rolling error
-  4. Detect drift (ADWIN), classify each point, confirm structural via ablation
-  5. Validate against known events
-  6. Route each drift point to its adaptation strategy, retrain
-  7. Evaluate regime-by-regime + adaptation lag
-
-Run: python main.py
-Requires data/pucsl_clean_daily_enriched.csv and data/event_table.csv to exist.
+Runs the full 15-minute drift-detection and cause-matched adaptation pipeline.
+Works both locally/Contabo (via relative paths) and in Google Colab (/content).
 """
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -22,94 +16,178 @@ from drift import detect_drift_points, classify_point, confirm_structural, valid
 from adapt import route_and_adapt
 import evaluate as ev
 
-DATA_DIR = Path(__file__).parent.parent / "data"
-ENRICHED_FILE = DATA_DIR / "pucsl_clean_daily_enriched.csv"
-EVENT_FILE = DATA_DIR / "event_table.csv"
+# Automatically use local project folder if running as a script, or /content in Colab
+if Path("/content").exists() and "__file__" not in locals():
+    BASE_DIR = Path("/content")
+    OUTPUT_DIR = Path("/content")
+else:
+    BASE_DIR = Path(__file__).resolve().parent
+    OUTPUT_DIR = BASE_DIR / "data" if (BASE_DIR / "data").exists() else BASE_DIR
+
 TARGET_COL = "total_generation_mw"
 
 
+def find_csv_file():
+    search_roots = [BASE_DIR, BASE_DIR.parent]
+    for root in search_roots:
+        for pattern in ["*15min*enriched.csv*", "*enriched.csv*"]:
+            matches = list(root.rglob(pattern))
+            if matches:
+                return matches[0]
+    raise FileNotFoundError(f"CSV not found inside {BASE_DIR}!")
+
+
 def load_data():
-    df = pd.read_csv(ENRICHED_FILE)
+    csv_file = find_csv_file()
+    print(f"1. Loading dataset from: {csv_file}")
+    df = pd.read_csv(csv_file, low_memory=False)
     df["date"] = pd.to_datetime(df["date"])
     df = df.sort_values("date").reset_index(drop=True)
 
-    if EVENT_FILE.exists():
-        events = pd.read_csv(EVENT_FILE)
+    bad_rows = (df[TARGET_COL] < 200).sum()
+    if bad_rows > 0:
+        print(f"   Filtering out {bad_rows:,} anomalous/empty intervals (total_generation_mw < 200 MW)...")
+        df = df[df[TARGET_COL] >= 200].reset_index(drop=True)
+
+    if "solar_generation_mw" in df.columns:
+        df["solar_generation_mw"] = df["solar_generation_mw"].clip(lower=0.0, upper=1000.0)
+
+    event_matches = list(BASE_DIR.rglob("event_table.csv"))
+    if event_matches:
+        events = pd.read_csv(event_matches[0])
         events["date"] = pd.to_datetime(events["date"])
     else:
-        print(f"! {EVENT_FILE} not found -- using an empty event table. "
-              "Create one with columns: date, event_type, description.")
-        events = pd.DataFrame(columns=["date", "event_type", "description"])
+        events = pd.DataFrame([
+            {"date": "2022-03-01", "event_type": "abrupt", "description": "2022 Economic Crisis & Scheduled Load Shedding"},
+            {"date": "2022-08-10", "event_type": "abrupt", "description": "August 2022 Electricity Tariff Hike (~75%)"},
+            {"date": "2022-12-01", "event_type": "gradual", "description": "Late-2022 Industrial Contraction & Monsoon Shift"},
+            {"date": "2023-02-15", "event_type": "abrupt", "description": "February 2023 Electricity Tariff Hike (~66%)"},
+            {"date": "2023-06-01", "event_type": "structural", "description": "Accelerated Rooftop Solar PV Expansion"},
+            {"date": "2023-10-20", "event_type": "abrupt", "description": "October 2023 Electricity Tariff Hike (~18%)"},
+            {"date": "2024-03-05", "event_type": "gradual", "description": "March 2024 PUCSL Tariff Reduction (~22%) & Demand Recovery"},
+            {"date": "2025-04-01", "event_type": "structural", "description": "2025 Dry-Season Peak Rooftop Solar Integration"},
+            {"date": "2026-07-15", "event_type": "structural", "description": "2026 Grid-Scale & Rooftop Solar Expansion"},
+        ])
+        events["date"] = pd.to_datetime(events["date"])
+
     return df, events
 
 
 def main():
     df, events = load_data()
-    print(f"Loaded {len(df)} days of data, {df['date'].min()} to {df['date'].max()}")
+    print(f"   Loaded {len(df):,} 15-min rows ({df['date'].min()} to {df['date'].max()})")
 
-    # --- 1. Baseline, trained ONLY on pre-crisis data (not a generic split) ---
-    # This is deliberate: training must stop before 2022-03-01 so the crisis,
-    # tariff, and solar regimes all fall in the TEST set, where drift should
-    # actually be detected. A generic 70/30 split would bury the crisis inside
-    # training data and defeat the entire premise of this research.
-    CUTOFF = pd.Timestamp("2022-01-01")  # ADJUST if your data starts later/earlier
+    # Step A: Train Static Baseline on Pre-2022 Data
+    CUTOFF = pd.Timestamp("2022-01-01")
     train_df = df[df["date"] < CUTOFF].reset_index(drop=True)
     test_df = df[df["date"] >= CUTOFF].reset_index(drop=True)
-    if len(train_df) < 180:
-        print(f"! only {len(train_df)} days before {CUTOFF.date()} -- baseline may be unreliable "
-              f"with less than ~6 months of pre-crisis training data")
 
     model, feature_names = train_baseline(train_df, target_col=TARGET_COL, use_holiday=True, use_weather=True)
-    print("Baseline trained on features:", feature_names)
+    print(f"\n2. Baseline trained on {len(train_df):,} pre-2022 rows with features: {feature_names}")
+
+    warmup_df = train_df[train_df["date"] >= pd.Timestamp("2021-07-01")]
+    warmup_preds = predict(model, warmup_df, use_holiday=True, use_weather=True)
+    warmup_errors = pd.Series(
+        np.abs(warmup_df[TARGET_COL].values - warmup_preds) / np.maximum(warmup_df[TARGET_COL].values, 1e-6),
+        index=warmup_df["date"]
+    )
 
     preds = predict(model, test_df, use_holiday=True, use_weather=True)
     errors = pd.Series(
         np.abs(test_df[TARGET_COL].values - preds) / np.maximum(test_df[TARGET_COL].values, 1e-6),
         index=test_df["date"]
     )
+    all_errors = pd.concat([warmup_errors, errors])
 
-    # --- 2. Detect + classify drift ---
-    drift_dates = detect_drift_points(errors)
-    print(f"Detected {len(drift_dates)} drift points")
+    # Step B: Detect & Classify Drift Points
+    drift_dates = detect_drift_points(errors, warmup_errors=warmup_errors)
+    print(f"\n3. Detected {len(drift_dates)} drift points via ADWIN")
 
     classified = []
     for dp in drift_dates:
-        label, tau, delta = classify_point(dp, errors)
+        label, tau, delta = classify_point(dp, all_errors)
 
-        def retrain_with_solar(d, use_solar=True):
-            m, _ = train_baseline(train_df, target_col=TARGET_COL, use_solar=use_solar, use_holiday=True, use_weather=True)
-            p = predict(m, test_df, use_solar=use_solar, use_holiday=True, use_weather=True)
-            e = pd.Series(np.abs(test_df[TARGET_COL].values - p) / np.maximum(test_df[TARGET_COL].values, 1e-6), index=test_df["date"])
-            return m, e
+        def ablation_at_drift(drift_dt):
+            train_win = df[(df["date"] >= drift_dt - pd.DateOffset(days=180)) & (df["date"] < drift_dt)]
+            eval_win = df[(df["date"] >= drift_dt) & (df["date"] < drift_dt + pd.DateOffset(days=30))]
+            if len(train_win) < 96 or len(eval_win) < 96:
+                return pd.Series(dtype=float), pd.Series(dtype=float)
 
-        structural_label, reduction = confirm_structural(dp, test_df, errors, retrain_with_solar)
+            m_no, _ = train_baseline(train_win, target_col=TARGET_COL, use_solar=False, use_holiday=True, use_weather=True, include_trend_annual=False)
+            m_sol, _ = train_baseline(train_win, target_col=TARGET_COL, use_solar=True, use_holiday=True, use_weather=True, include_trend_annual=False)
+            p_no = predict(m_no, eval_win, use_solar=False, use_holiday=True, use_weather=True, include_trend_annual=False)
+            p_sol = predict(m_sol, eval_win, use_solar=True, use_holiday=True, use_weather=True, include_trend_annual=False)
+            e_no = pd.Series(np.abs(eval_win[TARGET_COL].values - p_no) / eval_win[TARGET_COL].values, index=eval_win["date"])
+            e_sol = pd.Series(np.abs(eval_win[TARGET_COL].values - p_sol) / eval_win[TARGET_COL].values, index=eval_win["date"])
+            return e_no, e_sol
+
+        structural_label, reduction = confirm_structural(dp, test_df, all_errors, ablation_at_drift)
         final_label = structural_label or label
-        classified.append({"date": dp, "label": final_label, "tau": tau, "delta": delta, "structural_reduction": reduction})
+        classified.append({
+            "date": dp,
+            "label": final_label,
+            "tau": tau,
+            "delta": delta,
+            "structural_reduction": reduction
+        })
 
     classified_df = pd.DataFrame(classified)
+    print("\n--- Classified Drift Points ---")
     print(classified_df)
+    classified_df.to_csv(OUTPUT_DIR / "classified_drift_points.csv", index=False)
 
-    # --- 3. Validate against known events ---
+    # Step C: Validate Against Known Events
     validation = validate_against_events(drift_dates, events)
+    print("\n--- Event Validation ---")
     print(validation)
+    validation.to_csv(OUTPUT_DIR / "drift_event_validation.csv", index=False)
 
-    # --- 4. Route + adapt for each drift point ---
-    for _, row in classified_df.iterrows():
-        adapted_model = route_and_adapt(row["label"], train_df, row["date"], target_col=TARGET_COL, use_holiday=True, use_weather=True)
-        print(f"Adapted model trained for {row['date'].date()} ({row['label']})")
+    # Step D: Route & Adapt Sequentially
+    test_df = test_df.copy()
+    test_df["baseline_pred"] = preds
+    test_df["adapted_pred"] = preds.copy()
 
-    # --- 5. Evaluate (ADJUST regime boundaries to your actual event dates) ---
+    print("\n4. Applying Cause-Matched Adaptation Strategies:")
+    valid_drifts = classified_df[classified_df["label"] != "unclassified"].reset_index(drop=True)
+
+    for idx in range(len(valid_drifts)):
+        dp = valid_drifts.loc[idx, "date"]
+        d_label = valid_drifts.loc[idx, "label"]
+        next_dp = (
+            valid_drifts.loc[idx + 1, "date"]
+            if (idx + 1) < len(valid_drifts)
+            else test_df["date"].max() + pd.DateOffset(days=1)
+        )
+
+        adapted_model = route_and_adapt(
+            d_label, df, dp, target_col=TARGET_COL, use_holiday=True, use_weather=True
+        )
+        seg_mask = (test_df["date"] >= dp) & (test_df["date"] < next_dp)
+        if seg_mask.sum() > 0:
+            flags = getattr(adapted_model, "_adapt_flags", {"use_holiday": True, "use_weather": True})
+            test_df.loc[seg_mask, "adapted_pred"] = predict(adapted_model, test_df.loc[seg_mask], **flags)
+        print(f"   -> Adapted at {dp.date()} [{d_label}] applied to {dp.date()} .. {next_dp.date()}")
+
+    # Step E: Evaluate Baseline vs Adapted Model by Regime
     regimes = {
         "pre_crisis": (df["date"].min(), pd.Timestamp("2022-03-01")),
         "crisis": (pd.Timestamp("2022-03-01"), pd.Timestamp("2022-08-01")),
         "tariff_adjustment": (pd.Timestamp("2022-08-01"), pd.Timestamp("2023-06-01")),
         "solar_growth": (pd.Timestamp("2023-06-01"), df["date"].max()),
     }
-    test_df = test_df.copy()
-    test_df["pred"] = preds
-    results = ev.regime_mape_rmse(test_df, TARGET_COL, "pred", regimes)
-    print(results)
-    results.to_csv(DATA_DIR / "regime_results.csv", index=False)
+
+    base_res = ev.regime_mape_rmse(test_df, TARGET_COL, "baseline_pred", regimes)
+    base_res["model"] = "Static Baseline"
+
+    adapt_res = ev.regime_mape_rmse(test_df, TARGET_COL, "adapted_pred", regimes)
+    adapt_res["model"] = "Cause-Matched Adapted"
+
+    comparison = pd.concat([base_res, adapt_res], ignore_index=True)
+    print("\n5. --- Regime Accuracy Comparison ---")
+    print(comparison)
+    comparison.to_csv(OUTPUT_DIR / "regime_results_comparison.csv", index=False)
+
+    return df, test_df, classified_df, comparison
 
 
 if __name__ == "__main__":
