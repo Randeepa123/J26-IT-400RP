@@ -1,4 +1,3 @@
-%%writefile drift.py
 import numpy as np
 import pandas as pd
 from river.drift import ADWIN

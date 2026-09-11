@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import Ridge
-from baseline import make_features
+try:
+    from .baseline import make_features
+except ImportError:  # Existing direct-script entry point
+    from baseline import make_features
 
 
 def hard_reset(df, drift_date, target_col="total_generation_mw", window_days=60, **feature_flags):
