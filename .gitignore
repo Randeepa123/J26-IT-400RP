@@ -1,0 +1,21 @@
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+# large / regenerable training artefacts (keep models/ and outputs/selected_models.json)
+outputs/training_runs/*/checkpoints/
+outputs/training_runs/*/monitor.csv
+outputs/logs/
+*.log
+
+outputs/live/
+outputs/live_demo/
+data/live_inputs_demo/
+
+tools/
+grafana/runtime/
+grafana/data/
+grafana/logs/
+grafana/plugins/
+outputs/dashboard_cache/
+docs/

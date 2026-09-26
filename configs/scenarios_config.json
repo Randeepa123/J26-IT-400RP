@@ -1,0 +1,191 @@
+{
+  "project_metadata": {
+    "project_name": "Hydropower Generation and Reservoir Release Optimization Subsystem (Component 3)",
+    "target_facility": "Kukule Ganga Power Station, Sabaragamuwa Province, Sri Lanka",
+    "basin": "Kukule Ganga (Upper Tributary of Kalu Ganga Basin)",
+    "dataset_purpose": "Scientifically defensible synthetic dataset for Linear Programming (LP) and Deep Q-Network (DQN) optimization models",
+    "dataset_version": "2.1-scenario-controlled",
+    "generation_date": "2026-10-19",
+    "random_seed": 42
+  },
+  "temporal_scope": {
+    "start_date": "2021-10-19",
+    "end_date": "2026-10-18",
+    "frequency": "D",
+    "expected_calendar_days": 1826
+  },
+  "shared_station_specifications": {
+    "station_name": "Kukule Ganga Power Station",
+    "facility_type": "Run-of-river with pondage (regulator weir, headrace tunnel, and underground powerhouse)",
+    "catchment_area_km2": 312.0,
+    "installed_capacity_mw": 70.0,
+    "num_units": 2,
+    "unit_capacity_mw": 35.0,
+    "full_supply_level_masl": 206.00,
+    "active_storage_volume_m3": 1670000.0,
+    "dead_storage_volume_m3": 350000.0,
+    "total_storage_volume_m3": 2020000.0,
+    "tailwater_level_masl": 19.60,
+    "tunnel_headloss_at_max_discharge_m": 10.30,
+    "nominal_overall_efficiency": 0.895,
+    "part_load_efficiency": 0.865,
+    "gravity_acceleration_m_s2": 9.81,
+    "water_density_kg_m3": 1000.0,
+    "elevation_storage_alpha": 1.05,
+    "headrace_length_m": 5799.0,
+    "headrace_diameter_m": 5.6,
+    "tailrace_length_m": 1600.0,
+    "tailrace_slope_pct": 0.58,
+    "tailrace_outfall_invert_masl": 13.52,
+    "generator_frequency_hz": 50.0,
+    "generator_rated_voltage_kv": 13.8,
+    "commissioning_year": 2003,
+    "efficiency_definition": "Combined wire-to-water efficiency (turbine hydraulic efficiency multiplied by generator electrical efficiency)"
+  },
+  "meteorological_parameters": {
+    "primary_rainfall_source_file": "data_pipelines/rainfall_forecast/ratnapura_synthetic_daily_rainfall_10years.csv",
+    "dekadal_source_file": "data_pipelines/rainfall_forecast/ratnapura_rainfall_renamed.csv",
+    "forecast_source_file": "data_pipelines/rainfall_forecast/kukule_ganga_15day_forecast.csv",
+    "reference_station": "Ratnapura Meteorological Station (DoM Sri Lanka / CHIRPS Admin-2 LK91)",
+    "catchment_orographic_enhancement_factor": 1.18,
+    "target_catchment_annual_rainfall_mm": 3840.0
+  },
+  "hydrological_parameters": {
+    "model_type": "Two-Store Conceptual Catchment Water Balance (GR4J/Thornthwaite Adaptation with Unit Hydrograph Routing)",
+    "soil_moisture_capacity_mm": 150.0,
+    "initial_soil_moisture_mm": 110.0,
+    "initial_groundwater_storage_mm": 120.0,
+    "baseflow_recession_k": 0.035,
+    "percolation_rate_coeff": 0.055,
+    "evapotranspiration_monthly_mm_day": {
+      "1": 3.2, "2": 3.5, "3": 3.8, "4": 3.6, "5": 3.2, "6": 2.9,
+      "7": 2.8, "8": 3.0, "9": 3.2, "10": 3.1, "11": 2.9, "12": 2.8
+    },
+    "routing_unit_hydrograph_weights": [0.65, 0.35],
+    "target_mean_inflow_m3s": 30.4,
+    "minimum_environmental_flow_m3s": 2.0
+  },
+  "operational_and_scenario_parameters": {
+    "daily_water_balance_tolerance_m3": 0.0001,
+    "max_daily_generation_mwh_at_70mw": 1680.0,
+    "daily_evaporation_loss_m3": 1440.0,
+    "planned_maintenance_schedule": [
+      {"year": 2022, "unit": 1, "start_day": 38, "duration_days": 12, "reason": "Annual Unit 1 overhaul during dry window"},
+      {"year": 2022, "unit": 2, "start_day": 225, "duration_days": 10, "reason": "Annual Unit 2 inspection"},
+      {"year": 2023, "unit": 1, "start_day": 45, "duration_days": 14, "reason": "Scheduled Unit 1 runner & valve maintenance"},
+      {"year": 2023, "unit": 2, "start_day": 230, "duration_days": 12, "reason": "Scheduled Unit 2 generator servicing"},
+      {"year": 2024, "unit": 1, "start_day": 40, "duration_days": 12, "reason": "Scheduled Unit 1 overhaul"},
+      {"year": 2024, "unit": 2, "start_day": 235, "duration_days": 11, "reason": "Scheduled Unit 2 inspection"},
+      {"year": 2025, "unit": 1, "start_day": 42, "duration_days": 13, "reason": "Unit 1 governor and valve maintenance"},
+      {"year": 2025, "unit": 2, "start_day": 228, "duration_days": 10, "reason": "Unit 2 overhaul"},
+      {"year": 2026, "unit": 1, "start_day": 41, "duration_days": 12, "reason": "Pre-monsoon Unit 1 servicing"},
+      {"year": 2026, "unit": 2, "start_day": 232, "duration_days": 11, "reason": "Unit 2 scheduled inspection"}
+    ],
+    "unplanned_outage_probability_per_day": 0.012
+  },
+  "scenarios": {
+    "baseline": {
+      "scenario_id": "baseline",
+      "scenario_name": "Baseline Scenario",
+      "description": "MOL 204.25 MASL and Rated Discharge 47.5 m3/s (with fixed provisional tailwater 19.60 MASL and 10.30 m total system loss)",
+      "minimum_operating_level_masl": 204.25,
+      "rated_turbine_discharge_station_m3s": 47.5,
+      "rated_turbine_discharge_unit_m3s": 23.75,
+      "active_head_range_m": 1.75,
+      "output_dir": "scenarios/scenario_baseline",
+      "parameter_provenance": {
+        "minimum_operating_level_masl": "MODEL_ASSUMPTION",
+        "rated_turbine_discharge_station_m3s": "MODEL_ASSUMPTION",
+        "tailwater_level_masl": "DERIVED_PROVISIONAL",
+        "tunnel_headloss_at_max_discharge_m": "DERIVED_PROVISIONAL"
+      }
+    },
+    "alt_a": {
+      "scenario_id": "alt_a",
+      "scenario_name": "Alternative A (Expanded Drawdown)",
+      "description": "MOL 204.00 MASL and Rated Discharge 47.5 m3/s (with fixed provisional tailwater 19.60 MASL and 10.30 m total system loss)",
+      "minimum_operating_level_masl": 204.00,
+      "rated_turbine_discharge_station_m3s": 47.5,
+      "rated_turbine_discharge_unit_m3s": 23.75,
+      "active_head_range_m": 2.00,
+      "output_dir": "scenarios/scenario_alt_a",
+      "parameter_provenance": {
+        "minimum_operating_level_masl": "USER_SUPPLIED_UNVERIFIED",
+        "rated_turbine_discharge_station_m3s": "MODEL_ASSUMPTION",
+        "tailwater_level_masl": "DERIVED_PROVISIONAL",
+        "tunnel_headloss_at_max_discharge_m": "DERIVED_PROVISIONAL"
+      }
+    },
+    "alt_b": {
+      "scenario_id": "alt_b",
+      "scenario_name": "Alternative B (Uprated Discharge)",
+      "description": "MOL 204.25 MASL and Rated Discharge 48.0 m3/s (with fixed provisional tailwater 19.60 MASL and 10.30 m total system loss)",
+      "minimum_operating_level_masl": 204.25,
+      "rated_turbine_discharge_station_m3s": 48.0,
+      "rated_turbine_discharge_unit_m3s": 24.00,
+      "active_head_range_m": 1.75,
+      "output_dir": "scenarios/scenario_alt_b",
+      "parameter_provenance": {
+        "minimum_operating_level_masl": "MODEL_ASSUMPTION",
+        "rated_turbine_discharge_station_m3s": "USER_SUPPLIED_UNVERIFIED",
+        "tailwater_level_masl": "DERIVED_PROVISIONAL",
+        "tunnel_headloss_at_max_discharge_m": "DERIVED_PROVISIONAL"
+      }
+    },
+    "alt_c": {
+      "scenario_id": "alt_c",
+      "scenario_name": "Alternative C (Expanded Drawdown + Uprated Discharge)",
+      "description": "MOL 204.00 MASL and Rated Discharge 48.0 m3/s (with fixed provisional tailwater 19.60 MASL and 10.30 m total system loss)",
+      "minimum_operating_level_masl": 204.00,
+      "rated_turbine_discharge_station_m3s": 48.0,
+      "rated_turbine_discharge_unit_m3s": 24.00,
+      "active_head_range_m": 2.00,
+      "output_dir": "scenarios/scenario_alt_c",
+      "parameter_provenance": {
+        "minimum_operating_level_masl": "USER_SUPPLIED_UNVERIFIED",
+        "rated_turbine_discharge_station_m3s": "USER_SUPPLIED_UNVERIFIED",
+        "tailwater_level_masl": "DERIVED_PROVISIONAL",
+        "tunnel_headloss_at_max_discharge_m": "DERIVED_PROVISIONAL"
+      }
+    },
+    "operational_v2": {
+      "scenario_id": "operational_v2",
+      "scenario_name": "Operational v2 (MOL 204.00 floor, reserve, mandatory releases)",
+      "description": "MOL/hard floor 204.00 MASL, rated discharge 47.5 m3/s, operating reserve, terminal target, environmental + irrigation weir releases",
+      "minimum_operating_level_masl": 204.00,
+      "rated_turbine_discharge_station_m3s": 47.5,
+      "rated_turbine_discharge_unit_m3s": 23.75,
+      "active_head_range_m": 2.00,
+      "output_dir": "scenarios/scenario_operational_v2",
+      "parameter_provenance": {
+        "minimum_operating_level_masl": "USER_SUPPLIED_UNVERIFIED",
+        "rated_turbine_discharge_station_m3s": "MODEL_ASSUMPTION",
+        "tailwater_level_masl": "DERIVED_PROVISIONAL",
+        "tunnel_headloss_at_max_discharge_m": "DERIVED_PROVISIONAL"
+      }
+    }
+  },
+  "operations_v2": {
+    "hard_floor_level_masl": 204.00,
+    "reserve_fraction_of_active_storage": 0.20,
+    "enforce_reserve_as_hard_limit": true,
+    "reserve_note": "Turbine release is limited so storage stays >= reserve whenever water allows; only mandatory env/irrigation release may draw below it (down to the hard floor).",
+    "terminal_target_fraction_of_active_storage": 0.50,
+    "demand_weight_clip": [0.8, 1.5],
+    "lp_horizon_days": 15,
+    "flood_headroom_forecast_quantile": "p90",
+    "mandatory_release_note": "Environmental + irrigation releases pass the weir (non-generating, tunnel bypasses the river reach) and are NOT counted as spill.",
+    "environmental_flow_m3s": 2.0,
+    "irrigation_extra_release_m3s_by_month": {
+      "1": 2.0, "2": 1.0, "3": 0.0, "4": 0.0, "5": 1.0, "6": 2.0,
+      "7": 2.0, "8": 2.0, "9": 0.0, "10": 1.0, "11": 2.0, "12": 2.0
+    },
+    "irrigation_provenance": "ASSUMPTION_NO_REAL_DATA (Maha Oct-Feb, Yala May-Aug cultivation windows); replace with Irrigation Department / CEB figures",
+    "reward_weights": {
+      "spill_energy_loss": 1.0,
+      "reserve_shortfall": 2.0,
+      "terminal_shortfall": 5.0,
+      "unmet_mandatory": 10.0
+    }
+  }
+}
