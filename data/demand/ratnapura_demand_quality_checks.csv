@@ -1,0 +1,9 @@
+check_id,check_name,target_criteria,observed_value,status,notes
+QC-DEMAND-01,Historical Calendar Count,"Exactly 1,826 historical dates",1826,PASS,2021-10-19 to 2026-10-18 inclusive (including 2024 leap year)
+QC-DEMAND-02,Forecast Horizon Count,Exactly 15 forecast dates,15,PASS,2026-10-19 to 2026-11-02 consecutive days
+QC-DEMAND-03,Temporal Continuity Across Origin,Forecast starts exactly 1 day after historical end,Hist End: 2026-10-18 -> FC Start: 2026-10-19,PASS,Zero gap between historical series and forecast origin
+QC-DEMAND-04,Numerical Completeness,Zero null or NaN entries across both datasets,"Hist NaNs: 0, FC NaNs: 0",PASS,All series are mathematically complete
+QC-DEMAND-05,Physical Non-negativity,Energy consumption > 0 MWh/day,"Hist Min: 609.68 MWh, FC Min: 1008.66 MWh",PASS,Energy consumption is strictly positive
+QC-DEMAND-06,Prediction Interval Monotonicity,Lower bound <= Forecast <= Upper bound,All 15 intervals valid,PASS,90% confidence bounds properly encompass point estimates
+QC-DEMAND-07,Geographic Scope Consistency,Strictly Ratnapura District (CEB DD3),"Ratnapura District, Sabaragamuwa Province, Sr...",PASS,Not national demand; explicitly labeled Ratnapura
+QC-DEMAND-08,Synthetic Label Authenticity,Never labeled as actual utility meter readings,"Hist: {'SYNTHETIC_SCENARIO'}, FC: {'SYNTHETIC_SCENARIO_FORECAST'}",PASS,Correctly marked as SYNTHETIC_SCENARIO
