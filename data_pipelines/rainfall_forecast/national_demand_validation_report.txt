@@ -1,0 +1,91 @@
+========================================================================
+NATIONAL ELECTRICITY DEMAND FORECAST - VALIDATION REPORT
+Generated at : 2026-10-19 14:57:22
+Script       : forecast_national_electricity_demand.py
+========================================================================
+
+1. SOURCE INSPECTION
+----------------------------------------
+   URL              : https://edlcare.edl.lk/gensum/details
+   HTTP accessible  : True
+   HTTP status      : 200
+   HTML size        : 4,460 bytes
+   Requires browser : True
+   Requires auth    : False
+
+   Static inspection notes:
+     - Page is a React SPA (div#root detected). Data is not present in the static HTML - Playwright is required to execute JavaScript.
+
+   Playwright (browser-render) notes:
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/peak-data?date=2026-10-18
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/night-peak-data?date=2026-10-18
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/notes
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/load-curve?date=2026-10-18
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/night-peak-data?date=2026-10-18
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/load-curve-station-groups?date=2026-10-18
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/daily-night-peak-power-summary
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/solar-forecast?date=2026-10-18
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/energy-data?date=2026-10-18
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/energy-data?date=2026-10-18
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/daily-energy-summary
+     - Captured JSON API response from: https://edlcare.edl.lk/api/gensum/reservoir-data?date=2026-10-18
+     - Found 1 date input(s). The page supports date selection.
+     - Page text contains GWh/MWh references - energy data is present.
+     - No tabular data was extracted from the rendered page. The page may require authentication or a more specific date selection.
+
+2. HISTORICAL DATA RETRIEVAL
+----------------------------------------
+   Requested period : 2021-10-19 to 2026-10-18
+   Records retrieved: 0
+   !! No historical data could be retrieved from the public source. !!
+   The EDL Care portal is a React SPA. The /gensum/details page requires
+   JavaScript execution AND may require authenticated login for historical
+   daily data beyond the currently displayed summary.
+
+   To obtain this data:
+     a) Contact Electricity Distribution Lanka (EDL) directly:
+        https://edlcare.edl.lk/  |  Tel: 1987
+     b) Request the CEB Statistical Digest:
+        https://www.ceb.lk/
+     c) Check the Public Utilities Commission of Sri Lanka (PUCSL):
+        https://www.pucsl.gov.lk/
+     d) Query ADB / World Bank energy databases for Sri Lanka.
+
+3. FORECAST
+----------------------------------------
+   Forecast origin  : 2026-10-19
+   Forecast horizon : 15 days
+   Model used       : NO_DATA_AVAILABLE
+   Forecast status  : TEMPLATE ONLY (no data)
+
+   IMPORTANT: Because no historical data was retrieved, all forecast
+   values in national_demand_forecast_15days.csv are NaN.
+   The CSV is provided as a template only.
+   Once real historical data is obtained, place it in
+   national_daily_electricity_consumption.csv and re-run the script.
+
+4. OUTPUT FILES
+----------------------------------------
+   national_daily_electricity_consumption.csv      - cleaned history
+   national_daily_electricity_consumption_raw.csv  - raw scrape
+   national_demand_forecast_15days.csv             - 15-day forecast
+   national_demand_forecast.png                    - forecast chart
+   national_demand_validation_report.txt           - this file
+
+5. DATA AUTHENTICITY STATEMENT
+----------------------------------------
+   This script does NOT fabricate, synthesise, or impute any historical
+   electricity consumption values. All NaN values indicate genuinely
+   missing or inaccessible observations, not synthetic replacements.
+
+6. UNRESOLVED LIMITATIONS
+----------------------------------------
+   - No public JSON/CSV historical API was found at edlcare.edl.lk.
+   - The /gensum/details page is a React SPA; static scraping yields
+     only the HTML shell, not the rendered data.
+   - Historical daily data likely requires an authorised EDL account.
+   - The forecast cannot be data-validated without a real historical series.
+   - Weather/temperature covariates were not used (no verified public source
+     matchable to national demand found without risk of fabrication).
+
+========================================================================

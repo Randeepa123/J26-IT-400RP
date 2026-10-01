@@ -1,0 +1,188 @@
+======================================================================
+SYNTHETIC DAILY RAINFALL -- VALIDATION REPORT
+Ratnapura, Sri Lanka | CHIRPS Admin-2 LK91
+Generated  : 2026-10-17 17:05
+Target range: 2016-10-17 to 2026-10-17
+======================================================================
+
+----------------------------------------------------------------------
+1. SOURCE DATASET OVERVIEW
+----------------------------------------------------------------------
+  File         : ratnapura_rainfall_renamed.csv
+  Source range : 1981-01-01 to 2026-10-01
+  Periods      : 1,648  (approx. 10-day dekadal intervals)
+  Report dates : 1st, 11th, 21st of each month
+
+  Column usage:
+  rainfall_10day_mm             -> observed period total (USED as generation target)
+  rainfall_10day_historical_avg -> long-run historical mean (USED as calibration aid)
+  rainfall_1month_mm            -> NOT used directly (derived sum)
+  rainfall_Xmonth_pct_of_avg    -> NOT used (dimensionless ratio, not mm)
+
+----------------------------------------------------------------------
+2. GENERATION METHOD
+----------------------------------------------------------------------
+  Model: Two-state Markov chain (wet/dry) + Gamma intensity distribution
+
+  A. Calibration (per calendar slot: 3 per month x 12 months = 36 slots)
+     p_wet   : proxy wet-day fraction = period_total / (n_days x 35 mm)
+               35 mm/day is a soft upper bound for Ratnapura. CANNOT be
+               directly validated -- no daily observations available.
+
+     Markov  : P(wet|wet)=p11, P(wet|dry)=p01 from p_wet + persistence=0.65
+               Persistence is a climatological prior for tropical humid zones.
+               CANNOT be calibrated from aggregated source data.
+
+     Gamma   : shape/scale by method-of-moments on period daily-average totals.
+               Fitted to inter-period variability, NOT true daily variability.
+
+  B. Disaggregation (per source period within target window)
+     1. Run Markov chain for n_days of the period.
+     2. Draw Gamma amounts for wet days.
+     3. Rescale amounts so they sum EXACTLY to the observed period total.
+     4. Boundary periods apportioned proportionally by day fraction.
+
+  C. Random seed: 42 (fully reproducible)
+
+----------------------------------------------------------------------
+3. PERIOD-TOTAL PRESERVATION
+----------------------------------------------------------------------
+  Fully-contained periods checked : 358
+  Max absolute difference         : 0.000000 mm (floating-point only)
+  Mean absolute difference        : 0.000000 mm
+
+  Period Start   Period End     Observed  Synthetic      Diff
+  ------------------------------------------------------------
+  2016-10-21     2016-10-31       53.130     53.130   0.00000
+  2016-11-01     2016-11-10      141.620    141.620   0.00000
+  2016-11-11     2016-11-20      120.759    120.759   0.00000
+  2016-11-21     2016-11-30       72.463     72.463   0.00000
+  2016-12-01     2016-12-10       36.296     36.296   0.00000
+  2016-12-11     2016-12-20       25.972     25.972   0.00000
+  2016-12-21     2016-12-31       39.602     39.602  -0.00000
+  2017-01-01     2017-01-10        6.472      6.472   0.00000
+  2017-01-11     2017-01-20        4.352      4.352   0.00000
+  2017-01-21     2017-01-31      135.185    135.185   0.00000
+  2017-02-01     2017-02-10        4.917      4.917   0.00000
+  2017-02-11     2017-02-20       48.731     48.731   0.00000
+  2017-02-21     2017-02-28       60.157     60.157   0.00000
+  2017-03-01     2017-03-10       91.981     91.981  -0.00000
+  2017-03-11     2017-03-20      109.880    109.880   0.00000
+  2017-03-21     2017-03-31       55.981     55.981   0.00000
+  2017-04-01     2017-04-10       57.083     57.083  -0.00000
+  2017-04-11     2017-04-20       67.324     67.324   0.00000
+  2017-04-21     2017-04-30       12.250     12.250   0.00000
+  2017-05-01     2017-05-10      121.278    121.278   0.00000
+  2017-05-11     2017-05-20      124.583    124.583  -0.00000
+  2017-05-21     2017-05-31      294.537    294.537   0.00000
+  2017-06-01     2017-06-10       75.981     75.981   0.00000
+  2017-06-11     2017-06-20       66.083     66.083   0.00000
+  2017-06-21     2017-06-30       63.250     63.250   0.00000
+  2017-07-01     2017-07-10       38.491     38.491   0.00000
+  2017-07-11     2017-07-20       17.343     17.343  -0.00000
+  2017-07-21     2017-07-31       66.120     66.120   0.00000
+  2017-08-01     2017-08-10       58.463     58.463   0.00000
+  2017-08-11     2017-08-20      128.009    128.009  -0.00000
+
+----------------------------------------------------------------------
+4. MONTHLY COMPARISON (Synthetic avg vs Historical avg)
+----------------------------------------------------------------------
+  NOTE: 'Synthetic avg mm' is mean annual monthly total from synthetic data.
+  'Historical avg mm' is sum of source hist_avg columns / 3 (approximate).
+  These use different sample bases -- comparison is a rough sanity check only.
+
+  Month       Synth avg     Hist avg    Ratio
+  ---------------------------------------------
+  Jan             139.2       2148.8    0.065
+  Feb             124.7       1877.3    0.066
+  Mar             195.2       2777.9    0.070
+  Apr             263.7       4038.3    0.065
+  May             460.2       5159.2    0.089
+  Jun             260.9       3762.5    0.069
+  Jul             165.2       2481.4    0.067
+  Aug             214.6       2359.0    0.091
+  Sep             308.9       3678.3    0.084
+  Oct             405.2       5239.3    0.077
+  Nov             405.3       5524.9    0.073
+  Dec             191.1       3012.6    0.063
+
+----------------------------------------------------------------------
+5. STATISTICAL SUMMARY
+----------------------------------------------------------------------
+  Total records        : 3,653
+  Rainy days (>0.1mm)  : 947  (25.9%)
+  Total rainfall       : 31,341.9 mm over 10 years
+  Mean annual rainfall : 3134.2 mm/yr
+  Max daily value      : 368.28 mm
+  Median wet-day amt   : 17.04 mm
+  95th percentile daily: 50.85 mm
+  99th percentile daily: 133.96 mm
+
+----------------------------------------------------------------------
+6. CALIBRATED PARAMETERS (36 calendar slots)
+----------------------------------------------------------------------
+  Month  Grp    p_wet      p11      p01    shape    scale
+  -------------------------------------------------------
+  Jan      1    0.148    0.702    0.052    1.161    4.453
+  Jan      2    0.129    0.695    0.045    1.118    4.045
+  Jan      3    0.106    0.687    0.037    1.148    3.236
+  Feb      1    0.137    0.698    0.048    0.943    5.086
+  Feb      2    0.124    0.693    0.043    0.892    4.875
+  Feb      3    0.120    0.692    0.042    2.237    1.869
+  Mar      1    0.145    0.701    0.051    1.691    2.995
+  Mar      2    0.173    0.711    0.061    0.888    6.817
+  Mar      3    0.172    0.710    0.060    2.440    2.462
+  Apr      1    0.224    0.728    0.078    2.048    3.823
+  Apr      2    0.237    0.733    0.083    3.185    2.606
+  Apr      3    0.271    0.745    0.095    3.431    2.760
+  May      1    0.346    0.771    0.121    2.220    5.457
+  May      2    0.337    0.768    0.118    1.604    7.352
+  May      3    0.273    0.746    0.096    2.435    3.927
+  Jun      1    0.272    0.745    0.095    2.843    3.344
+  Jun      2    0.228    0.730    0.080    2.340    3.413
+  Jun      3    0.203    0.721    0.071    2.543    2.791
+  Jul      1    0.148    0.702    0.052    2.625    1.978
+  Jul      2    0.143    0.700    0.050    2.181    2.298
+  Jul      3    0.141    0.699    0.049    2.852    1.733
+  Aug      1    0.120    0.692    0.042    1.867    2.250
+  Aug      2    0.142    0.700    0.050    1.323    3.761
+  Aug      3    0.168    0.709    0.059    1.845    3.181
+  Sep      1    0.214    0.725    0.075    2.491    3.006
+  Sep      2    0.226    0.729    0.079    2.319    3.412
+  Sep      3    0.284    0.749    0.099    2.554    3.887
+  Oct      1    0.250    0.738    0.088    2.067    4.233
+  Oct      2    0.333    0.767    0.117    2.878    4.054
+  Oct      3    0.367    0.778    0.128    4.213    3.047
+  Nov      1    0.346    0.771    0.121    7.071    1.712
+  Nov      2    0.338    0.768    0.118    4.467    2.650
+  Nov      3    0.341    0.769    0.119    2.981    4.007
+  Dec      1    0.215    0.725    0.075    3.049    2.466
+  Dec      2    0.201    0.720    0.070    3.231    2.172
+  Dec      3    0.145    0.701    0.051    2.450    2.069
+
+----------------------------------------------------------------------
+7. LIMITATIONS AND SCIENTIFIC CAVEATS
+----------------------------------------------------------------------
+  The following cannot be validated from the available source (aggregates only):
+
+  a) Daily wet-day frequency -- estimated via heuristic, not observation.
+  b) Markov persistence -- set as a climatological prior (0.65).
+  c) Extreme daily rainfall -- Gamma fitted to period means, not daily extremes;
+     true daily maxima at Ratnapura can exceed 200 mm; these may be under-
+     represented in this simulation.
+  d) Within-period temporal structure -- rescaling removes true day-to-day
+     autocorrelation; inter-day dependence is from the Markov chain only.
+  e) Monsoon onset/retreat timing -- not explicitly modeled.
+
+  RECOMMENDATION: Use as preliminary stochastic forcing for hydropower
+  simulations. Do NOT substitute for observed daily records in formal
+  hydrological calibration, flood frequency analysis, or operations.
+
+----------------------------------------------------------------------
+8. HOW TO REPRODUCE
+----------------------------------------------------------------------
+  Requirements: Python 3.8+, pandas, numpy, matplotlib, scipy
+  Install:  pip install pandas numpy matplotlib scipy
+  Run:      python generate_synthetic_daily_rainfall.py
+  Seed:     42  (change RANDOM_SEED constant for different realisations)
+======================================================================

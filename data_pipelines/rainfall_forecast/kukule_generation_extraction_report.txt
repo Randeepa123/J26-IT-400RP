@@ -1,0 +1,107 @@
+========================================================================
+KUKULE GANGA PS - GENERATION HISTORY EXTRACTION REPORT
+Generated at : 2026-10-19 14:51:57
+Script       : extract_kukule_generation_history.py
+========================================================================
+
+1. SOURCE INSPECTION
+----------------------------------------
+   Primary URL      : https://samanalacomplex.lk/test/test/index.php
+   Data URL         : https://samanalacomplex.lk/test/test/data.php
+   index.php accessible : True
+   data.php accessible  : True
+   Historical API found : False
+   Date selector found  : False
+   Latest date in page  : 2026-10-18
+   Kukule latest (MWh)  : None
+
+   Endpoints probed:
+     - https://samanalacomplex.lk/test/test/data.php
+     - https://samanalacomplex.lk/test/test/history.php
+     - https://samanalacomplex.lk/test/test/report.php
+     - https://samanalacomplex.lk/test/test/getdata.php
+     - https://samanalacomplex.lk/test/test/chart_data.php
+     - https://samanalacomplex.lk/test/test/daily.php
+     - https://samanalacomplex.lk/test/test/generation.php
+     - https://samanalacomplex.lk/test/test/export.php
+
+   Inspection notes:
+     - Dates found in page: ['2026-10-18']
+     - No date selector found. Page appears to show only the latest day.
+     - data.php accessible. Content length: 24640 chars. Returns same current-day HTML structure - no historical data.
+     - Not accessible: https://samanalacomplex.lk/test/test/history.php
+     - Not accessible: https://samanalacomplex.lk/test/test/report.php
+     - Not accessible: https://samanalacomplex.lk/test/test/getdata.php
+     - Not accessible: https://samanalacomplex.lk/test/test/chart_data.php
+     - Not accessible: https://samanalacomplex.lk/test/test/daily.php
+     - Not accessible: https://samanalacomplex.lk/test/test/generation.php
+     - Not accessible: https://samanalacomplex.lk/test/test/export.php
+
+2. EXTRACTION RESULTS
+----------------------------------------
+   Requested period   : 2021-10-19 to 2026-10-18
+   Records retrieved  : 0
+   Duplicate dates    : 0
+   Missing dates      : 0
+   Zero-generation days: 0
+   Implausible values : 0
+
+3. WHAT WAS FOUND
+----------------------------------------
+   The Samanala Complex dashboard (index.php) is a static PHP page that
+   embeds live data directly into the HTML on each page load.
+
+   CONFIRMED PUBLICLY AVAILABLE DATA:
+     - Single latest daily generation figure for Kukule PS (MWh)
+     - Latest date of data
+     - Unit status for each generating unit (running/standstill/outage)
+     - Reservoir water levels and active storage percentages
+
+   NOT PUBLICLY AVAILABLE (based on inspection):
+     - Historical daily generation series (5-year or any period)
+     - No date-range selector on the public page
+     - No downloadable CSV/Excel/PDF reports found
+     - No public JSON/XML API for historical generation
+     - data.php returns same current-day structure as index.php
+     - All candidate historical endpoints (history.php, report.php,
+       getdata.php, chart_data.php, daily.php, generation.php,
+       export.php) returned 404.
+
+4. TO OBTAIN THE 5-YEAR HISTORY
+----------------------------------------
+   Contact the Samanala Complex / CEPB directly:
+     Website : https://samanalacomplex.lk/
+     Email   : info@samanalacomplex.lk (if available)
+     CEB     : https://www.ceb.lk/
+
+   Alternative official data sources:
+     - PUCSL (Public Utilities Commission of Sri Lanka):
+       https://www.pucsl.gov.lk/
+     - CEB Annual Statistical Digest
+     - World Bank / ADB Sri Lanka electricity statistics
+
+   To accumulate data over time using this script:
+     Run daily with --accumulate flag:
+       python extract_kukule_generation_history.py --accumulate
+     This will append each day's reading to kukule_generation_daily_5years.csv.
+
+5. OUTPUT FILES
+----------------------------------------
+   kukule_generation_raw.csv            - raw extracted records
+   kukule_generation_daily_5years.csv   - cleaned daily series (or template)
+   kukule_generation_missing_dates.csv  - list of missing dates
+   kukule_generation_history.png        - generation chart
+   kukule_generation_extraction_report.txt - this file
+
+6. DATA AUTHENTICITY STATEMENT
+----------------------------------------
+   This script does NOT fabricate, synthesise, or impute any generation
+   values. The 5-year daily CSV is provided as a correctly-structured
+   template if historical records cannot be accessed. NaN values
+   indicate genuinely missing or inaccessible observations.
+
+   Installed capacity reference: 70 MW (2 x 35 MW units)
+   Theoretical daily max: 70.0 MW x 24h = 1680 MWh
+   Values above 1,900 MWh are flagged for investigation.
+
+========================================================================

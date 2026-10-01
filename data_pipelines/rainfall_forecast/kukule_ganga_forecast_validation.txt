@@ -1,0 +1,242 @@
+===========================================================================
+KUKULE GANGA POWER STATION
+15-DAY PROBABILISTIC RAINFALL AND INFLOW FORECAST
+VALIDATION REPORT AND SCIENTIFIC DOCUMENTATION
+Generated  : 2026-10-18 01:08:37
+Period     : 2026-10-18 to 2026-11-01
+Location   : Kukule Ganga catchment, Kalawana, Ratnapura District, LK91
+Simulations: 1,000  |  Random seed: 42
+===========================================================================
+
+---------------------------------------------------------------------------
+1. INPUT SOURCE DOCUMENTS
+---------------------------------------------------------------------------
+
+  A. fifteen_day_pdf.pdf (ECMWF 14-day rainfall forecast)
+     Title  : 24H RAINFALL (mm) & MAX 2m TEMPERATURE (C) FORECAST
+     Source : NWP Division, Dept of Meteorology, Sri Lanka
+     Init   : ECMWF model 12 UTC 16 October 2026
+     Maps   : 14 pages covering 18-31 October 2026
+     Legend : 0.1, 1, 5, 10, 15, 20, 30, 50, 80, 100, 150, 200, 250 mm
+     Text extracted via pdfplumber: Minimal (graphical PDF)
+     LIMITATION: Maps are colour-coded graphics. Exact catchment-average
+     rainfall cannot be read without GIS pixel-to-coordinate mapping.
+     All ECMWF guidance used QUALITATIVELY via weekly anomaly categories.
+
+  B. weekly_forecast.pdf (NCMRWF weekly anomaly forecast)
+     Title  : Weekly Rainfall Forecast 16 Oct - 12 Nov 2026
+     Source : Seasonal Forecasting Division, Dept of Meteorology, Sri Lanka
+     Issued : 15 October 2026
+     Basis  : NCMRWF Extended Range Forecasts (init 15 Oct 2026)
+     Week 1 (16-22 Oct): Near-normal most of Sri Lanka
+     Week 2 (23-29 Oct): Near-normal most areas
+     Week 3 (30Oct-05Nov): BELOW-NORMAL for most of Sri Lanka
+     Week 4 (06-12Nov): Near-normal
+     Scale  : RF anomaly -20 to +20 mm/day
+     Note   : Sabaragamuwa Province not explicitly named in week descriptions.
+     LIMITATION: Weekly categories, not point forecasts for the catchment.
+
+  C. rainfall_pdf.pdf (Seasonal OND outlook, issued 2 Oct 2026)
+     OND overall: Above-normal rainfall for most of Sri Lanka
+     October: Slightly above-normal (most areas)
+       Week 3 of Oct (16-22 Oct): Below-normal POSSIBLE in some Sabaragamuwa areas
+     November: Above-normal for most
+     December: Slightly above-normal for most
+     Ratnapura District 1991-2020 normals (from annex):
+       October  : 396.4 mm
+       November : 393.7 mm
+       December : 234.7 mm
+     ENSO note in this doc: ENSO-neutral, La Nina development expected (~90%)
+     NOTE: Conflicts with currentCondition_pdf - see discrepancy note below.
+
+  D. currentCondition_pdf.pdf (ENSO/IOD, issued 6 Oct 2026)
+     Ref    : SF-2026-10-ENSO-IOD
+     ENSO   : El Nino PRESENT. >90% chance very strong El Nino through OND.
+              75% chance of historic event (strongest since 1950).
+     IOD    : Neutral; index +0.76 C (week ending 27 Sep 2026)
+              Positive IOD likely to develop in S. Hemisphere spring.
+     Rainfall implication for Ratnapura in El Nino years:
+       October  : NEAR-NORMAL (Ratnapura explicitly mentioned)
+       November : Near to slightly above-normal
+       December : Above-normal (most areas)
+
+     ENSO DISCREPANCY RESOLUTION:
+     rainfall_pdf (2 Oct): mentions La Nina development expected
+     currentCondition_pdf (6 Oct): states El Nino is present and persisting
+     Resolution: The more recent, directly measured ENSO document (6 Oct)
+     takes precedence. El Nino is assumed operative for this forecast.
+     This does not materially change the Ratnapura Oct forecast since the
+     El Nino analogue explicitly shows near-normal rainfall for Ratnapura.
+
+  E. aug26.pdf (Historical rainfall context, August 2026)
+     Title  : Observed Rainfall Anomaly - August 2026
+     Source : Dept of Meteorology, Sri Lanka
+     Finding: Sabaragamuwa Province had near/above-normal rainfall in Aug 2026
+              Country average: 93 mm (77% of normal)
+     Use    : Informs initial catchment wetness condition for Oct simulation.
+     Assumption: Catchment remains wet into October after a near/above-normal
+     August. CN = 80 (AMC-III) used as initial antecedent condition.
+     LIMITATION: No Sep 2026 data available. High wetness assumed to persist.
+
+  F. ratnapura_synthetic_daily_rainfall_10years.csv
+     Content: Synthetic daily rainfall 17 Oct 2016 - 17 Oct 2026 (3,653 rows)
+     Note   : SYNTHETIC data from ~10-day CHIRPS aggregates (NOT observed gauge)
+     October calibration statistics used:
+       p_wet        = 0.395
+       Gamma shape  = 0.570
+       Gamma scale  = 57.808 mm
+       Mean wet-day = 33.0 mm (from Gamma params)
+
+---------------------------------------------------------------------------
+2. CATCHMENT AND SPATIAL INFORMATION
+---------------------------------------------------------------------------
+
+  Catchment  : Kukule Ganga above hydropower intake, Kalawana
+  District   : Ratnapura, Sabaragamuwa Province, Sri Lanka
+  Approx lat : 6.3-6.7 degN  |  Approx lon: 80.3-80.6 degE
+  Area       : ~270 km2 (approximate, from CEB/LECO project docs)
+  Elevation  : 400-2000 m  (mean ~900 m)
+  Land cover : Dense forest and scrub (high runoff coefficient)
+  Power station: Kukule Ganga Power Station, 70 MW (2 x 35 MW units)
+
+  Catchment RF factor: 1.25 (mean) relative to Ratnapura district avg
+  Uncertainty: lognormal 90% CI = 1.10 - 1.45
+  Rationale: Southwest-facing highland slopes receive orographic enhancement
+  during SW monsoon (May-Sep) and NE monsoon (Oct-Jan). Published annual
+  rainfall for upper Kukule Ganga catchment: ~3,500-5,000 mm vs district ~3,400 mm.
+  CANNOT be validated without rain gauges within the catchment.
+
+---------------------------------------------------------------------------
+3. RAINFALL GENERATION METHOD
+---------------------------------------------------------------------------
+
+  Monte Carlo simulations: 1,000
+  Random seed: 42
+
+  Per-day procedure:
+  1. Determine weekly forecast category (weekly_forecast.pdf primary source)
+  2. Refine with seasonal outlook and El Nino analogue (secondary sources)
+  3. Assign lognormal multiplier distribution: centre = category_mean,
+     sigma = category_spread + 0.013 * lead_day
+  4. Adjust wet-day probability: p_adj = p_clim x multiplier (clipped 0.05-0.98)
+  5. Sample wet/dry occurrence; sample Gamma amounts for wet days
+  6. Scale by catchment spatial factor (lognormal, mean=1.25)
+
+  Category parameters:
+  Category                       Centre   Base spread
+  ----------------------------------------------------
+  near_normal_lean_below           0.90          0.32
+  near_normal                      1.00          0.30
+  below_normal                     0.65          0.35
+
+  Day-by-day category assignments:
+  Date         Category                    Centre   Confidence
+  ------------------------------------------------------------
+  2026-10-18   near_normal_lean_below        0.90         HIGH
+  2026-10-19   near_normal_lean_below        0.90         HIGH
+  2026-10-20   near_normal_lean_below        0.90         HIGH
+  2026-10-21   near_normal_lean_below        0.90       MEDIUM
+  2026-10-22   near_normal_lean_below        0.90       MEDIUM
+  2026-10-23   near_normal                   1.00       MEDIUM
+  2026-10-24   near_normal                   1.00       MEDIUM
+  2026-10-25   near_normal                   1.00          LOW
+  2026-10-26   near_normal                   1.00          LOW
+  2026-10-27   near_normal                   1.00          LOW
+  2026-10-28   near_normal                   1.00          LOW
+  2026-10-29   near_normal                   1.00          LOW
+  2026-10-30   below_normal                  0.65          LOW
+  2026-10-31   below_normal                  0.65          LOW
+  2026-11-01   below_normal                  0.65     VERY_LOW
+
+---------------------------------------------------------------------------
+4. HYDROLOGICAL MODEL
+---------------------------------------------------------------------------
+
+  Model    : SCS Curve Number + Linear Baseflow Recession
+  Status   : UNCALIBRATED - no observed Kukule Ganga flow data was available
+  Outputs  : PROVISIONAL SYNTHETIC ESTIMATES ONLY
+
+  Catchment area    : 270 km2
+  CN (mean/std)     : 80 / 5 (normal distribution)
+  Antecedent cond.  : AMC-III (wet, based on Aug 2026 near/above normal in Sab.)
+  Baseflow          : normal(27, 8) m3/s
+  Recession coeff K : uniform(0.87, 0.93) per day
+  Direct frac       : uniform(0.55, 0.75) of surface runoff
+  Subsurface release: uniform(0.40, 0.60) per day from storage bucket
+
+  High-inflow threshold: 100 m3/s (PROVISIONAL)
+  Basis: approx design Q for 70 MW @ ~90 m head:
+         P = rho*g*Q*H*eta => Q = 70e6/(1000*9.81*90*0.85) = 93 m3/s
+  NOTE: This is NOT an official operational flood threshold.
+
+  Mass balance: inflow_m3 = inflow_m3s * 86400 seconds/day
+  Output CSV stores volumes in Mm3 (= m3 / 1e6)
+
+---------------------------------------------------------------------------
+5. VALIDATION RESULTS
+---------------------------------------------------------------------------
+
+  All QC checks PASSED.
+
+  Independent validation: NOT POSSIBLE.
+  No observed daily inflow or rain gauge data was available for comparison.
+
+---------------------------------------------------------------------------
+6. SCIENTIFIC LIMITATIONS
+---------------------------------------------------------------------------
+
+  a) ECMWF MAPS NOT NUMERICALLY READABLE
+     The 14 ECMWF forecast maps are colour-coded graphical images.
+     Exact catchment-average rainfall requires GIS spatial averaging.
+     This was not possible. The ECMWF guidance is QUALITATIVE only.
+
+  b) SYNTHETIC RAINFALL CALIBRATION
+     Gamma parameters were fitted to SYNTHETIC daily data derived from
+     ~10-day CHIRPS aggregates. Daily-scale statistics may be unreliable.
+
+  c) SPATIAL MISMATCH
+     Ratnapura district (~3100 km2) vs Kukule Ganga catchment (~270 km2).
+     The scaling factor (1.25) is an estimate, not a calibrated value.
+
+  d) HYDROLOGICAL MODEL UNCALIBRATED
+     CN, baseflow, and routing parameters are literature estimates.
+     Model uncertainty is VERY HIGH. Inflow scenarios could be wrong
+     by a factor of 2 or more without calibration data.
+
+  e) ANTECEDENT CONDITIONS
+     Initial catchment wetness assumed from Aug 2026 above-normal context.
+     No Sep 2026 rainfall data was available to refine this assumption.
+
+  f) 1 NOVEMBER 2026 (BEYOND ECMWF DAILY MAPS)
+     No daily ECMWF map exists for this date. Forecast uses weekly W3
+     (below-normal) with widened uncertainty (+0.013*lead_day spread).
+
+---------------------------------------------------------------------------
+7. ADDITIONAL DATA REQUIRED FOR DEFENSIBLE FORECAST
+---------------------------------------------------------------------------
+
+  CRITICAL (cannot produce calibrated forecast without these):
+  - Observed daily streamflow at Kukule Ganga gauging station
+  - Daily rain gauge records within the Kukule Ganga catchment
+
+  IMPORTANT (would significantly improve forecast quality):
+  - CHIRPS or GPM IMERG gridded daily rainfall for the catchment (GIS)
+  - Digital Elevation Model for catchment delineation and area verification
+  - Reservoir water level time series (for storage-based inflow estimation)
+
+  USEFUL:
+  - SMAP soil moisture satellite data (for CN parameter estimation)
+  - CEB/LECO reservoir operation logs and inflow records
+  - Land use and soil classification maps for the catchment
+
+---------------------------------------------------------------------------
+8. HOW TO REPRODUCE
+---------------------------------------------------------------------------
+
+  Requirements: Python 3.8+, pandas, numpy, matplotlib, scipy, pdfplumber
+  Install: pip install pandas numpy matplotlib scipy pdfplumber
+  Run:     python kukule_ganga_forecast.py
+  Seed:    Change RANDOM_SEED constant for alternative realisations
+  Dates:   Change FORECAST_START and FORECAST_END for updated periods
+
+===========================================================================

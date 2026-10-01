@@ -1,0 +1,79 @@
+{
+  "metadata": {
+    "document_title": "Kukule Ganga Synthetic Hydropower Dataset Engineering Assumptions",
+    "author": "Antigravity Research Pipeline",
+    "project": "Hydropower Generation & Reservoir Release Optimization Subsystem (Component 3)",
+    "facility": "Kukule Ganga Power Station, Sabaragamuwa Province, Sri Lanka",
+    "temporal_range": "2021-10-19 to 2026-10-18 (1,826 calendar days)",
+    "created_at": "2026-10-19 15:56:19"
+  },
+  "station_reference_parameters": {
+    "station_name": "Kukule Ganga Power Station",
+    "facility_type": "Run-of-river with pondage (regulator weir, headrace tunnel, and underground powerhouse)",
+    "catchment_area_km2": 312.0,
+    "installed_capacity_mw": 70.0,
+    "num_units": 2,
+    "unit_capacity_mw": 35.0,
+    "full_supply_level_masl": 206.0,
+    "minimum_operating_level_masl": 204.25,
+    "active_storage_volume_m3": 1670000.0,
+    "dead_storage_volume_m3": 350000.0,
+    "total_storage_volume_m3": 2020000.0,
+    "active_head_range_m": 1.75,
+    "nominal_gross_head_m": 176.5,
+    "tailwater_level_masl": 29.5,
+    "rated_turbine_discharge_unit_m3s": 23.75,
+    "rated_turbine_discharge_station_m3s": 47.5,
+    "maximum_hydraulic_discharge_m3s": 48.5,
+    "nominal_overall_efficiency": 0.895,
+    "part_load_efficiency": 0.865,
+    "gravity_acceleration_m_s2": 9.81,
+    "water_density_kg_m3": 1000.0,
+    "tunnel_length_m": 5790.0,
+    "tunnel_headloss_at_max_discharge_m": 2.5,
+    "elevation_storage_alpha": 1.05
+  },
+  "meteorological_assumptions": {
+    "source": "CHIRPS Dekadal precipitation (LK91) disaggregated via two-state Markov chain and Gamma distribution",
+    "orographic_enhancement_factor": 1.18,
+    "catchment_annual_mean_rainfall_mm": 3838.2038798756844,
+    "wet_day_threshold_mm": 0.1
+  },
+  "hydrological_model_assumptions": {
+    "model_architecture": "Continuous two-store conceptual water balance (GR4J/Thornthwaite-Mather)",
+    "catchment_area_km2": 312.0,
+    "soil_store_capacity_mm": 150.0,
+    "baseflow_recession_k": 0.035,
+    "unit_hydrograph_routing": [
+      0.65,
+      0.35
+    ],
+    "calibrated_mean_inflow_m3s": 30.473586363636365,
+    "literature_reference_mean_inflow_m3s": 30.4
+  },
+  "reservoir_water_balance_assumptions": {
+    "full_supply_level_masl": 206.0,
+    "minimum_operating_level_masl": 204.25,
+    "active_storage_volume_m3": 1670000.0,
+    "elevation_storage_relationship": "Non-linear power law h(S) = MOL + 1.75 * (S / 1670000)^(1/1.05)",
+    "pond_evaporation_m3_day": 1440.0
+  },
+  "hydropower_generation_assumptions": {
+    "installed_capacity_mw": 70.0,
+    "theoretical_daily_max_energy_mwh": 1680.0,
+    "simulated_mean_daily_generation_mwh": 678.8567891566265,
+    "simulated_annual_generation_gwh": 247.95244223945784,
+    "historical_ceb_annual_benchmark_gwh": "250 to 320 GWh/year",
+    "tailwater_elevation_masl": 29.5,
+    "headrace_tunnel_friction_loss_m": 2.5,
+    "overall_efficiency": 0.895
+  },
+  "dashboard_conflict_investigation_2026_10_18": {
+    "date": "2026-10-18",
+    "reported_water_level_masl": 206.0,
+    "reported_active_storage_pct": 100.0,
+    "reported_dashboard_generation_mwh": 1835.3,
+    "physical_limit_at_70mw_mwh": 1680.0,
+    "discrepancy_explanation": "The 1835.300 MWh reading reported for Kukule PS on 2026-10-18 physically exceeds the absolute maximum 24-hour generation possible for a 70 MW station (70 MW * 24 h = 1680.0 MWh). The source inspection shows this test page (/test/test/index.php) lacked live production telemetry validation and likely reported cumulative/uncalibrated values. In accordance with physical engineering constraints, 1680.0 MWh is strictly enforced as the maximum daily ceiling, and the discrepancy is logged for scientific provenance."
+  }
+}

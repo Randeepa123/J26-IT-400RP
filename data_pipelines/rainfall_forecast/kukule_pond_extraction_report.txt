@@ -1,0 +1,126 @@
+========================================================================
+KUKULE POND WATER LEVEL - EXTRACTION REPORT
+Generated at : 2026-10-19 15:13:52
+Script       : extract_kukule_pond_water_levels.py
+========================================================================
+
+1. SOURCE INSPECTION
+----------------------------------------
+   Primary URL        : https://samanalacomplex.lk/test/test/index.php
+   Data URL           : https://samanalacomplex.lk/test/test/data.php
+   index.php accessible   : True
+   data.php accessible    : True
+   Historical API found   : False
+   Date selector found    : False
+   Latest date in page    : 2026-10-18
+   Kukule Pond level(MASL): 206.0
+   Active storage (%)     : 100.0
+   Level range (MASL)     : [204.25, 206.0]
+   Unit confirmed         : MASL
+
+   Endpoints probed:
+     - https://samanalacomplex.lk/test/test/data.php
+     - https://samanalacomplex.lk/test/test/water_level.php
+     - https://samanalacomplex.lk/test/test/level_history.php
+     - https://samanalacomplex.lk/test/test/reservoir.php
+     - https://samanalacomplex.lk/test/test/reservoir_history.php
+     - https://samanalacomplex.lk/test/test/levels.php
+     - https://samanalacomplex.lk/test/test/pond_data.php
+     - https://samanalacomplex.lk/test/test/history.php
+     - https://samanalacomplex.lk/test/test/report.php
+     - https://samanalacomplex.lk/test/test/export.php
+
+   Inspection notes:
+     - Successfully parsed JavaScript reservoir data object from HTML.
+     - Kukule Pond: level=206.0 MASL, storage=100.0%, range=[204.25 - 206.0 MASL]
+     - Dates found in page: ['2026-10-18']
+     - No date selector found. Page shows only the latest day's water level.
+     - data.php accessible (24640 chars). Returns same current-day HTML structure - no historical water levels.
+     - Not accessible: https://samanalacomplex.lk/test/test/water_level.php
+     - Not accessible: https://samanalacomplex.lk/test/test/level_history.php
+     - Not accessible: https://samanalacomplex.lk/test/test/reservoir.php
+     - Not accessible: https://samanalacomplex.lk/test/test/reservoir_history.php
+     - Not accessible: https://samanalacomplex.lk/test/test/levels.php
+     - Not accessible: https://samanalacomplex.lk/test/test/pond_data.php
+     - Not accessible: https://samanalacomplex.lk/test/test/history.php
+     - Not accessible: https://samanalacomplex.lk/test/test/report.php
+     - Not accessible: https://samanalacomplex.lk/test/test/export.php
+
+2. EXTRACTION RESULTS
+----------------------------------------
+   Requested period   : 2021-10-19 to 2026-10-18
+   Records retrieved  : 1
+   Actual date range  : 2026-10-18 to 2026-10-18
+   Duplicate dates    : 0
+   Missing dates      : 0
+   Flagged values     : 0
+
+3. WHAT WAS FOUND
+----------------------------------------
+   CONFIRMED PUBLICLY AVAILABLE:
+     - Current Kukule Pond water level embedded in page JavaScript
+     - Level unit: MASL (metres above sea level) - CONFIRMED
+     - Active storage percentage - CONFIRMED
+     - Level range embedded in chart configuration:
+         min = 204.25 MASL
+         max = 206.0 MASL
+
+   IMPORTANT UNIT CLARIFICATION:
+     The page variable 'level' (e.g. 206) is in MASL.
+     The variable 'percentage' (e.g. 100) is active storage %.
+     MASL and active storage percentage are NOT the same variable.
+     MASL is an absolute elevation; storage % is a ratio of active capacity.
+
+   NOT PUBLICLY AVAILABLE (based on inspection):
+     - Historical daily water-level series (5-year or any period)
+     - No date-range selector exists on the public page
+     - No downloadable CSV/Excel/PDF archive of level observations
+     - No public JSON/XML API for historical water levels
+     - data.php returns the same current-day HTML structure
+     - All candidate historical endpoints returned 404:
+       (water_level.php, level_history.php, reservoir.php,
+        reservoir_history.php, levels.php, pond_data.php,
+        history.php, report.php, export.php)
+
+4. STATION REFERENCE (FOR VALIDATION ONLY)
+----------------------------------------
+   Full supply level (FSL)   : 206.0 MASL
+   Min operating level (MOL) : 204.25 MASL
+   Active storage range      : 1.75 m
+   Flag threshold (above)    : > 206.5 MASL
+   Flag threshold (below)    : < 203.75 MASL
+   Source: page JavaScript levelRange object (verified from HTML)
+
+5. TO OBTAIN THE 5-YEAR HISTORY
+----------------------------------------
+   a) Contact the Samanala Complex / CEPB operations team:
+      Website : https://samanalacomplex.lk/
+   b) Contact the Irrigation Department of Sri Lanka:
+      https://www.irrigation.gov.lk/
+      (Maintains hydrological gauge records at reservoirs)
+   c) Contact the Natural Resources Management Centre (NRMC):
+      https://www.nrmc.gov.lk/
+   d) Contact the Ceylon Electricity Board (CEB):
+      https://www.ceb.lk/
+
+   To accumulate readings over time:
+     python extract_kukule_pond_water_levels.py --accumulate
+     Run daily - each run will append the current level.
+
+6. OUTPUT FILES
+----------------------------------------
+   kukule_pond_level_raw.csv              - raw extracted records
+   kukule_pond_water_level_daily_5years.csv - full-period template
+   kukule_pond_missing_dates.csv           - missing dates list
+   kukule_pond_water_level_history.png     - water level chart
+   kukule_pond_extraction_report.txt       - this file
+
+7. DATA AUTHENTICITY STATEMENT
+----------------------------------------
+   This script does NOT fabricate, synthesise, or impute any water-level
+   observations. The 5-year daily CSV is a correctly-structured template.
+   NaN values indicate genuinely missing or inaccessible observations.
+   Only values extracted directly from the public source are recorded
+   as 'observed'. All other rows are marked 'missing_not_available'.
+
+========================================================================

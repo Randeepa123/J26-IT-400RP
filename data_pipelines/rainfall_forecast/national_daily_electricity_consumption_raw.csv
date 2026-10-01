@@ -1,0 +1,43 @@
+table_index,Description,Active Power (MW),Reactive Power (Mvar),Daily Generation,Energy (GWh),Percentage (%),Night Peak Data (Complex Wise),Major Reservoir,Present Level (masl),Rainfall (mm) for past 24 h,Reservoir/Pond
+0,Night Peak at 18:45,2582.8,550.9,,,,,,,,
+0,Minimum Demand at 02:45,1562.5,34.2,,,,,,,,
+1,,,,Laxapana Hydro Complex,6.85,12.84,,,,,
+1,,,,Mahaweli Hydro Complex,10.37,19.42,,,,,
+1,,,,Samanala Hydro Complex,5.30,9.92,,,,,
+1,,,,CEB Thermal Coal,0.00,0.00,,,,,
+1,,,,CEB Thermal Oil,5.91,11.07,,,,,
+1,,,,IPP Thermal Oil,6.72,12.58,,,,,
+1,,,,CEB Wind,0.45,0.85,,,,,
+1,,,,SPP Wind,0.26,0.48,,,,,
+1,,,,SPP Solar,11.85,22.20,,,,,
+1,,,,SPP Biomass,0.23,0.44,,,,,
+1,,,,SPP Minihydro,5.45,10.21,,,,,
+1,,,,Total,53.38,,,,,,
+2,,327.8,48.6,,,,Laxapana Hydro Complex,,,,
+2,,663.9,46.6,,,,Mahaweli Hydro Complex,,,,
+2,,263.2,9.9,,,,Samanala Hydro Complex,,,,
+2,,0.0,0.0,,,,CEB Thermal Coal,,,,
+2,,508.1,91.1,,,,CEB Thermal Oil,,,,
+2,,592.1,102.5,,,,IPP Thermal Oil,,,,
+2,,14.8,4.1,,,,CEB Wind,,,,
+2,,164.5,0.0,,,,SPP Wind,,,,
+2,,2.8,0.0,,,,CEB Small Hydro,,,,
+2,,7.9,0.0,,,,SPP Biomass,,,,
+2,,156.6,0.0,,,,SPP Minihydro,,,,
+2,,0.0,94.7,,,,Capacitors,,,,
+2,,2701.7,397.6,,,,Total,,,,
+3,,,,,,,,Castlereigh,1094.78,8.50,
+3,,,,,,,,Maussakalle,1165.42,8.70,
+3,,,,,,,,Kotmale,695.55,0.00,
+3,,,,,,,,Victoria,435.43,0.00,
+3,,,,,,,,Randenigala,222.66,0.00,
+3,,,,,,,,Samanalawewa,442.17,20.50,
+4,,,,,,,,,63.19,10.00,Inginiyagala
+4,,,,,,,,,Not available,24.30,Norton
+4,,,,,,,,,Not available,15.40,Canyon
+4,,,,,,,,,Not available,3.00,Laxapana
+4,,,,,,,,,440.54,5.20,Ukuwela
+4,,,,,,,,,150.47,0.00,Rantambe
+4,,,,,,,,,250.52,0.00,Bowatenna
+4,,,,,,,,,Not available,4.00,Kukule
+4,,,,,,,,,1193.49,8.70,Upper Koth.
