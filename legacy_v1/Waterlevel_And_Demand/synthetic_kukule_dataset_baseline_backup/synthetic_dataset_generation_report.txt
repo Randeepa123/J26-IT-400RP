@@ -1,0 +1,33 @@
+================================================================================
+KUKULE GANGA SYNTHETIC HYDROPOWER DATASET GENERATION LOG & PROVENANCE REPORT
+Execution Timestamp : 2026-10-19 15:56:28
+================================================================================
+
+1. PIPELINE EXECUTION METRICS
+------------------------------------------------------------
+Python Environment  : Python 3.13 / Windows
+Random Seed         : 42 (Fully deterministic and reproducible)
+Target Basin        : Kukule Ganga (Upper Kalu Ganga basin, Sri Lanka)
+Installed Capacity  : 70 MW (2 x 35 MW Francis turbine units)
+Catchment Area      : 312 km2
+Active Storage      : 1.67 MCM (1,670,000 m3) between 204.25 and 206.00 MASL
+
+2. GENERATED OUTPUT ARTIFACTS
+------------------------------------------------------------
+* synthetic_kukule_daily_rainfall_5years.csv       |    149.8 KB | SHA256: 2ecb5264b2db7356
+* synthetic_kukule_daily_inflow_5years.csv         |    114.4 KB | SHA256: 6a4fde0293ec6250
+* synthetic_kukule_pond_water_level_5years.csv     |    156.1 KB | SHA256: a1c4fb1edf023483
+* synthetic_kukule_generation_5years.csv           |    158.4 KB | SHA256: e46789ce3c579e11
+* synthetic_kukule_integrated_dataset_5years.csv   |    331.5 KB | SHA256: d7db50a0203b5a7e
+* synthetic_dataset_quality_checks.csv             |      1.6 KB | SHA256: ae595fb09c4fc398
+* synthetic_dataset_assumptions.json               |      3.7 KB | SHA256: 353e35ef33302af9
+* synthetic_dataset_validation_report.txt          |      5.6 KB | SHA256: f8a7b5c3cd9761ce
+
+3. REPRODUCIBILITY INSTRUCTIONS
+------------------------------------------------------------
+To reproduce this exact 5-year synthetic dataset at any time, run:
+    python generate_synthetic_kukule_dataset.py
+
+To verify all quality checks automatically, run:
+    python verify_synthetic_dataset.py
+================================================================================

@@ -1,0 +1,157 @@
+{
+  "metadata": {
+    "evaluation_title": "Held-Out Test Split Evaluation for Kukule Ganga DQN Agent",
+    "model_path": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\dqn\\run_50000steps_20261020_114852\\dqn_kukule_final.zip",
+    "evaluation_timestamp": "2026-10-20T11:58:07.499684",
+    "split": "test",
+    "date_range": [
+      "2025-10-19",
+      "2026-10-18"
+    ],
+    "calendar_days": 365,
+    "inference_mode": "deterministic",
+    "random_seed": 42
+  },
+  "dqn_metrics": {
+    "calendar_days": 365,
+    "date_range": [
+      "2025-10-19",
+      "2026-10-18"
+    ],
+    "initial_storage_mcm": 1.67,
+    "terminal_storage_mcm": 0.0,
+    "storage_change_mcm": -1.67,
+    "total_inflow_mcm": 908.9915,
+    "total_evaporation_mcm": 0.5256,
+    "total_turbine_release_mcm": 537.3513,
+    "total_spill_volume_mcm": 372.7846,
+    "total_physical_generation_gwh": 233.2666,
+    "mean_daily_generation_mwh": 639.086,
+    "capacity_factor_pct": 38.04,
+    "water_productivity_mwh_per_mcm_turb": 434.1,
+    "inflow_productivity_mwh_per_mcm_inflow": 256.62,
+    "stored_potential_energy_at_st_gwh": 0.0,
+    "total_system_energy_equivalent_gwh": 233.2666,
+    "max_daily_water_balance_residual_m3": 1e-08,
+    "cumulative_mass_balance_error_m3": 0.0,
+    "unmet_environmental_release_m3": 1209600.0,
+    "days_unmet_environmental_release": 7
+  },
+  "baseline_comparison": [
+    {
+      "metric_name": "Calendar Evaluation Days",
+      "reference_rule_curve": 365.0,
+      "dqn_agent": 365.0,
+      "omniscient_lp_ceiling": 365.0,
+      "dqn_vs_ref_diff": 0.0,
+      "dqn_vs_ref_pct": "+0.0%",
+      "dqn_vs_lp_diff": 0.0,
+      "engineering_interpretation": "Identical 1-year test horizon"
+    },
+    {
+      "metric_name": "Initial Storage S_0 (MCM)",
+      "reference_rule_curve": 1.67,
+      "dqn_agent": 1.67,
+      "omniscient_lp_ceiling": 1.67,
+      "dqn_vs_ref_diff": 0.0,
+      "dqn_vs_ref_pct": "+0.0%",
+      "dqn_vs_lp_diff": 0.0,
+      "engineering_interpretation": "All models start at full pondage (1.67 MCM)"
+    },
+    {
+      "metric_name": "Terminal Storage S_T (MCM)",
+      "reference_rule_curve": 0.21608782999999998,
+      "dqn_agent": 0.0,
+      "omniscient_lp_ceiling": 1.67,
+      "dqn_vs_ref_diff": -0.21608782999999998,
+      "dqn_vs_ref_pct": "-100.0%",
+      "dqn_vs_lp_diff": -1.67,
+      "engineering_interpretation": "LP enforces S_T >= 1.67; Reference ends depleted at 0.22"
+    },
+    {
+      "metric_name": "Net Storage Change \u0394S (MCM)",
+      "reference_rule_curve": -1.45391217,
+      "dqn_agent": -1.67,
+      "omniscient_lp_ceiling": 0.0,
+      "dqn_vs_ref_diff": -0.21608782999999998,
+      "dqn_vs_ref_pct": "N/A",
+      "dqn_vs_lp_diff": -1.67,
+      "engineering_interpretation": "Water borrowed from / retained in storage"
+    },
+    {
+      "metric_name": "Turbine Release Volume (MCM)",
+      "reference_rule_curve": 577.95579012,
+      "dqn_agent": 537.3513,
+      "omniscient_lp_ceiling": 572.29723099,
+      "dqn_vs_ref_diff": -40.60449011999992,
+      "dqn_vs_ref_pct": "-7.03%",
+      "dqn_vs_lp_diff": -34.945930989999965,
+      "engineering_interpretation": "Total volume routed through turbines"
+    },
+    {
+      "metric_name": "Spillway Overflow Volume (MCM)",
+      "reference_rule_curve": 331.96398835,
+      "dqn_agent": 372.7846,
+      "omniscient_lp_ceiling": 336.16863531,
+      "dqn_vs_ref_diff": 40.82061164999999,
+      "dqn_vs_ref_pct": "+12.30%",
+      "dqn_vs_lp_diff": 36.61596469,
+      "engineering_interpretation": "Uncaptured weir overflow"
+    },
+    {
+      "metric_name": "Evaluated Physical Generation (GWh)",
+      "reference_rule_curve": 245.170226,
+      "dqn_agent": 233.2666,
+      "omniscient_lp_ceiling": 249.170943,
+      "dqn_vs_ref_diff": -11.903626000000003,
+      "dqn_vs_ref_pct": "-4.86%",
+      "dqn_vs_lp_diff": -15.904342999999983,
+      "engineering_interpretation": "Exact non-linear physical generation"
+    },
+    {
+      "metric_name": "Capacity Factor (%)",
+      "reference_rule_curve": 39.982098173515986,
+      "dqn_agent": 38.04,
+      "omniscient_lp_ceiling": 40.63453082191781,
+      "dqn_vs_ref_diff": -1.942098173515987,
+      "dqn_vs_ref_pct": "-1.94%",
+      "dqn_vs_lp_diff": -2.5945308219178074,
+      "engineering_interpretation": "Annual capacity factor based on 70 MW rating"
+    },
+    {
+      "metric_name": "Turbine Water Productivity (MWh/MCM)",
+      "reference_rule_curve": 424.20238743364047,
+      "dqn_agent": 434.1,
+      "omniscient_lp_ceiling": 435.38729441162343,
+      "dqn_vs_ref_diff": 9.897612566359555,
+      "dqn_vs_ref_pct": "+2.33%",
+      "dqn_vs_lp_diff": -1.2872944116234066,
+      "engineering_interpretation": "Conversion efficiency: higher head yields higher MWh/MCM"
+    },
+    {
+      "metric_name": "Terminal Stored Potential Energy (GWh)",
+      "reference_rule_curve": 0.09225653814019999,
+      "dqn_agent": 0.0,
+      "omniscient_lp_ceiling": 0.7129898,
+      "dqn_vs_ref_diff": -0.09225653814019999,
+      "dqn_vs_ref_pct": "N/A",
+      "dqn_vs_lp_diff": -0.7129898,
+      "engineering_interpretation": "Value of water preserved for subsequent cycle"
+    },
+    {
+      "metric_name": "Total System Energy Equivalent (GWh)",
+      "reference_rule_curve": 245.2624825381402,
+      "dqn_agent": 233.2666,
+      "omniscient_lp_ceiling": 249.8839328,
+      "dqn_vs_ref_diff": -11.995882538140194,
+      "dqn_vs_ref_pct": "-4.89%",
+      "dqn_vs_lp_diff": -16.617332799999986,
+      "engineering_interpretation": "Generation + Terminal Potential Energy"
+    }
+  ],
+  "plots": {
+    "generation_plot": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\dqn\\run_50000steps_20261020_114852\\eval_test_20261020_115802\\dqn_vs_baselines_generation.png",
+    "storage_plot": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\dqn\\run_50000steps_20261020_114852\\eval_test_20261020_115802\\dqn_vs_baselines_storage.png",
+    "releases_plot": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\dqn\\run_50000steps_20261020_114852\\eval_test_20261020_115802\\dqn_vs_baselines_releases.png"
+  }
+}

@@ -1,0 +1,11 @@
+check_id,check_name,target_criteria,observed_value,status,tolerance,notes
+QC-01,Calendar Days Count,"Exactly 1,826 calendar days",1826,PASS,0,Covers 2021-10-19 to 2026-10-18 inclusive including 2024 leap day
+QC-02,Date Uniqueness,Zero duplicate dates,0 duplicates,PASS,0,Strict 1-to-1 daily timestamp sequence
+QC-03,Finite Numerical Completeness,Zero NaN or null values across all columns,0 missing entries,PASS,0,All series are mathematically complete and finite
+QC-04,Rainfall Physical Non-negativity,Rainfall >= 0.0 mm,Min = 0.0000 mm,PASS,>= 0.0,Disaggregated from CHIRPS and verified
+QC-05,Pond Water Level Limits,204.00 MASL (MOL) <= Level <= 206.00 MASL (FSL),"[204.0088, 206.0000] MASL",PASS,"Operating range [204.00, 206.00]",Spillway discharge prevents overtopping above FSL
+QC-06,Active Storage Bounds,0.0% <= Active Storage <= 100.0%,"[0.34%, 100.00%]",PASS,"[0.0%, 100.0%]",Proportional to active volume 1.67 MCM
+QC-07,Hydropower Capacity Constraint,"Daily generation <= 1,680.0 MWh (70 MW * 24 h)",Max = 1680.00 MWh/day,PASS,"<= 1,680.0 MWh",Enforces nominal station electrical generation ceiling
+QC-08,Water Balance Conservation,Continuity error < 0.0001 m3/day,Max error = 0.00000001 m3,PASS,< 0.0001 m3,"Exact volume conservation across all 1,826 days"
+QC-09,Turbine Discharge Feasibility,Discharge <= 47.50 m3/s,Max discharge = 47.50 m3/s,PASS,<= 47.50 m3/s,Bounded by configured rated turbine discharge
+QC-10,Synthetic Label Authenticity,Synthetic records never labeled as observed,0 rows marked observed,PASS,0,All generated rows strictly marked MODEL_ESTIMATED/SYNTHETIC

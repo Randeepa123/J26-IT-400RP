@@ -1,0 +1,958 @@
+{
+  "metadata": {
+    "audit_title": "Comprehensive Kukule Ganga LP Optimizer Feasibility and Validation Audit",
+    "component": "Component 3 - Hydropower Generation & Reservoir Release Optimization",
+    "facility": "Kukule Ganga Power Station (70 MW, 1.67 MCM active pondage)",
+    "audit_timestamp": "2026-10-19T22:31:38.213052",
+    "target_solver": "SciPy linprog (HiGHS dual simplex/interior point)",
+    "overall_verdict": "FEASIBLE_WITH_CAVEATS"
+  },
+  "unit_test_suite": {
+    "all_tests_passed": true,
+    "total_tests_run": 13,
+    "test_breakdown": [
+      {
+        "test_id": "test_01_solver_status_and_feasibility",
+        "description": "TEST-01: Verify that HiGHS solves the full 1,826-day problem to optimality.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_02_water_balance_continuity",
+        "description": "TEST-02: Verify exact mass continuity for all 1,826 time steps.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_03_active_storage_bounds",
+        "description": "TEST-03: Verify end-of-day active storage respects physical bounds [0, S_max].",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_04_turbine_discharge_limits",
+        "description": "TEST-04: Verify turbine discharge does not exceed physical unit hydraulic ratings.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_05_station_power_and_energy_ceiling",
+        "description": "TEST-05: Verify daily physical generation never exceeds continuous electrical ceiling.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_06_terminal_storage_enforcement",
+        "description": "TEST-06: Verify terminal storage constraint prevents end-of-horizon depletion.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_07_monsoon_high_inflow_behavior",
+        "description": "TEST-07: Verify optimizer behavior under massive monsoon flood inflow.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_08_drought_low_inflow_behavior",
+        "description": "TEST-08: Verify optimizer behavior under severe dry-season drought.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_09_infeasible_target_handling",
+        "description": "TEST-09: Verify that impossible terminal storage targets are detected and rejected as INFEASIBLE.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_10_nonlinear_energy_consistency",
+        "description": "TEST-10: Verify the linear LP power approximation is consistent with physical non-linear power.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_11_future_date_range_optimization",
+        "description": "TEST-11: Verify LP optimization on a forward-looking future forecast date range (2026-10-20 to 2026-11-03).",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_12_future_visualization_generation",
+        "description": "TEST-12: Verify generation of all 4 research-quality Matplotlib figures for future LP dispatch.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      },
+      {
+        "test_id": "test_13_no_plots_flag_suppression",
+        "description": "TEST-13: Verify that visualization generation can be safely bypassed when requested without affecting optimization.",
+        "status": "PASS",
+        "details": "Assertion passed cleanly."
+      }
+    ]
+  },
+  "objective_function_audit": {
+    "formulation": "min sum_{t=1}^T ( -k_e * V_turb,t + c_spill * V_spill,t - c_storage * S_t )",
+    "terms": [
+      {
+        "term_name": "Turbine Generation Reward",
+        "mathematical_expression": "-k_e * V_turb,t",
+        "coefficient_value": 0.000427351871875,
+        "engineering_units": "MWh/m\u00b3",
+        "sign_in_minimization": "NEGATIVE (Maximizes generation)",
+        "ratio_to_c_storage": 4273.5,
+        "effect_on_solution": "Incentivizes routing maximum available water through turbines up to electrical capacity ceiling."
+      },
+      {
+        "term_name": "Spillway Discharge Penalty",
+        "mathematical_expression": "+c_spill * V_spill,t",
+        "coefficient_value": 1e-06,
+        "engineering_units": "MWh/m\u00b3",
+        "sign_in_minimization": "POSITIVE (Penalizes spill)",
+        "ratio_to_c_storage": 10.0,
+        "effect_on_solution": "Prevents artificial spilling when turbine or storage capacity is available. Serves as penalty slack."
+      },
+      {
+        "term_name": "Active Storage Preservation Incentive",
+        "mathematical_expression": "-c_storage * S_t",
+        "coefficient_value": 1e-07,
+        "engineering_units": "MWh/m\u00b3",
+        "sign_in_minimization": "NEGATIVE (Incentivizes holding water in storage)",
+        "ratio_to_c_storage": 1.0,
+        "effect_on_solution": "Resolves multi-period storage degeneracy in high-inflow regimes. Keeps reservoir elevation near FSL."
+      }
+    ],
+    "hierarchy_condition": "k_e (4.2735e-04) >> c_spill (1.0000e-06) >> c_storage (1.0000e-07) > 0",
+    "hierarchy_satisfied": true,
+    "potential_drawbacks": [
+      "c_storage creates a mild bias against drawing down storage during marginal low-inflow periods if terminal storage is free.",
+      "Linear k_e assumes fixed rated net head (175.1 m) and fixed nominal efficiency (0.895), neglecting head variation and quadratic friction in optimization.",
+      "Environmental flow constraint is disabled by default (--enforce-env-flow defaults to False).",
+      "24-hour daily discrete time step cannot model intra-day sub-daily peaking, morning/evening tariffs, or ramping constraints."
+    ]
+  },
+  "schedules_feasibility_audit": [
+    {
+      "schedule_label": "Full Horizon Baseline (5 Years, 1826d)",
+      "file_path": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\lp_results_full_new.csv",
+      "calendar_days": 1826,
+      "date_range": [
+        "2021-10-19",
+        "2026-10-18"
+      ],
+      "total_inflow_mcm": 4807.7081,
+      "total_turbine_mcm": 2975.3778,
+      "total_spill_mcm": 1829.7008,
+      "total_generation_gwh": 1293.6123,
+      "capacity_factor_pct": 42.17,
+      "initial_storage_m3": 1670000.0,
+      "terminal_storage_m3": 1670000.0,
+      "terminal_target_m3": 1670000.0,
+      "terminal_storage_satisfied": true,
+      "max_water_balance_residual_m3": 3.725290298461914e-09,
+      "water_balance_violations": 0,
+      "max_inter_day_continuity_residual_m3": 0.0,
+      "min_storage_observed_m3": 0.0,
+      "max_storage_observed_m3": 1670000.0,
+      "storage_bound_violations": 0,
+      "max_turbine_release_observed_m3": 3931186.71,
+      "turbine_discharge_violations": 0,
+      "max_generation_observed_mwh": 1680.0,
+      "generation_ceiling_violations": 0,
+      "inflow_non_negative": true,
+      "spill_non_negative": true,
+      "max_formula_energy_discrepancy_mwh": 0.043578516032766856,
+      "nan_count": 0,
+      "inf_count": 0,
+      "overall_feasibility_pass": true
+    },
+    {
+      "schedule_label": "Development Split (4 Years, 1461d)",
+      "file_path": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\lp_results_dev_new.csv",
+      "calendar_days": 1461,
+      "date_range": [
+        "2021-10-19",
+        "2025-10-18"
+      ],
+      "total_inflow_mcm": 3898.7166,
+      "total_turbine_mcm": 2403.0806,
+      "total_spill_mcm": 1493.5322,
+      "total_generation_gwh": 1044.4414,
+      "capacity_factor_pct": 42.55,
+      "initial_storage_m3": 1670000.0,
+      "terminal_storage_m3": 1670000.0,
+      "terminal_target_m3": 1670000.0,
+      "terminal_storage_satisfied": true,
+      "max_water_balance_residual_m3": 3.725290298461914e-09,
+      "water_balance_violations": 0,
+      "max_inter_day_continuity_residual_m3": 0.0,
+      "min_storage_observed_m3": 0.0,
+      "max_storage_observed_m3": 1670000.0,
+      "storage_bound_violations": 0,
+      "max_turbine_release_observed_m3": 3931186.71,
+      "turbine_discharge_violations": 0,
+      "max_generation_observed_mwh": 1680.0,
+      "generation_ceiling_violations": 0,
+      "inflow_non_negative": true,
+      "spill_non_negative": true,
+      "max_formula_energy_discrepancy_mwh": 0.043578516032766856,
+      "nan_count": 0,
+      "inf_count": 0,
+      "overall_feasibility_pass": true
+    },
+    {
+      "schedule_label": "Held-Out Test Split (1 Year, 365d)",
+      "file_path": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\lp_results_test_new.csv",
+      "calendar_days": 365,
+      "date_range": [
+        "2025-10-19",
+        "2026-10-18"
+      ],
+      "total_inflow_mcm": 908.9915,
+      "total_turbine_mcm": 572.2972,
+      "total_spill_mcm": 336.1686,
+      "total_generation_gwh": 249.1709,
+      "capacity_factor_pct": 40.63,
+      "initial_storage_m3": 1670000.0,
+      "terminal_storage_m3": 1670000.0,
+      "terminal_target_m3": 1670000.0,
+      "terminal_storage_satisfied": true,
+      "max_water_balance_residual_m3": 3.725290298461914e-09,
+      "water_balance_violations": 0,
+      "max_inter_day_continuity_residual_m3": 0.0,
+      "min_storage_observed_m3": 0.0,
+      "max_storage_observed_m3": 1670000.0,
+      "storage_bound_violations": 0,
+      "max_turbine_release_observed_m3": 3931186.71,
+      "turbine_discharge_violations": 0,
+      "max_generation_observed_mwh": 1680.0,
+      "generation_ceiling_violations": 0,
+      "inflow_non_negative": true,
+      "spill_non_negative": true,
+      "max_formula_energy_discrepancy_mwh": 0.04009002531938677,
+      "nan_count": 0,
+      "inf_count": 0,
+      "overall_feasibility_pass": true
+    },
+    {
+      "schedule_label": "Future Operational Run (2026-10-20 to 2026-11-01, 13d)",
+      "file_path": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\future_20261020_20261101\\optimization_schedule.csv",
+      "calendar_days": 13,
+      "date_range": [
+        "2026-10-20",
+        "2026-11-01"
+      ],
+      "total_inflow_mcm": 19.1141,
+      "total_turbine_mcm": 19.0954,
+      "total_spill_mcm": 0.0,
+      "total_generation_gwh": 8.506,
+      "capacity_factor_pct": 38.95,
+      "initial_storage_m3": 1670000.0,
+      "terminal_storage_m3": 1670000.0,
+      "terminal_target_m3": 1670000.0,
+      "terminal_storage_satisfied": true,
+      "max_water_balance_residual_m3": 2.3283064365386963e-10,
+      "water_balance_violations": 0,
+      "max_inter_day_continuity_residual_m3": 0.0,
+      "min_storage_observed_m3": 1670000.0,
+      "max_storage_observed_m3": 1670000.0,
+      "storage_bound_violations": 0,
+      "max_turbine_release_observed_m3": 2249971.2,
+      "turbine_discharge_violations": 0,
+      "max_generation_observed_mwh": 1005.863,
+      "generation_ceiling_violations": 0,
+      "inflow_non_negative": true,
+      "spill_non_negative": true,
+      "max_formula_energy_discrepancy_mwh": 0.022853043680015617,
+      "nan_count": 0,
+      "inf_count": 0,
+      "overall_feasibility_pass": true
+    },
+    {
+      "schedule_label": "Future 15-Day Forecast Run (2026-10-20 to 2026-11-03, 15d)",
+      "file_path": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\future_20261020_20261103\\optimization_schedule.csv",
+      "calendar_days": 15,
+      "date_range": [
+        "2026-10-20",
+        "2026-11-03"
+      ],
+      "total_inflow_mcm": 20.5249,
+      "total_turbine_mcm": 20.5033,
+      "total_spill_mcm": 0.0,
+      "total_generation_gwh": 9.1236,
+      "capacity_factor_pct": 36.2,
+      "initial_storage_m3": 1670000.0,
+      "terminal_storage_m3": 1670000.0,
+      "terminal_target_m3": 1670000.0,
+      "terminal_storage_satisfied": true,
+      "max_water_balance_residual_m3": 2.3283064365386963e-10,
+      "water_balance_violations": 0,
+      "max_inter_day_continuity_residual_m3": 0.0,
+      "min_storage_observed_m3": 1670000.0,
+      "max_storage_observed_m3": 1670000.0,
+      "storage_bound_violations": 0,
+      "max_turbine_release_observed_m3": 2249971.2,
+      "turbine_discharge_violations": 0,
+      "max_generation_observed_mwh": 1005.863,
+      "generation_ceiling_violations": 0,
+      "inflow_non_negative": true,
+      "spill_non_negative": true,
+      "max_formula_energy_discrepancy_mwh": 0.022853043680015617,
+      "nan_count": 0,
+      "inf_count": 0,
+      "overall_feasibility_pass": true
+    },
+    {
+      "schedule_label": "Future 40-Day Extended Run (2026-10-22 to 2026-11-30, 40d)",
+      "file_path": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\future_20261022_20261130\\optimization_schedule.csv",
+      "calendar_days": 40,
+      "date_range": [
+        "2026-10-22",
+        "2026-11-30"
+      ],
+      "total_inflow_mcm": 27.9962,
+      "total_turbine_mcm": 27.9386,
+      "total_spill_mcm": 0.0,
+      "total_generation_gwh": 12.3509,
+      "capacity_factor_pct": 18.38,
+      "initial_storage_m3": 1670000.0,
+      "terminal_storage_m3": 1670000.0,
+      "terminal_target_m3": 1670000.0,
+      "terminal_storage_satisfied": true,
+      "max_water_balance_residual_m3": 2.3283064365386963e-10,
+      "water_balance_violations": 0,
+      "max_inter_day_continuity_residual_m3": 0.0,
+      "min_storage_observed_m3": 1670000.0,
+      "max_storage_observed_m3": 1670000.0,
+      "storage_bound_violations": 0,
+      "max_turbine_release_observed_m3": 1908345.6,
+      "turbine_discharge_violations": 0,
+      "max_generation_observed_mwh": 857.181,
+      "generation_ceiling_violations": 0,
+      "inflow_non_negative": true,
+      "spill_non_negative": true,
+      "max_formula_energy_discrepancy_mwh": 0.01430304448001607,
+      "nan_count": 0,
+      "inf_count": 0,
+      "overall_feasibility_pass": true
+    }
+  ],
+  "perfect_foresight_analysis": {
+    "foresight_present": true,
+    "description": "Full-horizon LP optimizes with global knowledge of all future inflows, resulting in pre-flood drawdown maneuvers impossible under causal real-time operation.",
+    "detected_pre_drain_events": [
+      {
+        "pre_drain_date": "2021-10-25",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2021-10-26",
+        "next_day_inflow_m3": 30798110.21,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2021-11-22",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": -0.0,
+        "next_day_date": "2021-11-23",
+        "next_day_inflow_m3": 24808807.17,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2021-12-02",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2021-12-03",
+        "next_day_inflow_m3": 12596551.73,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2022-03-31",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2022-04-01",
+        "next_day_inflow_m3": 10395077.85,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2022-04-10",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2022-04-11",
+        "next_day_inflow_m3": 10718785.75,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2022-04-23",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2022-04-24",
+        "next_day_inflow_m3": 17526680.81,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2022-07-21",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2022-07-22",
+        "next_day_inflow_m3": 21355273.78,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2022-08-26",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2022-08-27",
+        "next_day_inflow_m3": 11842406.03,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2022-11-13",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2022-11-14",
+        "next_day_inflow_m3": 16069287.3,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2022-12-21",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2022-12-22",
+        "next_day_inflow_m3": 11973113.84,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-03-09",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-03-10",
+        "next_day_inflow_m3": 10150150.86,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-03-17",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-03-18",
+        "next_day_inflow_m3": 23467837.47,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-03-29",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-03-30",
+        "next_day_inflow_m3": 10944447.43,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-05-04",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": -0.0,
+        "next_day_date": "2023-05-05",
+        "next_day_inflow_m3": 60628695.02,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-05-15",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-05-16",
+        "next_day_inflow_m3": 28623449.63,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-05-30",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-05-31",
+        "next_day_inflow_m3": 18677133.43,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-06-10",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-06-11",
+        "next_day_inflow_m3": 25888931.99,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-06-21",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-06-22",
+        "next_day_inflow_m3": 16741494.39,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-09-06",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-09-07",
+        "next_day_inflow_m3": 21092187.08,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-09-14",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-09-15",
+        "next_day_inflow_m3": 15467649.58,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-09-22",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-09-23",
+        "next_day_inflow_m3": 21934064.16,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-10-03",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-10-04",
+        "next_day_inflow_m3": 39667651.31,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-10-10",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-10-11",
+        "next_day_inflow_m3": 21723193.42,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-11-25",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-11-26",
+        "next_day_inflow_m3": 25556842.69,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2023-12-07",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2023-12-08",
+        "next_day_inflow_m3": 22212227.37,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2024-01-02",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2024-01-03",
+        "next_day_inflow_m3": 38209507.55,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2024-10-06",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2024-10-07",
+        "next_day_inflow_m3": 15961112.89,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2024-10-31",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2024-11-01",
+        "next_day_inflow_m3": 11439648.85,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2024-11-02",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2024-11-03",
+        "next_day_inflow_m3": 12865451.69,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2024-11-10",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2024-11-11",
+        "next_day_inflow_m3": 12747324.55,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2024-11-20",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2024-11-21",
+        "next_day_inflow_m3": 19235396.65,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-01-15",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-01-16",
+        "next_day_inflow_m3": 13824622.24,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-01-24",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-01-25",
+        "next_day_inflow_m3": 24351713.72,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-02-28",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-03-01",
+        "next_day_inflow_m3": 17794543.75,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-03-24",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-03-25",
+        "next_day_inflow_m3": 14100410.28,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-04-07",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-04-08",
+        "next_day_inflow_m3": 12520559.37,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-04-11",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-04-12",
+        "next_day_inflow_m3": 10160370.14,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-05-08",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-05-09",
+        "next_day_inflow_m3": 18805343.3,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-05-23",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-05-24",
+        "next_day_inflow_m3": 10425955.96,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-10-02",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-10-03",
+        "next_day_inflow_m3": 12507938.04,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-10-10",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-10-11",
+        "next_day_inflow_m3": 23327704.23,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-10-12",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-10-13",
+        "next_day_inflow_m3": 11414550.87,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-11-19",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-11-20",
+        "next_day_inflow_m3": 34674320.38,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-11-21",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": -0.0,
+        "next_day_date": "2025-11-22",
+        "next_day_inflow_m3": 12059699.22,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-11-24",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-11-25",
+        "next_day_inflow_m3": 13875321.35,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2025-12-10",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2025-12-11",
+        "next_day_inflow_m3": 11367507.67,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2026-04-26",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2026-04-27",
+        "next_day_inflow_m3": 12750907.53,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2026-05-01",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2026-05-02",
+        "next_day_inflow_m3": 31651934.76,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2026-05-08",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2026-05-09",
+        "next_day_inflow_m3": 11320480.49,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2026-05-16",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2026-05-17",
+        "next_day_inflow_m3": 29740278.35,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2026-06-13",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2026-06-14",
+        "next_day_inflow_m3": 14953763.08,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2026-09-29",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2026-09-30",
+        "next_day_inflow_m3": 16527212.18,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      },
+      {
+        "pre_drain_date": "2026-10-01",
+        "storage_change_m3": -1670000.0,
+        "ending_storage_m3": 0.0,
+        "next_day_date": "2026-10-02",
+        "next_day_inflow_m3": 10326225.45,
+        "interpretation": "LP emptied pondage to maximize generation knowing an uncontrollable flood was arriving next day."
+      }
+    ]
+  },
+  "lp_vs_reference_comparison": {
+    "comparison_fairness_status": "PARTIALLY_FAIR_WITH_METHODOLOGICAL_DIFFERENCES",
+    "key_findings": [
+      "Inflow data, initial storage, hydraulic parameters, and physical evaluation equations are strictly identical.",
+      "LP enforces terminal storage constraint S_T >= 1.67 MCM, whereas Reference Policy ends depleted (0.216 MCM).",
+      "LP turbined 20.17 MCM less water yet generated 23.36 GWh more energy across 5 years due to head preservation near FSL.",
+      "LP benefits from omniscient future foresight across the entire horizon, which serves as a theoretical performance ceiling rather than an achievable real-time controller."
+    ],
+    "benchmark_records": [
+      {
+        "split_name": "Full Horizon (5 Years)",
+        "start_date": "2021-10-19",
+        "end_date": "2026-10-18",
+        "calendar_days": 1826,
+        "initial_storage_mode": "Nominal Full (1.67 MCM)",
+        "inflow_volume_mcm": 4807.7081,
+        "evaporation_loss_mcm": 2.6294,
+        "ref_initial_storage_mcm": 1.67,
+        "ref_terminal_storage_mcm": 0.2161,
+        "ref_storage_change_mcm": -1.4539,
+        "ref_turbine_release_mcm": 2995.5451,
+        "ref_spill_volume_mcm": 1810.9875,
+        "ref_physical_generation_gwh": 1270.2479,
+        "ref_capacity_factor_pct": 41.41,
+        "ref_water_productivity_mwh_per_mcm_turb": 424.05,
+        "ref_inflow_productivity_mwh_per_mcm_inflow": 264.21,
+        "ref_terminal_storage_value_gwh": 0.0923,
+        "ref_total_system_energy_gwh": 1270.3402,
+        "ref_max_water_balance_residual_m3": 7.450580596923828e-09,
+        "lp_initial_storage_mcm": 1.67,
+        "lp_terminal_storage_mcm": 1.67,
+        "lp_storage_change_mcm": 0.0,
+        "lp_turbine_release_mcm": 2975.3778,
+        "lp_spill_volume_mcm": 1829.7008,
+        "lp_physical_generation_gwh": 1293.6123,
+        "lp_capacity_factor_pct": 42.17,
+        "lp_water_productivity_mwh_per_mcm_turb": 434.77,
+        "lp_inflow_productivity_mwh_per_mcm_inflow": 269.07,
+        "lp_terminal_storage_value_gwh": 0.713,
+        "lp_total_system_energy_gwh": 1294.3253,
+        "lp_max_water_balance_residual_m3": 3.725290298461914e-09,
+        "diff_generation_gwh": 23.3644,
+        "diff_generation_pct": 1.84,
+        "diff_terminal_storage_mcm": 1.4539,
+        "diff_turbine_release_mcm": -20.1672,
+        "diff_spill_volume_mcm": 18.7133,
+        "diff_water_productivity_mwh_per_mcm_turb": 10.73,
+        "diff_inflow_productivity_mwh_per_mcm_inflow": 4.86,
+        "diff_total_system_energy_gwh": 23.9851
+      },
+      {
+        "split_name": "Development Split (4 Years)",
+        "start_date": "2021-10-19",
+        "end_date": "2025-10-18",
+        "calendar_days": 1461,
+        "initial_storage_mode": "Nominal Full (1.67 MCM)",
+        "inflow_volume_mcm": 3898.7166,
+        "evaporation_loss_mcm": 2.1038,
+        "ref_initial_storage_mcm": 1.67,
+        "ref_terminal_storage_mcm": 0.2758,
+        "ref_storage_change_mcm": -1.3942,
+        "ref_turbine_release_mcm": 2418.9835,
+        "ref_spill_volume_mcm": 1479.0235,
+        "ref_physical_generation_gwh": 1025.7055,
+        "ref_capacity_factor_pct": 41.79,
+        "ref_water_productivity_mwh_per_mcm_turb": 424.02,
+        "ref_inflow_productivity_mwh_per_mcm_inflow": 263.09,
+        "ref_terminal_storage_value_gwh": 0.1177,
+        "ref_total_system_energy_gwh": 1025.8233,
+        "ref_max_water_balance_residual_m3": 7.450580596923828e-09,
+        "lp_initial_storage_mcm": 1.67,
+        "lp_terminal_storage_mcm": 1.67,
+        "lp_storage_change_mcm": 0.0,
+        "lp_turbine_release_mcm": 2403.0806,
+        "lp_spill_volume_mcm": 1493.5322,
+        "lp_physical_generation_gwh": 1044.4414,
+        "lp_capacity_factor_pct": 42.55,
+        "lp_water_productivity_mwh_per_mcm_turb": 434.63,
+        "lp_inflow_productivity_mwh_per_mcm_inflow": 267.89,
+        "lp_terminal_storage_value_gwh": 0.713,
+        "lp_total_system_energy_gwh": 1045.1543,
+        "lp_max_water_balance_residual_m3": 3.725290298461914e-09,
+        "diff_generation_gwh": 18.7358,
+        "diff_generation_pct": 1.83,
+        "diff_terminal_storage_mcm": 1.3942,
+        "diff_turbine_release_mcm": -15.9029,
+        "diff_spill_volume_mcm": 14.5087,
+        "diff_water_productivity_mwh_per_mcm_turb": 10.6,
+        "diff_inflow_productivity_mwh_per_mcm_inflow": 4.81,
+        "diff_total_system_energy_gwh": 19.3311
+      },
+      {
+        "split_name": "Held-Out Test (Unchained Reset)",
+        "start_date": "2025-10-19",
+        "end_date": "2026-10-18",
+        "calendar_days": 365,
+        "initial_storage_mode": "Reset to Full (1.67 MCM)",
+        "inflow_volume_mcm": 908.9915,
+        "evaporation_loss_mcm": 0.5256,
+        "ref_initial_storage_mcm": 1.67,
+        "ref_terminal_storage_mcm": 0.2161,
+        "ref_storage_change_mcm": -1.4539,
+        "ref_turbine_release_mcm": 577.9558,
+        "ref_spill_volume_mcm": 331.964,
+        "ref_physical_generation_gwh": 245.1702,
+        "ref_capacity_factor_pct": 39.98,
+        "ref_water_productivity_mwh_per_mcm_turb": 424.2,
+        "ref_inflow_productivity_mwh_per_mcm_inflow": 269.72,
+        "ref_terminal_storage_value_gwh": 0.0923,
+        "ref_total_system_energy_gwh": 245.2625,
+        "ref_max_water_balance_residual_m3": 7.450580596923828e-09,
+        "lp_initial_storage_mcm": 1.67,
+        "lp_terminal_storage_mcm": 1.67,
+        "lp_storage_change_mcm": 0.0,
+        "lp_turbine_release_mcm": 572.2972,
+        "lp_spill_volume_mcm": 336.1686,
+        "lp_physical_generation_gwh": 249.1709,
+        "lp_capacity_factor_pct": 40.63,
+        "lp_water_productivity_mwh_per_mcm_turb": 435.39,
+        "lp_inflow_productivity_mwh_per_mcm_inflow": 274.12,
+        "lp_terminal_storage_value_gwh": 0.713,
+        "lp_total_system_energy_gwh": 249.8839,
+        "lp_max_water_balance_residual_m3": 3.725290298461914e-09,
+        "diff_generation_gwh": 4.0007,
+        "diff_generation_pct": 1.63,
+        "diff_terminal_storage_mcm": 1.4539,
+        "diff_turbine_release_mcm": -5.6586,
+        "diff_spill_volume_mcm": 4.2046,
+        "diff_water_productivity_mwh_per_mcm_turb": 11.18,
+        "diff_inflow_productivity_mwh_per_mcm_inflow": 4.4,
+        "diff_total_system_energy_gwh": 4.6215
+      },
+      {
+        "split_name": "Held-Out Test (Chained Continuity)",
+        "start_date": "2025-10-19",
+        "end_date": "2026-10-18",
+        "calendar_days": 365,
+        "initial_storage_mode": "Chained from Dev End Storage",
+        "inflow_volume_mcm": 908.9915,
+        "evaporation_loss_mcm": 0.5256,
+        "ref_initial_storage_mcm": 0.2758,
+        "ref_terminal_storage_mcm": 0.2161,
+        "ref_storage_change_mcm": -0.0597,
+        "ref_turbine_release_mcm": 576.5616,
+        "ref_spill_volume_mcm": 331.964,
+        "ref_physical_generation_gwh": 244.5424,
+        "ref_capacity_factor_pct": 39.88,
+        "ref_water_productivity_mwh_per_mcm_turb": 424.14,
+        "ref_inflow_productivity_mwh_per_mcm_inflow": 269.03,
+        "ref_terminal_storage_value_gwh": 0.0923,
+        "ref_total_system_energy_gwh": 244.6347,
+        "ref_max_water_balance_residual_m3": 7.450580596923828e-09,
+        "lp_initial_storage_mcm": 1.67,
+        "lp_terminal_storage_mcm": 1.67,
+        "lp_storage_change_mcm": 0.0,
+        "lp_turbine_release_mcm": 572.2972,
+        "lp_spill_volume_mcm": 336.1686,
+        "lp_physical_generation_gwh": 249.1709,
+        "lp_capacity_factor_pct": 40.63,
+        "lp_water_productivity_mwh_per_mcm_turb": 435.39,
+        "lp_inflow_productivity_mwh_per_mcm_inflow": 274.12,
+        "lp_terminal_storage_value_gwh": 0.713,
+        "lp_total_system_energy_gwh": 249.8839,
+        "lp_max_water_balance_residual_m3": 3.725290298461914e-09,
+        "diff_generation_gwh": 4.6285,
+        "diff_generation_pct": 1.89,
+        "diff_terminal_storage_mcm": 1.4539,
+        "diff_turbine_release_mcm": -4.2644,
+        "diff_spill_volume_mcm": 4.2046,
+        "diff_water_productivity_mwh_per_mcm_turb": 11.25,
+        "diff_inflow_productivity_mwh_per_mcm_inflow": 5.09,
+        "diff_total_system_energy_gwh": 5.2493
+      }
+    ]
+  },
+  "unrepresented_engineering_constraints": [
+    "Tailwater stage-discharge rating curve (fixed at 19.60 MASL; actual river outfall invert is 13.52 MASL with unknown flood tailwater rise).",
+    "Hourly/sub-daily peaking and ramp rate limits (daily model cannot capture intra-day turbine cycling or morning/evening peak tariffs).",
+    "Minimum environmental flow constraint (present in config as 2.0 m\u00b3/s, tracked as deficit, but unenforced as hard constraint in default LP run).",
+    "Turbine cavitation / draft tube pressure limits at extreme low operating head.",
+    "Generator apparent power (MVA) and power factor thermal constraints (generator nameplate 42.0 MVA vs 46.2 MVA overload)."
+  ],
+  "dqn_readiness_next_steps": [
+    "Formulate Gymnasium environment with state s_t = (S_t, Q_in,t, Q_in,t-1, antecedent_rain, u_t).",
+    "Define action space as continuous turbine discharge V_turb,t in [0, V_turb,max(u_t)].",
+    "Reward function must align with evaluated physical generation while penalizing uncaptured spill and end-of-horizon depletion.",
+    "Benchmark DQN strictly on held-out test split (2025-10-19 to 2026-10-18) against Reference Policy (lower benchmark) and Omniscient LP (theoretical upper bound)."
+  ]
+}

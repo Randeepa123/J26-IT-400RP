@@ -1,0 +1,78 @@
+================================================================================
+KUKULE GANGA POWER STATION - 5-YEAR SYNTHETIC DATASET VALIDATION REPORT
+Scenario: Baseline Scenario (ID: baseline)
+Generated at: 2026-10-19 18:52:31
+Component 3: Hydropower Generation & Reservoir Release Optimization Subsystem
+NOTICE: SYNTHETIC SIMULATION RESULTS - NOT OBSERVED HISTORICAL TELEMETRY
+================================================================================
+
+1. EXECUTIVE SUMMARY & STATISTICAL OVERVIEW
+------------------------------------------------------------
+Target Period              : 2021-10-19 to 2026-10-18
+Total Calendar Days        : 1,826 days (inclusive, leap year 2024 included)
+District Mean Rainfall     : 3252.7 mm/year (Daily max: 368.3 mm)
+Catchment Mean Rainfall    : 3838.2 mm/year (Orographic factor 1.18)
+Mean Inflow Rate           : 30.47 m3/s (Benchmark: ~30.4 m3/s)
+Inflow Range               : [2.71, 701.72] m3/s
+Mean Daily Generation      : 695.65 MWh/day (Capacity factor: 41.4%)
+Annual Generation Total    : 254.08 GWh/year (CEB Benchmark: 250-320 GWh)
+Daily Generation Limits    : [102.67, 1680.00] MWh/day (Ceiling: 1,680.0 MWh)
+Pond Water Level Limits    : [204.26, 206.00] MASL (MOL: 204.25, FSL: 206.00)
+Active Storage Range       : [0.3%, 100.0%] (Usable volume: 1.67 MCM)
+Spill Frequency            : 283 days (15.5% of days)
+
+2. DISCREPANCY ANALYSIS & VALIDATION FOR 18 OCTOBER 2026
+------------------------------------------------------------
+A reported reading of 1,835.300 MWh was identified in the test dashboard
+snapshot (samanalacomplex.lk/test/test/index.php) under 'Daily Gen. on latest date'.
+
+Physical Verification:
+  * Installed capacity: 2 units x 35.0 MW = 70.0 MW nominal rating.
+  * Theoretical continuous 24-hour generation ceiling:
+      70.0 MW x 24.0 hours = 1,680.0 MWh.
+  * Conflict magnitude: 1,835.300 MWh - 1,680.0 MWh = +155.3 MWh (+9.24% over maximum).
+
+Engineering Action Implemented:
+  * Daily generation is bounded strictly at 1,680.0 MWh for two-unit normal dispatch.
+  * Discrepancy is fully preserved in provenance logs without corrupting simulation physics.
+
+3. DETAILED MONTHLY CLIMATOLOGY & HYDROLOGICAL BREAKDOWN
+------------------------------------------------------------
+Month      | Rain (mm)  | Inflow (m3/s)  | Generation (GWh) | Spill Days
+--------------------------------------------------------------------
+January    | 174.6      | 21.71          | 17.36            | 1.4       
+February   | 138.5      | 13.93          | 12.19            | 2.4       
+March      | 211.7      | 20.56          | 15.53            | 3.2       
+April      | 314.7      | 30.58          | 21.96            | 6.0       
+May        | 452.4      | 49.58          | 26.95            | 7.6       
+June       | 240.1      | 31.65          | 24.33            | 5.6       
+July       | 136.0      | 16.23          | 16.18            | 1.2       
+August     | 177.1      | 17.71          | 15.28            | 2.4       
+September  | 265.0      | 25.73          | 20.14            | 3.6       
+October    | 452.6      | 50.24          | 30.17            | 8.8       
+November   | 460.0      | 58.60          | 29.92            | 10.8      
+December   | 229.5      | 28.48          | 24.05            | 3.6       
+--------------------------------------------------------------------
+
+4. OPERATING SCENARIOS & OUTAGE AUDIT
+------------------------------------------------------------
+Normal Two-Unit Operation  : 1692 days (92.7%)
+Planned Maintenance Days   : 117 days (6.4%)
+Unplanned Outage Days      : 17 days (0.9%)
+
+5. AUTOMATED QUALITY ASSURANCE RESULTS
+------------------------------------------------------------
+[PASS] QC-01: Calendar Days Count              | 1826                      | Covers 2021-10-19 to 2026-10-18 inclusive including 2024 leap day
+[PASS] QC-02: Date Uniqueness                  | 0 duplicates              | Strict 1-to-1 daily timestamp sequence
+[PASS] QC-03: Finite Numerical Completeness    | 0 missing entries         | All series are mathematically complete and finite
+[PASS] QC-04: Rainfall Physical Non-negativity | Min = 0.0000 mm           | Disaggregated from CHIRPS and verified
+[PASS] QC-05: Pond Water Level Limits          | [204.2577, 206.0000] MASL | Spillway discharge prevents overtopping above FSL
+[PASS] QC-06: Active Storage Bounds            | [0.34%, 100.00%]          | Proportional to active volume 1.67 MCM
+[PASS] QC-07: Hydropower Capacity Constraint   | Max = 1680.00 MWh/day     | Enforces nominal station electrical generation ceiling
+[PASS] QC-08: Water Balance Conservation       | Max error = 0.00000001 m3 | Exact volume conservation across all 1,826 days
+[PASS] QC-09: Turbine Discharge Feasibility    | Max discharge = 47.50 m3/s | Bounded by configured rated turbine discharge
+[PASS] QC-10: Synthetic Label Authenticity     | 0 rows marked observed    | All generated rows strictly marked MODEL_ESTIMATED/SYNTHETIC
+
+================================================================================
+END OF VALIDATION REPORT
+================================================================================

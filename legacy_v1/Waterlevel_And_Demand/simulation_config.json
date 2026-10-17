@@ -1,0 +1,93 @@
+{
+  "project_metadata": {
+    "project_name": "Hydropower Generation and Reservoir Release Optimization Subsystem (Component 3)",
+    "target_facility": "Kukule Ganga Power Station, Sabaragamuwa Province, Sri Lanka",
+    "basin": "Kukule Ganga (Upper Tributary of Kalu Ganga Basin)",
+    "dataset_purpose": "Scientifically defensible synthetic dataset for Linear Programming (LP) and Deep Q-Network (DQN) optimization models",
+    "generation_date": "2026-10-19",
+    "random_seed": 42
+  },
+  "temporal_scope": {
+    "start_date": "2021-10-19",
+    "end_date": "2026-10-18",
+    "frequency": "D",
+    "expected_calendar_days": 1826
+  },
+  "station_specifications": {
+    "station_name": "Kukule Ganga Power Station",
+    "facility_type": "Run-of-river with pondage (regulator weir, headrace tunnel, and underground powerhouse)",
+    "catchment_area_km2": 312.0,
+    "installed_capacity_mw": 70.0,
+    "num_units": 2,
+    "unit_capacity_mw": 35.0,
+    "full_supply_level_masl": 206.00,
+    "minimum_operating_level_masl": 204.25,
+    "active_storage_volume_m3": 1670000.0,
+    "dead_storage_volume_m3": 350000.0,
+    "total_storage_volume_m3": 2020000.0,
+    "active_head_range_m": 1.75,
+    "nominal_gross_head_m": 176.5,
+    "tailwater_level_masl": 29.5,
+    "rated_turbine_discharge_unit_m3s": 23.75,
+    "rated_turbine_discharge_station_m3s": 47.5,
+    "maximum_hydraulic_discharge_m3s": 48.5,
+    "nominal_overall_efficiency": 0.895,
+    "part_load_efficiency": 0.865,
+    "gravity_acceleration_m_s2": 9.81,
+    "water_density_kg_m3": 1000.0,
+    "tunnel_length_m": 5790.0,
+    "tunnel_headloss_at_max_discharge_m": 2.50,
+    "elevation_storage_alpha": 1.05
+  },
+  "meteorological_parameters": {
+    "primary_rainfall_source_file": "../../data_pipelines/rainfall_forecast/ratnapura_synthetic_daily_rainfall_10years.csv",
+    "dekadal_source_file": "../../data_pipelines/rainfall_forecast/ratnapura_rainfall_renamed.csv",
+    "forecast_source_file": "../../data_pipelines/rainfall_forecast/kukule_ganga_15day_forecast.csv",
+    "reference_station": "Ratnapura Meteorological Station (DoM Sri Lanka / CHIRPS Admin-2 LK91)",
+    "catchment_orographic_enhancement_factor": 1.18,
+    "target_catchment_annual_rainfall_mm": 3840.0
+  },
+  "hydrological_parameters": {
+    "model_type": "Two-Store Conceptual Catchment Water Balance (GR4J/Thornthwaite Adaptation with Unit Hydrograph Routing)",
+    "soil_moisture_capacity_mm": 150.0,
+    "initial_soil_moisture_mm": 110.0,
+    "initial_groundwater_storage_mm": 120.0,
+    "baseflow_recession_k": 0.035,
+    "percolation_rate_coeff": 0.055,
+    "evapotranspiration_monthly_mm_day": {
+      "1": 3.2, "2": 3.5, "3": 3.8, "4": 3.6, "5": 3.2, "6": 2.9,
+      "7": 2.8, "8": 3.0, "9": 3.2, "10": 3.1, "11": 2.9, "12": 2.8
+    },
+    "routing_unit_hydrograph_weights": [0.65, 0.35],
+    "target_mean_inflow_m3s": 30.4,
+    "minimum_environmental_flow_m3s": 2.0
+  },
+  "operational_and_scenario_parameters": {
+    "daily_water_balance_tolerance_m3": 0.0001,
+    "max_daily_generation_mwh_at_70mw": 1680.0,
+    "pond_evaporation_rate_mm_day": 3.2,
+    "pond_surface_area_at_fsl_m2": 450000.0,
+    "daily_evaporation_loss_m3": 1440.0,
+    "planned_maintenance_schedule": [
+      {"year": 2022, "unit": 1, "start_day": 38, "duration_days": 12, "reason": "Annual Unit 1 overhaul during dry window"},
+      {"year": 2022, "unit": 2, "start_day": 225, "duration_days": 10, "reason": "Annual Unit 2 inspection"},
+      {"year": 2023, "unit": 1, "start_day": 45, "duration_days": 14, "reason": "Scheduled Unit 1 runner & valve maintenance"},
+      {"year": 2023, "unit": 2, "start_day": 230, "duration_days": 12, "reason": "Scheduled Unit 2 generator servicing"},
+      {"year": 2024, "unit": 1, "start_day": 40, "duration_days": 12, "reason": "Scheduled Unit 1 overhaul"},
+      {"year": 2024, "unit": 2, "start_day": 235, "duration_days": 11, "reason": "Scheduled Unit 2 inspection"},
+      {"year": 2025, "unit": 1, "start_day": 42, "duration_days": 13, "reason": "Unit 1 governor and valve maintenance"},
+      {"year": 2025, "unit": 2, "start_day": 228, "duration_days": 10, "reason": "Unit 2 overhaul"},
+      {"year": 2026, "unit": 1, "start_day": 41, "duration_days": 12, "reason": "Pre-monsoon Unit 1 servicing"},
+      {"year": 2026, "unit": 2, "start_day": 232, "duration_days": 11, "reason": "Unit 2 scheduled inspection"}
+    ],
+    "unplanned_outage_probability_per_day": 0.012
+  },
+  "dashboard_2026_10_18_validation": {
+    "date": "2026-10-18",
+    "reported_water_level_masl": 206.00,
+    "reported_active_storage_pct": 100.0,
+    "reported_dashboard_generation_mwh": 1835.300,
+    "physical_limit_at_70mw_mwh": 1680.0,
+    "discrepancy_explanation": "The 1835.300 MWh reading reported for Kukule PS on 2026-10-18 physically exceeds the absolute maximum 24-hour generation possible for a 70 MW station (70 MW * 24 h = 1680.0 MWh). The source inspection shows this test page (/test/test/index.php) lacked live production telemetry validation and likely reported cumulative/uncalibrated values. In accordance with physical engineering constraints, 1680.0 MWh is strictly enforced as the maximum daily ceiling, and the discrepancy is logged for scientific provenance."
+  }
+}

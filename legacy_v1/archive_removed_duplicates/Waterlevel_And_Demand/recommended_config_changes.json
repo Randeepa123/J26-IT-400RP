@@ -1,0 +1,192 @@
+{
+  "audit_metadata": {
+    "title": "Recommended Configuration Changes for Kukule Ganga Hydropower Simulation",
+    "audit_date": "2026-10-19",
+    "target_facility": "Kukule Ganga Power Station, Sabaragamuwa Province, Sri Lanka",
+    "baseline_config_file": "simulation_config_baseline_backup.json",
+    "updated_staged_file": "simulation_config_updated.json",
+    "governance_rule": "Do not overwrite baseline configuration or regenerate datasets without explicit approval of these recommended changes."
+  },
+  "recommended_parameter_modifications": [
+    {
+      "parameter_name": "tailwater_level_masl",
+      "baseline_value": 29.5,
+      "recommended_value": 19.6,
+      "unit": "MASL",
+      "classification": "DERIVED",
+      "why_needed": "The baseline 29.5 MASL was an arbitrary proxy. The newly supplied gross head benchmark (186.4 m at FSL 206.0 MASL) physically implies an effective operational tailwater elevation of 19.60 MASL under rated discharge. The outfall invert (13.52 MASL) cannot be used directly without accounting for the 9.28 m tailrace incline and hydraulic flow depth.",
+      "effect_on_simulation": "Gross head increases from [174.75, 176.50] m to [184.40, 186.40] m, correctly reflecting the physical elevation drop to the draft tube manifold.",
+      "implementation_status": "RECOMMENDED_AS_CONFIGURABLE_BENCHMARK"
+    },
+    {
+      "parameter_name": "tunnel_headloss_at_max_discharge_m",
+      "baseline_value": 2.5,
+      "recommended_value": 10.3,
+      "unit": "m",
+      "classification": "DERIVED",
+      "why_needed": "The baseline 2.50 m accounted only for estimated headrace skin friction. The supplied maximum net head benchmark (176.1 m at FSL under rated flow) establishes that total system hydraulic losses (intake, trash racks, 5.8 km tunnel, surge shaft, penstocks, valves, draft tube, and 1.6 km tailrace) equal exactly 10.30 m (186.4 - 176.1 = 10.30 m).",
+      "effect_on_simulation": "When combined with the 19.60 MASL tailwater, net head ranges exactly between 174.10 m (at MOL) and 176.10 m (at FSL), matching supplied benchmarks. Darcy-Weisbach headrace loss (3.11 m) must NOT be added on top to avoid double-counting.",
+      "implementation_status": "RECOMMENDED_AS_CONFIGURABLE_BENCHMARK"
+    },
+    {
+      "parameter_name": "minimum_operating_level_masl",
+      "baseline_value": 204.25,
+      "recommended_value": 204.0,
+      "unit": "MASL",
+      "classification": "USER_SUPPLIED_UNVERIFIED",
+      "why_needed": "Supplied engineering details specify 204.00 MASL. The baseline 204.25 MASL was an earlier model assumption. Neither is officially verified with CEB rule curves in the repository.",
+      "effect_on_simulation": "Expands active pond drawdown range from 1.75 m to 2.00 m. Active storage remains 1.67 MCM, resulting in a slightly expanded stage range.",
+      "implementation_status": "REQUIRES_SCENARIO_SELECTION_OPTION"
+    },
+    {
+      "parameter_name": "rated_turbine_discharge_unit_m3s",
+      "baseline_value": 23.75,
+      "recommended_value": 24.0,
+      "unit": "m3/s",
+      "classification": "USER_SUPPLIED_UNVERIFIED",
+      "why_needed": "Supplied engineering details specify 24.0 m3/s per unit at 37.5 MW turbine output. The baseline was 23.75 m3/s.",
+      "effect_on_simulation": "Station maximum hydraulic release increases from 47.5 m3/s to 48.0 m3/s (+1.05%). Marginal reduction in spillway discharge during peak monsoon events.",
+      "implementation_status": "REQUIRES_SCENARIO_SELECTION_OPTION"
+    },
+    {
+      "parameter_name": "headrace_length_m",
+      "baseline_value": 5790.0,
+      "recommended_value": 5799.0,
+      "unit": "m",
+      "classification": "USER_SUPPLIED_UNVERIFIED",
+      "why_needed": "Refines headrace chainage to 5,799 m as supplied.",
+      "effect_on_simulation": "Metadata documentation update. Negligible standalone friction impact (+0.15%).",
+      "implementation_status": "SAFE_TO_APPLY"
+    },
+    {
+      "parameter_name": "headrace_diameter_m",
+      "baseline_value": null,
+      "recommended_value": 5.6,
+      "unit": "m",
+      "classification": "USER_SUPPLIED_UNVERIFIED",
+      "why_needed": "Adds newly supplied circular waterway geometry parameter.",
+      "effect_on_simulation": "Establishes finished tunnel area (24.63 m2) and rated flow velocity (1.95 m/s).",
+      "implementation_status": "SAFE_TO_APPLY"
+    },
+    {
+      "parameter_name": "tailrace_length_m",
+      "baseline_value": null,
+      "recommended_value": 1600.0,
+      "unit": "m",
+      "classification": "USER_SUPPLIED_UNVERIFIED",
+      "why_needed": "Adds newly supplied tailrace tunnel geometry parameter.",
+      "effect_on_simulation": "Enables physical tailrace backwater evaluation.",
+      "implementation_status": "SAFE_TO_APPLY"
+    },
+    {
+      "parameter_name": "tailrace_slope_pct",
+      "baseline_value": null,
+      "recommended_value": 0.58,
+      "unit": "%",
+      "classification": "USER_SUPPLIED_UNVERIFIED",
+      "why_needed": "Adds newly supplied longitudinal tunnel slope parameter.",
+      "effect_on_simulation": "Establishes 9.28 m invert elevation drop between powerhouse and outfall portal.",
+      "implementation_status": "SAFE_TO_APPLY"
+    },
+    {
+      "parameter_name": "tailrace_outfall_invert_masl",
+      "baseline_value": null,
+      "recommended_value": 13.52,
+      "unit": "MASL",
+      "classification": "USER_SUPPLIED_UNVERIFIED",
+      "why_needed": "Adds newly supplied physical portal invert elevation.",
+      "effect_on_simulation": "Defines physical outfall geometry; must NOT be used directly as operational tailwater.",
+      "implementation_status": "SAFE_TO_APPLY"
+    },
+    {
+      "parameter_name": "generator_frequency_hz",
+      "baseline_value": null,
+      "recommended_value": 50.0,
+      "unit": "Hz",
+      "classification": "OFFICIAL_VERIFIED",
+      "why_needed": "Formally documents synchronous grid frequency.",
+      "effect_on_simulation": "Specification metadata only; no impact on water balance.",
+      "implementation_status": "SAFE_TO_APPLY"
+    },
+    {
+      "parameter_name": "generator_rated_voltage_kv",
+      "baseline_value": null,
+      "recommended_value": 13.8,
+      "unit": "kV",
+      "classification": "USER_SUPPLIED_UNVERIFIED",
+      "why_needed": "Documents generator line-to-line terminal voltage.",
+      "effect_on_simulation": "Specification metadata only; no impact on water balance.",
+      "implementation_status": "SAFE_TO_APPLY"
+    },
+    {
+      "parameter_name": "commissioning_year",
+      "baseline_value": null,
+      "recommended_value": 2003,
+      "unit": "year",
+      "classification": "OFFICIAL_VERIFIED",
+      "why_needed": "Documents historical commercial commissioning year.",
+      "effect_on_simulation": "Metadata documentation only.",
+      "implementation_status": "SAFE_TO_APPLY"
+    }
+  ],
+  "flagged_unresolved_parameters_for_audit": {
+    "turbine_maximum_output_per_unit_mw": {
+      "supplied_value": 40.0,
+      "status": "REQUIRES_CLARIFICATION",
+      "action": "Preserve as turbine runner peak mechanical output capability. Do not assume continuous electrical export capability without generator MVA, step-up transformer, and transmission verification. Keep nominal continuous station ceiling strictly at 70.0 MW."
+    },
+    "generator_apparent_power_mva": {
+      "supplied_values": "42.0 MVA vs 46.2 MVA",
+      "status": "REQUIRES_CLARIFICATION",
+      "action": "42.0 MVA aligns with 35.0 MW at 0.833-0.85 pf. 46.2 MVA is exactly 42.0 x 1.10 (10% continuous/2-hr overload). Must verify generator nameplate before modeling sustained generation above 35 MW/unit."
+    },
+    "generator_power_factor_raw": {
+      "supplied_value": "8.5",
+      "status": "REQUIRES_CLARIFICATION",
+      "action": "Flagged as typographical source error for 0.85 (85%). Must not be silently altered in provenance audit."
+    },
+    "annual_energy_raw": {
+      "supplied_value": "317 MWh",
+      "status": "REQUIRES_CLARIFICATION",
+      "action": "Flagged as typographical source error for ~317 GWh/year. Must not be silently converted in raw registry."
+    }
+  },
+  "recommended_simulation_code_fixes": [
+    {
+      "target_file": "generate_synthetic_kukule_dataset.py",
+      "line_number": 323,
+      "issue": "Hardcoded 35.0 MW unit capacity in cap_mw calculation",
+      "recommended_fix": "Replace `cap_mw = units * 35.0` with `cap_mw = units * s_cfg.get('unit_capacity_mw', 35.0)`"
+    },
+    {
+      "target_file": "generate_synthetic_kukule_dataset.py",
+      "line_number": 373,
+      "issue": "Hardcoded 47.5 m3/s in head loss formula denominator",
+      "recommended_fix": "Replace `((q_avg_turb / 47.5) ** 2)` with `((q_avg_turb / s_cfg.get('rated_turbine_discharge_station_m3s', 47.5)) ** 2)`"
+    },
+    {
+      "target_file": "generate_synthetic_kukule_dataset.py",
+      "line_number": 517,
+      "issue": "Hardcoded 204.25 MASL in QA Check 5",
+      "recommended_fix": "Read `mol = s_cfg.get('minimum_operating_level_masl', 204.25)` and test `min_lvl >= mol`"
+    },
+    {
+      "target_file": "generate_synthetic_kukule_dataset.py",
+      "line_number": 569,
+      "issue": "Hardcoded 47.5001 m3/s in QA Check 9",
+      "recommended_fix": "Read `q_max = s_cfg.get('rated_turbine_discharge_station_m3s', 47.5)` and test `max_release_rate <= q_max + 0.001`"
+    },
+    {
+      "target_file": "verify_synthetic_dataset.py",
+      "line_number": 125,
+      "issue": "Hardcoded 204.25 MASL in standalone QA verification suite",
+      "recommended_fix": "Load active `simulation_config.json` dynamically and test against configured MOL"
+    },
+    {
+      "target_file": "verify_synthetic_dataset.py",
+      "line_number": 144,
+      "issue": "Hardcoded 47.5001 m3/s in standalone QA verification suite",
+      "recommended_fix": "Load active `simulation_config.json` dynamically and test against configured rated discharge"
+    }
+  ]
+}

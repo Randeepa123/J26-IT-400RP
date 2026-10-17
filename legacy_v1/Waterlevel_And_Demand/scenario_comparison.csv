@@ -1,0 +1,5 @@
+scenario_id,scenario_name,mol_masl,rated_discharge_m3s,active_head_range_m,mean_daily_generation_mwh,annual_generation_gwh,capacity_factor_pct,total_spill_volume_mcm,annual_spill_mcm,spill_days_count,spill_frequency_pct,min_pond_level_masl,max_pond_level_masl,min_active_storage_pct,max_active_storage_pct,mean_active_storage_pct,min_net_head_m,max_net_head_m,mean_net_head_m,unmet_release_days,constraint_violations_count,max_water_balance_continuity_error_m3
+baseline,Baseline Scenario,204.25,47.5,1.75,695.65,254.08,41.41,1810.99,362.25,283,15.5,204.2577,206.0,0.34,100.0,32.86,174.38,184.71,182.49,1447,0,0.00000001
+alt_a,Alternative A (Expanded Drawdown),204.0,47.5,2.0,695.28,253.95,41.39,1810.99,362.25,283,15.5,204.0088,206.0,0.34,100.0,32.86,174.13,184.48,182.33,1447,0,0.00000001
+alt_b,Alternative B (Uprated Discharge),204.25,48.0,1.75,695.09,253.88,41.37,1798.3,359.71,280,15.33,204.2783,206.0,1.31,100.0,32.75,174.38,184.72,182.51,1450,0,0.00000001
+alt_c,Alternative C (Expanded Drawdown + Uprated Discharge),204.0,48.0,2.0,694.72,253.75,41.35,1798.3,359.71,280,15.33,204.0323,206.0,1.31,100.0,32.75,174.13,184.49,182.35,1450,0,0.00000001

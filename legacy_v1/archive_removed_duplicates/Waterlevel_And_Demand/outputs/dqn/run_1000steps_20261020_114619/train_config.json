@@ -1,0 +1,35 @@
+{
+  "project": "Component 3 - Hydropower Generation & Reservoir Release Optimization",
+  "station": "Kukule Ganga Power Station (70 MW)",
+  "algorithm": "DQN (Deep Q-Network)",
+  "policy": "MlpPolicy (128x128)",
+  "split": "dev",
+  "date_range": [
+    "2021-10-19",
+    "2025-10-18"
+  ],
+  "total_timesteps_trained": 1000,
+  "elapsed_seconds": 2.9,
+  "steps_per_second": 344.5,
+  "hyperparameters": {
+    "learning_rate": 0.0005,
+    "buffer_size": 50000,
+    "learning_starts": 200,
+    "batch_size": 64,
+    "gamma": 0.99,
+    "target_update_interval": 1000,
+    "exploration_fraction": 0.2,
+    "exploration_final_eps": 0.05,
+    "random_seed": 42
+  },
+  "episodes_completed": 0,
+  "mean_episode_reward": null,
+  "min_episode_reward": null,
+  "max_episode_reward": null,
+  "saved_artifacts": {
+    "output_directory": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\dqn\\run_1000steps_20261020_114619",
+    "final_model_zip": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\dqn\\run_1000steps_20261020_114619\\dqn_kukule_final.zip",
+    "monitor_csv": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\dqn\\run_1000steps_20261020_114619\\monitor.csv",
+    "checkpoints_directory": "G:\\SLIIT\\Research\\Kukule_Ganga Demo\\Waterlevel_And_Demand\\outputs\\dqn\\run_1000steps_20261020_114619\\checkpoints"
+  }
+}

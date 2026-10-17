@@ -1,0 +1,2 @@
+# Requirements for Kukule Ganga Hydropower & Reservoir Release Pipeline
+-r Waterlevel_And_Demand/requirements.txt

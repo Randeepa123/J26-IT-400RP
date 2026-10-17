@@ -1,0 +1,264 @@
+{
+  "project_metadata": {
+    "project_name": "Hydropower Generation and Reservoir Release Optimization Subsystem (Component 3)",
+    "target_facility": "Kukule Ganga Power Station, Sabaragamuwa Province, Sri Lanka",
+    "basin": "Kukule Ganga (Upper Tributary of Kalu Ganga Basin)",
+    "dataset_purpose": "Scientifically defensible synthetic dataset for Linear Programming (LP) and Deep Q-Network (DQN) optimization models",
+    "generation_date": "2026-10-19",
+    "revision_version": "2.0-staged-engineering-update",
+    "random_seed": 42
+  },
+  "temporal_scope": {
+    "start_date": "2021-10-19",
+    "end_date": "2026-10-18",
+    "frequency": "D",
+    "expected_calendar_days": 1826
+  },
+  "documented_station_specifications": {
+    "installed_capacity_mw": {
+      "value": 70.0,
+      "unit": "MW",
+      "source_description": "Ceylon Electricity Board (CEB) official power station asset register and nameplate rating",
+      "verification_status": "VERIFIED_OFFICIAL",
+      "engineering_notes": "Total nominal continuous electrical generating capacity across two identical 35 MW units."
+    },
+    "num_units": {
+      "value": 2,
+      "unit": "units",
+      "source_description": "CEB generation system master plans and powerhouse architectural drawings",
+      "verification_status": "VERIFIED_OFFICIAL",
+      "engineering_notes": "Underground powerhouse houses two identical vertical Francis turbine-generator units."
+    },
+    "nominal_unit_capacity_mw": {
+      "value": 35.0,
+      "unit": "MW",
+      "source_description": "CEB official station rating (70 MW total / 2 units)",
+      "verification_status": "VERIFIED_OFFICIAL",
+      "engineering_notes": "Continuous nominal generator output rating per unit at nominal power factor (0.85 lag)."
+    },
+    "turbine_type": {
+      "value": "vertical Francis",
+      "unit": "text",
+      "source_description": "Manufacturer specification and CEB plant profile",
+      "verification_status": "VERIFIED_OFFICIAL",
+      "engineering_notes": "Medium-to-high head reaction Francis turbines coupled to vertical synchronous generators."
+    },
+    "turbine_maximum_output_per_unit_mw": {
+      "value": 40.0,
+      "unit": "MW",
+      "source_description": "Newly supplied engineering details (turbine maximum mechanical capability)",
+      "verification_status": "REQUIRES_CLARIFICATION",
+      "engineering_notes": "Turbine runner maximum mechanical shaft power. Cannot be assumed as unrestricted continuous station operating point without generator stator thermal rating, step-up transformer capacity (MVA), and CEB transmission dispatch authorization."
+    },
+    "turbine_rated_discharge_per_unit_m3s": {
+      "value": 24.0,
+      "unit": "m3/s",
+      "source_description": "Newly supplied engineering details at rated output of 37.5 MW per runner",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Rated discharge at design net head (176.1 m) producing 37.5 MW shaft power. Replaces previous assumption of 23.75 m3/s per unit pending confirmation."
+    },
+    "turbine_rated_output_at_design_q_mw": {
+      "value": 37.5,
+      "unit": "MW",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Turbine mechanical rating at 24 m3/s design discharge. Exceeds 35.0 MW nominal generator rating by 2.5 MW (overload/head margin)."
+    },
+    "maximum_gross_head_m": {
+      "value": 186.4,
+      "unit": "m",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Occurs at Pond Full Supply Level (206.00 MASL). Implies an effective operational tailwater elevation of 19.60 MASL (206.00 - 186.40 = 19.60 MASL), distinct from the outfall invert."
+    },
+    "maximum_net_head_m": {
+      "value": 176.1,
+      "unit": "m",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Design net head at Full Supply Level (206.00 MASL) under full rated discharge. Implies total system hydraulic head loss of 10.30 m (186.40 - 176.10 = 10.30 m)."
+    },
+    "minimum_net_head_m": {
+      "value": 174.1,
+      "unit": "m",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Net head available at Minimum Operating Level (204.00 MASL). Exactly 2.00 m below maximum net head, matching the 2.00 m active pondage drawdown range."
+    },
+    "pond_full_spill_level_masl": {
+      "value": 206.0,
+      "unit": "MASL",
+      "source_description": "CEB weir operational guidelines, weir crest / radial gate spillway crest",
+      "verification_status": "VERIFIED_OFFICIAL",
+      "engineering_notes": "Full Supply Level (FSL). Inflow exceeding turbine throughput is spilled above this elevation."
+    },
+    "minimum_operating_level_masl": {
+      "value": 204.0,
+      "unit": "MASL",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Minimum Operating Level (MOL) of pondage. Lowered from baseline assumption of 204.25 MASL, expanding active pond stage range to 2.00 m."
+    },
+    "usable_storage_m3": {
+      "value": 1670000.0,
+      "unit": "m3",
+      "source_description": "CEB official station description (1.67 million m3)",
+      "verification_status": "VERIFIED_OFFICIAL",
+      "engineering_notes": "Usable active pondage storage volume between MOL and FSL for daily peaking regulation."
+    },
+    "headrace_length_m": {
+      "value": 5799.0,
+      "unit": "m",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Total length of low-pressure concrete-lined headrace tunnel from intake weir to surge tank. Refined from previous rounded 5,790 m."
+    },
+    "headrace_diameter_m": {
+      "value": 5.6,
+      "unit": "m",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Finished internal diameter of circular headrace tunnel (cross-sectional area A = 24.63 m2; velocity V = 1.95 m/s at 48 m3/s)."
+    },
+    "tailrace_length_m": {
+      "value": 1600.0,
+      "unit": "m",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Length of discharge tailrace tunnel from powerhouse draft tube manifold to river outfall portal."
+    },
+    "tailrace_slope_pct": {
+      "value": 0.58,
+      "unit": "%",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Longitudinal tunnel floor grade (0.0058 m/m), producing an elevation change of 9.28 m over 1,600 m length."
+    },
+    "tailrace_outfall_invert_masl": {
+      "value": 13.52,
+      "unit": "MASL",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Physical invert (floor) level of tailrace tunnel outfall structure into the river. Must not be confused with operating tailwater level under discharge."
+    },
+    "generator_frequency_hz": {
+      "value": 50.0,
+      "unit": "Hz",
+      "source_description": "Sri Lanka National Grid Standard / CEB Transmission Code",
+      "verification_status": "VERIFIED_OFFICIAL",
+      "engineering_notes": "Synchronous electrical frequency of Sri Lanka power grid."
+    },
+    "generator_rated_voltage_kv": {
+      "value": 13.8,
+      "unit": "kV",
+      "source_description": "Newly supplied engineering details",
+      "verification_status": "SUPPLIED_UNVERIFIED",
+      "engineering_notes": "Generator terminal line-to-line RMS voltage before main step-up transformer (13.8 kV to 132 kV)."
+    },
+    "commissioning_year": {
+      "value": 2003,
+      "unit": "year",
+      "source_description": "CEB historical generation commissioning records",
+      "verification_status": "VERIFIED_OFFICIAL",
+      "engineering_notes": "Commercial operational commissioning date of Kukule Ganga Power Station."
+    }
+  },
+  "station_specifications": {
+    "station_name": "Kukule Ganga Power Station",
+    "facility_type": "Run-of-river with pondage (regulator weir, headrace tunnel, and underground powerhouse)",
+    "commissioning_year": 2003,
+    "catchment_area_km2": 312.0,
+    "installed_capacity_mw": 70.0,
+    "num_units": 2,
+    "unit_capacity_mw": 35.0,
+    "turbine_type": "vertical Francis",
+    "generator_frequency_hz": 50.0,
+    "generator_rated_voltage_kv": 13.8,
+    "full_supply_level_masl": 206.00,
+    "minimum_operating_level_masl": 204.00,
+    "active_storage_volume_m3": 1670000.0,
+    "dead_storage_volume_m3": 350000.0,
+    "total_storage_volume_m3": 2020000.0,
+    "active_head_range_m": 2.00,
+    "nominal_gross_head_m": 186.4,
+    "maximum_gross_head_m": 186.4,
+    "maximum_net_head_m": 176.1,
+    "minimum_net_head_m": 174.1,
+    "effective_operational_tailwater_masl": 19.60,
+    "tailrace_outfall_invert_masl": 13.52,
+    "headrace_length_m": 5799.0,
+    "headrace_diameter_m": 5.6,
+    "tailrace_length_m": 1600.0,
+    "tailrace_slope_pct": 0.58,
+    "total_system_headloss_at_rated_discharge_m": 10.30,
+    "rated_turbine_discharge_unit_m3s": 24.0,
+    "rated_turbine_discharge_station_provisional_m3s": 48.0,
+    "rated_turbine_discharge_station_baseline_m3s": 47.5,
+    "active_discharge_limit_selection": "PROVISIONAL_48_0_M3S",
+    "continuous_station_capacity_limit_mw": 70.0,
+    "turbine_maximum_output_per_unit_mw": 40.0,
+    "turbine_rated_output_at_design_q_mw": 37.5,
+    "maximum_hydraulic_discharge_m3s": 48.5,
+    "nominal_overall_efficiency": 0.895,
+    "part_load_efficiency": 0.865,
+    "gravity_acceleration_m_s2": 9.81,
+    "water_density_kg_m3": 1000.0,
+    "elevation_storage_alpha": 1.05
+  },
+  "meteorological_parameters": {
+    "primary_rainfall_source_file": "../../data_pipelines/rainfall_forecast/ratnapura_synthetic_daily_rainfall_10years.csv",
+    "dekadal_source_file": "../../data_pipelines/rainfall_forecast/ratnapura_rainfall_renamed.csv",
+    "forecast_source_file": "../../data_pipelines/rainfall_forecast/kukule_ganga_15day_forecast.csv",
+    "reference_station": "Ratnapura Meteorological Station (DoM Sri Lanka / CHIRPS Admin-2 LK91)",
+    "catchment_orographic_enhancement_factor": 1.18,
+    "target_catchment_annual_rainfall_mm": 3840.0
+  },
+  "hydrological_parameters": {
+    "model_type": "Two-Store Conceptual Catchment Water Balance (GR4J/Thornthwaite Adaptation with Unit Hydrograph Routing)",
+    "soil_moisture_capacity_mm": 150.0,
+    "initial_soil_moisture_mm": 110.0,
+    "initial_groundwater_storage_mm": 120.0,
+    "baseflow_recession_k": 0.035,
+    "percolation_rate_coeff": 0.055,
+    "evapotranspiration_monthly_mm_day": {
+      "1": 3.2, "2": 3.5, "3": 3.8, "4": 3.6, "5": 3.2, "6": 2.9,
+      "7": 2.8, "8": 3.0, "9": 3.2, "10": 3.1, "11": 2.9, "12": 2.8
+    },
+    "routing_unit_hydrograph_weights": [0.65, 0.35],
+    "target_mean_inflow_m3s": 30.4,
+    "minimum_environmental_flow_m3s": 2.0
+  },
+  "operational_and_scenario_parameters": {
+    "daily_water_balance_tolerance_m3": 0.0001,
+    "max_daily_generation_mwh_at_70mw": 1680.0,
+    "pond_evaporation_rate_mm_day": 3.2,
+    "pond_surface_area_at_fsl_m2": 450000.0,
+    "daily_evaporation_loss_m3": 1440.0,
+    "planned_maintenance_schedule": [
+      {"year": 2022, "unit": 1, "start_day": 38, "duration_days": 12, "reason": "Annual Unit 1 overhaul during dry window"},
+      {"year": 2022, "unit": 2, "start_day": 225, "duration_days": 10, "reason": "Annual Unit 2 inspection"},
+      {"year": 2023, "unit": 1, "start_day": 45, "duration_days": 14, "reason": "Scheduled Unit 1 runner & valve maintenance"},
+      {"year": 2023, "unit": 2, "start_day": 230, "duration_days": 12, "reason": "Scheduled Unit 2 generator servicing"},
+      {"year": 2024, "unit": 1, "start_day": 40, "duration_days": 12, "reason": "Scheduled Unit 1 overhaul"},
+      {"year": 2024, "unit": 2, "start_day": 235, "duration_days": 11, "reason": "Scheduled Unit 2 inspection"},
+      {"year": 2025, "unit": 1, "start_day": 42, "duration_days": 13, "reason": "Unit 1 governor and valve maintenance"},
+      {"year": 2025, "unit": 2, "start_day": 228, "duration_days": 10, "reason": "Unit 2 overhaul"},
+      {"year": 2026, "unit": 1, "start_day": 41, "duration_days": 12, "reason": "Pre-monsoon Unit 1 servicing"},
+      {"year": 2026, "unit": 2, "start_day": 232, "duration_days": 11, "reason": "Unit 2 scheduled inspection"}
+    ],
+    "unplanned_outage_probability_per_day": 0.012,
+    "operating_constraints_notes": {
+      "continuous_capacity_policy": "Station capacity remains strictly capped at 70.0 MW (1,680.0 MWh/day) until generator stator, transformer, and transmission export ratings are authoritatively reconciled against 40 MW turbine runner peak capability.",
+      "discharge_limit_policy": "Station rated discharge is represented as 24.0 m3/s per unit (provisional 48.0 m3/s total), with baseline 47.5 m3/s retained as a selectable alternative.",
+      "hydraulic_headloss_policy": "Total waterway system head loss is calibrated to 10.30 m at full rated discharge based on benchmark gross-to-net head differential (186.4 m gross down to 176.1 m net at FSL)."
+    }
+  },
+  "dashboard_2026_10_18_validation": {
+    "date": "2026-10-18",
+    "reported_water_level_masl": 206.00,
+    "reported_active_storage_pct": 100.0,
+    "reported_dashboard_generation_mwh": 1835.300,
+    "physical_limit_at_70mw_mwh": 1680.0,
+    "discrepancy_explanation": "The 1835.300 MWh reading reported for Kukule PS on 2026-10-18 physically exceeds the absolute maximum 24-hour generation possible for a 70 MW station (70 MW * 24 h = 1680.0 MWh). The source inspection shows this test page (/test/test/index.php) lacked live production telemetry validation and likely reported cumulative/uncalibrated values. In accordance with physical engineering constraints, 1680.0 MWh is strictly enforced as the maximum daily ceiling, and the discrepancy is logged for scientific provenance."
+  }
+}

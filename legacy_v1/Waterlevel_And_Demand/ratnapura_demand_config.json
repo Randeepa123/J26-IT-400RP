@@ -1,0 +1,119 @@
+{
+  "project_metadata": {
+    "project_name": "Hydropower Generation and Reservoir Release Optimization - Kukule Ganga",
+    "subsystem": "Component 3: Regional Electricity Demand Forecasting Subsystem",
+    "target_facility": "Kukule Ganga Hydroelectric Subsystem Integration",
+    "generation_date": "2026-10-19",
+    "random_seed": 42
+  },
+  "geographic_scope": {
+    "scope_name": "Ratnapura District, Sabaragamuwa Province, Sri Lanka (CEB Distribution Division 3)",
+    "description": "Electricity consumption across the administrative Ratnapura District served under Ceylon Electricity Board (CEB) Distribution Division 3 (DD3), encompassing Ratnapura, Kahawatte, Eheliyagoda, Pelmadulla, Balangoda, and Embilipitiya consumer service areas.",
+    "energy_unit": "MWh",
+    "power_metric": "Daily Energy Consumption (MWh/day)",
+    "tariff_composition": {
+      "domestic_percentage": 52.4,
+      "industrial_percentage": 24.8,
+      "general_purpose_commercial_percentage": 18.2,
+      "religious_and_street_lighting_percentage": 4.6
+    }
+  },
+  "temporal_scope": {
+    "historical_start_date": "2021-10-19",
+    "historical_end_date": "2026-10-18",
+    "expected_historical_days": 1826,
+    "forecast_origin_date": "2026-10-18",
+    "forecast_start_date": "2026-10-19",
+    "forecast_end_date": "2026-11-02",
+    "forecast_horizon_days": 15
+  },
+  "ceb_statistical_benchmarks": {
+    "source_documentation": "Ceylon Electricity Board (CEB) Statistical Digest (2018-2025) and Sales and Generation Data Books for Sabaragamuwa Province / Distribution Division 3",
+    "sabaragamuwa_province_annual_sales_gwh": {
+      "2021": 550.0,
+      "2022": 535.8,
+      "2023": 530.4,
+      "2024": 575.0,
+      "2025": 616.4,
+      "2026": 645.0
+    },
+    "ratnapura_district_sales_share_pct": 63.5,
+    "ratnapura_district_annual_sales_gwh": {
+      "2021": 349.3,
+      "2022": 340.2,
+      "2023": 336.8,
+      "2024": 365.1,
+      "2025": 391.4,
+      "2026": 409.6
+    },
+    "ratnapura_district_mean_daily_mwh": {
+      "2021": 957.0,
+      "2022": 932.1,
+      "2023": 922.7,
+      "2024": 997.5,
+      "2025": 1072.3,
+      "2026": 1122.2
+    }
+  },
+  "temporal_profile_parameters": {
+    "day_of_week_multipliers": {
+      "Monday": 1.025,
+      "Tuesday": 1.030,
+      "Wednesday": 1.035,
+      "Thursday": 1.030,
+      "Friday": 1.020,
+      "Saturday": 0.965,
+      "Sunday": 0.895
+    },
+    "monthly_seasonality_multipliers": {
+      "1": 0.985,
+      "2": 0.990,
+      "3": 1.040,
+      "4": 0.980,
+      "5": 1.010,
+      "6": 1.000,
+      "7": 1.000,
+      "8": 1.010,
+      "9": 1.000,
+      "10": 1.010,
+      "11": 0.990,
+      "12": 1.005
+    },
+    "special_events_and_disturbances": {
+      "economic_crisis_load_shedding_2022": {
+        "start_date": "2022-02-22",
+        "end_date": "2022-07-15",
+        "mean_suppression_factor": 0.88,
+        "description": "CEB nationwide rotational load shedding (2 to 13 hours/day) and fuel shortages curtailing demand"
+      },
+      "sinhala_tamil_new_year": {
+        "month": 4,
+        "days": [13, 14, 15, 16],
+        "suppression_factor": 0.82,
+        "description": "Annual Avurudu holidays: major tea estates, gem mining, and commercial operations closure"
+      },
+      "year_end_holidays": {
+        "month": 12,
+        "days": [25, 26, 31],
+        "suppression_factor": 0.92,
+        "description": "Christmas and Year-end public holidays"
+      }
+    },
+    "autoregressive_noise": {
+      "ar_phi": 0.65,
+      "noise_sigma": 0.025
+    }
+  },
+  "forecasting_parameters": {
+    "validation_window_days": 60,
+    "candidate_models": [
+      "Seasonal_Naive_7D",
+      "Day_Of_Week_Profile_Mean",
+      "Rolling_Mean_7D",
+      "Holt_Winters_Exponential_Smoothing",
+      "Ridge_Autoregressive_TimeSeries"
+    ],
+    "prediction_interval_confidence": 0.90,
+    "z_score_90_pct": 1.645
+  }
+}

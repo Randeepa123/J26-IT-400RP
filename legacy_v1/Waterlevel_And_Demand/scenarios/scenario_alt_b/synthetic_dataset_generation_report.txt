@@ -1,0 +1,34 @@
+================================================================================
+KUKULE GANGA SYNTHETIC HYDROPOWER DATASET GENERATION LOG & PROVENANCE REPORT
+Execution Timestamp : 2026-10-19 18:54:26
+Active Scenario     : Alternative B (Uprated Discharge) (ID: alt_b)
+================================================================================
+
+1. PIPELINE EXECUTION METRICS
+------------------------------------------------------------
+Python Environment  : Python 3.13 / Windows
+Random Seed         : 42 (Fully deterministic and reproducible)
+Target Basin        : Kukule Ganga (Upper Kalu Ganga basin, Sri Lanka)
+Installed Capacity  : 70.0 MW (2 x 35.0 MW Francis units)
+Catchment Area      : 312.0 km2
+Pond Operating Range: 204.25 to 206.0 MASL (Usable: 1.67 MCM)
+Rated Station Flow  : 48.0 m3/s
+Tailwater Elevation : 19.6 MASL (provisional benchmark assumption)
+Waterway Head Loss  : 10.3 m at rated discharge (provisional benchmark)
+Config SHA256       : 83ef6904bfb9edbf0c5946b3a0923e58a59eaf2b8db2ce77462dc5c142c4680b
+
+2. GENERATED OUTPUT ARTIFACTS
+------------------------------------------------------------
+* synthetic_kukule_daily_rainfall_5years.csv       |    149.8 KB | SHA256: 2ecb5264b2db7356
+* synthetic_kukule_daily_inflow_5years.csv         |    114.4 KB | SHA256: 6a4fde0293ec6250
+* synthetic_kukule_pond_water_level_5years.csv     |    156.0 KB | SHA256: ab01e8aa8bea738a
+* synthetic_kukule_generation_5years.csv           |    158.2 KB | SHA256: 66e9dbd21f1f2104
+* synthetic_kukule_integrated_dataset_5years.csv   |    331.4 KB | SHA256: 0cdd667aec463133
+* synthetic_dataset_quality_checks.csv             |      1.6 KB | SHA256: ba52bfa99cf884e8
+* synthetic_dataset_assumptions.json               |      4.6 KB | SHA256: 573180e0e0f89883
+* synthetic_dataset_validation_report.txt          |      5.1 KB | SHA256: 2068e2a207b30c02
+
+3. DATA AUTHENTICITY AND RESEARCH NOTICE
+------------------------------------------------------------
+This dataset is synthesized for LP and DQN optimization modeling.
+No record in this dataset should be presented as actual observed telemetry.

@@ -1,0 +1,12 @@
+metric_name,reference_rule_curve,dqn_agent,omniscient_lp_ceiling,dqn_vs_ref_diff,dqn_vs_ref_pct,dqn_vs_lp_diff,engineering_interpretation
+Calendar Evaluation Days,365.0,365.0,365.0,0.0,+0.0%,0.0,Identical 1-year test horizon
+Initial Storage S_0 (MCM),1.67,1.67,1.67,0.0,+0.0%,0.0,All models start at full pondage (1.67 MCM)
+Terminal Storage S_T (MCM),0.21608782999999998,0.0,1.67,-0.21608782999999998,-100.0%,-1.67,LP enforces S_T >= 1.67; Reference ends depleted at 0.22
+Net Storage Change ΔS (MCM),-1.45391217,-1.67,0.0,-0.21608782999999998,N/A,-1.67,Water borrowed from / retained in storage
+Turbine Release Volume (MCM),577.95579012,537.3513,572.29723099,-40.60449011999992,-7.03%,-34.945930989999965,Total volume routed through turbines
+Spillway Overflow Volume (MCM),331.96398835,372.7846,336.16863531,40.82061164999999,+12.30%,36.61596469,Uncaptured weir overflow
+Evaluated Physical Generation (GWh),245.170226,233.2666,249.170943,-11.903626000000003,-4.86%,-15.904342999999983,Exact non-linear physical generation
+Capacity Factor (%),39.982098173515986,38.04,40.63453082191781,-1.942098173515987,-1.94%,-2.5945308219178074,Annual capacity factor based on 70 MW rating
+Turbine Water Productivity (MWh/MCM),424.20238743364047,434.1,435.38729441162343,9.897612566359555,+2.33%,-1.2872944116234066,Conversion efficiency: higher head yields higher MWh/MCM
+Terminal Stored Potential Energy (GWh),0.09225653814019999,0.0,0.7129898,-0.09225653814019999,N/A,-0.7129898,Value of water preserved for subsequent cycle
+Total System Energy Equivalent (GWh),245.2624825381402,233.2666,249.8839328,-11.995882538140194,-4.89%,-16.617332799999986,Generation + Terminal Potential Energy
