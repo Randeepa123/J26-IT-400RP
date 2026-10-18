@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-18",
+  "primary_method": "hybrid",
+  "turbine_release_m3": 2014134.9333333336,
+  "turbine_release_m3s": 23.31174691358025,
+  "generation_mwh": 901.0568870285288,
+  "mandatory_release_m3s": 3.0,
+  "expected_end_storage_pct": 74.57203992015965,
+  "expected_end_storage_m3": 1245353.0666666664,
+  "demand_weight": 1.0300003299411509,
+  "methods_day0_turbine_release_m3s": {
+    "rolling_lp": 23.31174691358025,
+    "reference": 30.960509259259258,
+    "hybrid": 23.31174691358025
+  },
+  "data_status": "MODELLED / ASSUMED INPUTS - decision support only"
+}

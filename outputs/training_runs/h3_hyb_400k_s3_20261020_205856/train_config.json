@@ -1,0 +1,138 @@
+{
+  "args": {
+    "timesteps": 400000,
+    "seed": 3,
+    "tag": "h3",
+    "lr": 0.0002,
+    "gamma": 0.995,
+    "net": 256,
+    "buffer": 200000,
+    "batch": 128,
+    "expl_frac": 0.15,
+    "target_update": 2000,
+    "train_freq": 4,
+    "shaping_beta": 1.0,
+    "eval_freq": 40000,
+    "val_n": 16,
+    "hybrid": true,
+    "out_dir": null
+  },
+  "elapsed_s": 1789.2,
+  "fps": 223.6,
+  "train_bank": 300,
+  "val_bank": 40,
+  "best_val_score": 26.869869370802896,
+  "val_history": [
+    {
+      "timesteps": 40000,
+      "val_score": 22.55730756712255,
+      "energy_gwh": 180.8854904760601,
+      "spill_mcm": 468.7174076927946,
+      "reserve_breach_pct": 0.839041095890411,
+      "terminal_storage_mcm": 1.1966812448103497,
+      "unmet_mandatory_days": 0.875,
+      "projected_actions": 77.6875
+    },
+    {
+      "timesteps": 80000,
+      "val_score": 24.06129681877944,
+      "energy_gwh": 181.93886324149628,
+      "spill_mcm": 467.3973088307624,
+      "reserve_breach_pct": 0.7534246575342466,
+      "terminal_storage_mcm": 0.9936417397776169,
+      "unmet_mandatory_days": 0.8125,
+      "projected_actions": 114.875
+    },
+    {
+      "timesteps": 120000,
+      "val_score": 26.869869370802896,
+      "energy_gwh": 184.13934699202576,
+      "spill_mcm": 461.3246018447828,
+      "reserve_breach_pct": 0.7191780821917808,
+      "terminal_storage_mcm": 1.0450103830099682,
+      "unmet_mandatory_days": 0.5625,
+      "projected_actions": 129.0625
+    },
+    {
+      "timesteps": 160000,
+      "val_score": 25.64877187202187,
+      "energy_gwh": 183.7710691401321,
+      "spill_mcm": 462.5284365333471,
+      "reserve_breach_pct": 1.2671232876712328,
+      "terminal_storage_mcm": 0.8979524076527611,
+      "unmet_mandatory_days": 0.9375,
+      "projected_actions": 111.875
+    },
+    {
+      "timesteps": 200000,
+      "val_score": 24.679912878450104,
+      "energy_gwh": 182.41666592562618,
+      "spill_mcm": 466.48263227647067,
+      "reserve_breach_pct": 0.9246575342465753,
+      "terminal_storage_mcm": 0.9367532473436354,
+      "unmet_mandatory_days": 0.625,
+      "projected_actions": 97.75
+    },
+    {
+      "timesteps": 240000,
+      "val_score": 26.66272949975214,
+      "energy_gwh": 184.33107977141896,
+      "spill_mcm": 461.2222472017767,
+      "reserve_breach_pct": 1.0445205479452055,
+      "terminal_storage_mcm": 0.980713669750943,
+      "unmet_mandatory_days": 0.9375,
+      "projected_actions": 99.375
+    },
+    {
+      "timesteps": 280000,
+      "val_score": 26.13732033381196,
+      "energy_gwh": 183.8638509004232,
+      "spill_mcm": 462.288537754158,
+      "reserve_breach_pct": 0.7876712328767123,
+      "terminal_storage_mcm": 0.819485394200975,
+      "unmet_mandatory_days": 0.5625,
+      "projected_actions": 178.5
+    },
+    {
+      "timesteps": 320000,
+      "val_score": 26.61078578884392,
+      "energy_gwh": 184.83415054392498,
+      "spill_mcm": 459.8484832544747,
+      "reserve_breach_pct": 1.4212328767123288,
+      "terminal_storage_mcm": 0.8454603767118635,
+      "unmet_mandatory_days": 0.9375,
+      "projected_actions": 155.25
+    },
+    {
+      "timesteps": 360000,
+      "val_score": 25.722142798532964,
+      "energy_gwh": 183.22778922338088,
+      "spill_mcm": 463.88295060152586,
+      "reserve_breach_pct": 0.821917808219178,
+      "terminal_storage_mcm": 0.8781246030437497,
+      "unmet_mandatory_days": 0.5625,
+      "projected_actions": 135.4375
+    },
+    {
+      "timesteps": 400000,
+      "val_score": 25.79173732002088,
+      "energy_gwh": 182.38139927587744,
+      "spill_mcm": 465.6259880519594,
+      "reserve_breach_pct": 0.5821917808219177,
+      "terminal_storage_mcm": 1.1057550529180773,
+      "unmet_mandatory_days": 0.3125,
+      "projected_actions": 88.5625
+    },
+    {
+      "timesteps": 400000,
+      "val_score": 25.417703686696232,
+      "energy_gwh": 181.8991208286771,
+      "spill_mcm": 466.8087712770215,
+      "reserve_breach_pct": 0.547945205479452,
+      "terminal_storage_mcm": 1.1403895505660575,
+      "unmet_mandatory_days": 0.3125,
+      "projected_actions": 78.5625
+    }
+  ],
+  "data_note": "SYNTHETIC scenario bank; model selected on validation bank only"
+}

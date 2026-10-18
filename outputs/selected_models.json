@@ -1,0 +1,12 @@
+{
+ "dqn": {
+  "path": "outputs/training_runs/a_800k_s2_20261020_202600/dqn_best_val.zip",
+  "holdout_val_score": -1.5314062520752594,
+  "rolling_lp_holdout_val_score": 4.53719987994811
+ },
+ "hybrid": {
+  "path": "outputs/training_runs/h3_hyb_400k_s3_20261020_205856/dqn_best_val.zip",
+  "holdout_val_score": 8.186357642650222,
+  "rolling_lp_holdout_val_score": 4.53719987994811
+ }
+}

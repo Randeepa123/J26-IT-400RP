@@ -1,0 +1,9 @@
+{
+ "params": {
+  "p90_blend": 0.25,
+  "c_spill_ratio": 0.25,
+  "terminal_value_ratio": 1.0,
+  "reserve_penalty_ratio": 0.3
+ },
+ "val_score": 25.448410244198467
+}

@@ -1,0 +1,188 @@
+{
+  "args": {
+    "timesteps": 600000,
+    "seed": 23,
+    "tag": "msd",
+    "lr": 0.0003,
+    "gamma": 0.99,
+    "net": 256,
+    "buffer": 200000,
+    "batch": 128,
+    "expl_frac": 0.3,
+    "target_update": 2000,
+    "train_freq": 4,
+    "shaping_beta": 0.5,
+    "eval_freq": 40000,
+    "val_n": 20,
+    "hybrid": false,
+    "out_dir": null
+  },
+  "elapsed_s": 1009.3,
+  "fps": 594.5,
+  "train_bank": 300,
+  "val_bank": 40,
+  "best_val_score": 23.89769241409908,
+  "val_history": [
+    {
+      "timesteps": 40000,
+      "val_score": 18.42819478814417,
+      "energy_gwh": 182.60042839661838,
+      "spill_mcm": 467.9009186240736,
+      "reserve_breach_pct": 2.301369863013699,
+      "terminal_storage_mcm": 0.5652189501708544,
+      "unmet_mandatory_days": 1.85,
+      "projected_actions": 258.7
+    },
+    {
+      "timesteps": 80000,
+      "val_score": 17.133047577394944,
+      "energy_gwh": 180.15434605426213,
+      "spill_mcm": 472.57026227235946,
+      "reserve_breach_pct": 2.3424657534246576,
+      "terminal_storage_mcm": 0.5344,
+      "unmet_mandatory_days": 1.85,
+      "projected_actions": 274.85
+    },
+    {
+      "timesteps": 120000,
+      "val_score": 19.799833665391883,
+      "energy_gwh": 183.31889091818377,
+      "spill_mcm": 465.2319592831741,
+      "reserve_breach_pct": 2.1917808219178077,
+      "terminal_storage_mcm": 0.5852789879179993,
+      "unmet_mandatory_days": 1.75,
+      "projected_actions": 247.4
+    },
+    {
+      "timesteps": 160000,
+      "val_score": 18.39297291716333,
+      "energy_gwh": 182.23028863271722,
+      "spill_mcm": 469.372605052121,
+      "reserve_breach_pct": 1.8630136986301369,
+      "terminal_storage_mcm": 0.6414590668089033,
+      "unmet_mandatory_days": 1.7,
+      "projected_actions": 250.65
+    },
+    {
+      "timesteps": 200000,
+      "val_score": 19.76627481159155,
+      "energy_gwh": 184.70479270708594,
+      "spill_mcm": 462.2230414666839,
+      "reserve_breach_pct": 2.4520547945205484,
+      "terminal_storage_mcm": 0.578839582754531,
+      "unmet_mandatory_days": 1.95,
+      "projected_actions": 283.45
+    },
+    {
+      "timesteps": 240000,
+      "val_score": 22.35746489295939,
+      "energy_gwh": 186.5294996494062,
+      "spill_mcm": 456.5014377046743,
+      "reserve_breach_pct": 2.397260273972603,
+      "terminal_storage_mcm": 0.7104280212551946,
+      "unmet_mandatory_days": 1.9,
+      "projected_actions": 256.05
+    },
+    {
+      "timesteps": 280000,
+      "val_score": 23.723980795905042,
+      "energy_gwh": 185.27401483450356,
+      "spill_mcm": 460.272168697419,
+      "reserve_breach_pct": 1.7945205479452053,
+      "terminal_storage_mcm": 0.6217142494818816,
+      "unmet_mandatory_days": 1.05,
+      "projected_actions": 263.1
+    },
+    {
+      "timesteps": 320000,
+      "val_score": 21.29469888621734,
+      "energy_gwh": 184.39746686842722,
+      "spill_mcm": 462.38147940088913,
+      "reserve_breach_pct": 2.1369863013698627,
+      "terminal_storage_mcm": 0.6692365343023935,
+      "unmet_mandatory_days": 1.55,
+      "projected_actions": 185.1
+    },
+    {
+      "timesteps": 360000,
+      "val_score": 22.006957795150306,
+      "energy_gwh": 183.97501320443016,
+      "spill_mcm": 464.33598691559826,
+      "reserve_breach_pct": 2.205479452054795,
+      "terminal_storage_mcm": 0.7727436387919486,
+      "unmet_mandatory_days": 1.15,
+      "projected_actions": 195.85
+    },
+    {
+      "timesteps": 400000,
+      "val_score": 21.722230781978507,
+      "energy_gwh": 183.0475349098654,
+      "spill_mcm": 466.0219904622284,
+      "reserve_breach_pct": 1.726027397260274,
+      "terminal_storage_mcm": 0.6963568159522238,
+      "unmet_mandatory_days": 1.1,
+      "projected_actions": 205.85
+    },
+    {
+      "timesteps": 440000,
+      "val_score": 20.4935053831592,
+      "energy_gwh": 182.82232619575225,
+      "spill_mcm": 466.7861777076023,
+      "reserve_breach_pct": 1.9041095890410962,
+      "terminal_storage_mcm": 0.6554357512501916,
+      "unmet_mandatory_days": 1.4,
+      "projected_actions": 221.45
+    },
+    {
+      "timesteps": 480000,
+      "val_score": 23.89769241409908,
+      "energy_gwh": 185.51542156967142,
+      "spill_mcm": 459.46114985845816,
+      "reserve_breach_pct": 1.6575342465753422,
+      "terminal_storage_mcm": 0.7496044962120426,
+      "unmet_mandatory_days": 1.05,
+      "projected_actions": 178.65
+    },
+    {
+      "timesteps": 520000,
+      "val_score": 18.198121733333227,
+      "energy_gwh": 181.6671057168488,
+      "spill_mcm": 468.1757802075338,
+      "reserve_breach_pct": 2.164383561643836,
+      "terminal_storage_mcm": 0.8832453648992471,
+      "unmet_mandatory_days": 1.75,
+      "projected_actions": 122.75
+    },
+    {
+      "timesteps": 560000,
+      "val_score": 23.11969944579306,
+      "energy_gwh": 184.81838034333893,
+      "spill_mcm": 460.9156078788677,
+      "reserve_breach_pct": 1.8493150684931503,
+      "terminal_storage_mcm": 0.7778060096669055,
+      "unmet_mandatory_days": 1.3,
+      "projected_actions": 205.85
+    },
+    {
+      "timesteps": 600000,
+      "val_score": 21.4409842345848,
+      "energy_gwh": 185.03325524676583,
+      "spill_mcm": 460.57718242672127,
+      "reserve_breach_pct": 2.3013698630136985,
+      "terminal_storage_mcm": 0.7047827976450043,
+      "unmet_mandatory_days": 1.75,
+      "projected_actions": 254.05
+    },
+    {
+      "timesteps": 600000,
+      "val_score": 21.34513374880574,
+      "energy_gwh": 185.04549066686258,
+      "spill_mcm": 460.6526159191333,
+      "reserve_breach_pct": 2.3835616438356166,
+      "terminal_storage_mcm": 0.6463790560639529,
+      "unmet_mandatory_days": 1.75,
+      "projected_actions": 254.75
+    }
+  ],
+  "data_note": "SYNTHETIC scenario bank; model selected on validation bank only"
+}
