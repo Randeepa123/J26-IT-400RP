@@ -55,8 +55,8 @@ PLANT_MAPPING = {
     86: "Sobadhanavi", 89: "Rooftop Solar (LECO)", 90: "IPP waste heat +Biomass",
     92: "Solar Roof Top", 93: "Solar Power NCRE", 94: "CEB Sup Power",
     95: "IPP Emergency", 96: "ALTAQQA-Pol.", 97: "ALTAQQA-Mahi.",
-    99: "Rooftop Solar 1", 100: "Other Revewable", 101: "Lakdhanavi",
-    105: "Soalr", 106: "Wind (IPP)", 107: "BESS",
+    99: "Rooftop Solar 1", 100: "Other Revewable", 101: "Lakdhanavi", 
+    106: "Wind (IPP)", 107: "BESS",
 }
 
 
