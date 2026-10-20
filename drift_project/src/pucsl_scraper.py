@@ -24,7 +24,7 @@ from pathlib import Path
 BASE_URL = "https://gendata.pucsl.gov.lk/api/actual-system-dispatch"
 LOCAL_TZ = "Asia/Colombo"          # Sri Lanka, UTC+5:30, no DST
 #YEARS_BACK = 10
-YEARS_BACK = 1
+YEARS_BACK = 10
 CHUNK_DAYS = 7                       # matches the site's own weekly window
 REQUEST_DELAY_SEC = 1.5              # be polite to a government server
 RAW_DIR = Path(__file__).parent.parent / "data" / "pucsl_raw_chunks"
@@ -139,6 +139,10 @@ def clean_and_reshape():
 
 
 if __name__ == "__main__":
-    download_all()
-    print_unique_plant_ids()   # check output, fill in PLANT_MAPPING, re-run clean_and_reshape()
-    clean_and_reshape()
+    import sys
+    if "--clean-only" in sys.argv:
+        clean_and_reshape()
+    else:
+        download_all()
+        print_unique_plant_ids()   # check output, fill in PLANT_MAPPING, re-run clean_and_reshape()
+        clean_and_reshape()
