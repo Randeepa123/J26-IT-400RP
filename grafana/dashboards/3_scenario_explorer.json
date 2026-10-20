@@ -1,0 +1,2055 @@
+{
+ "uid": "kg-scen",
+ "title": "3 - Scenario explorer",
+ "description": "Year-long behaviour of each method in drought, flood, Vesak and Christmas scenarios.",
+ "tags": [
+  "kukule",
+  "component3"
+ ],
+ "timezone": "utc",
+ "editable": true,
+ "graphTooltip": 1,
+ "schemaVersion": 39,
+ "version": 1,
+ "refresh": "",
+ "time": {
+  "from": "2025-10-19T00:00:00.000Z",
+  "to": "2026-10-19T00:00:00.000Z"
+ },
+ "templating": {
+  "list": [
+   {
+    "type": "custom",
+    "name": "scenario",
+    "label": "Scenario",
+    "query": "Normal year (held-out) : test_year_real_sim,El Nino drought (270 days) : drought_el_nino,Flood year (3 extreme storms) : flood_year,Flood over Vesak week : vesak_flood,Dry spell over Christmas : dry_christmas,Forecasts 40% too wet : forecast_bias_high,Forecasts 40% too dry : forecast_bias_low,Very wide forecast spread : wide_forecast_spread,Unit outages : double_outage",
+    "multi": false,
+    "includeAll": false,
+    "current": {
+     "selected": true,
+     "text": "El Nino drought (270 days)",
+     "value": "drought_el_nino"
+    },
+    "options": [
+     {
+      "selected": false,
+      "text": "Normal year (held-out)",
+      "value": "test_year_real_sim"
+     },
+     {
+      "selected": true,
+      "text": "El Nino drought (270 days)",
+      "value": "drought_el_nino"
+     },
+     {
+      "selected": false,
+      "text": "Flood year (3 extreme storms)",
+      "value": "flood_year"
+     },
+     {
+      "selected": false,
+      "text": "Flood over Vesak week",
+      "value": "vesak_flood"
+     },
+     {
+      "selected": false,
+      "text": "Dry spell over Christmas",
+      "value": "dry_christmas"
+     },
+     {
+      "selected": false,
+      "text": "Forecasts 40% too wet",
+      "value": "forecast_bias_high"
+     },
+     {
+      "selected": false,
+      "text": "Forecasts 40% too dry",
+      "value": "forecast_bias_low"
+     },
+     {
+      "selected": false,
+      "text": "Very wide forecast spread",
+      "value": "wide_forecast_spread"
+     },
+     {
+      "selected": false,
+      "text": "Unit outages",
+      "value": "double_outage"
+     }
+    ],
+    "hide": 0,
+    "skipUrlSync": false
+   },
+   {
+    "type": "custom",
+    "name": "smooth",
+    "label": "Moving average (days)",
+    "query": "none (daily) : 1,3 days : 3,7 days : 7,14 days : 14",
+    "multi": false,
+    "includeAll": false,
+    "current": {
+     "selected": true,
+     "text": "7 days",
+     "value": "7"
+    },
+    "options": [
+     {
+      "selected": false,
+      "text": "none (daily)",
+      "value": "1"
+     },
+     {
+      "selected": false,
+      "text": "3 days",
+      "value": "3"
+     },
+     {
+      "selected": true,
+      "text": "7 days",
+      "value": "7"
+     },
+     {
+      "selected": false,
+      "text": "14 days",
+      "value": "14"
+     }
+    ],
+    "hide": 0,
+    "skipUrlSync": false
+   },
+   {
+    "type": "custom",
+    "name": "methods",
+    "label": "Methods",
+    "query": "Hybrid LP-DQN : hybrid,Rolling LP : rolling_lp,DQN : dqn,Reference rule (causal) : reference,Reference rule (reads gauge) : reference_gauge,Perfect-foresight LP (bound) : omniscient_lp",
+    "multi": true,
+    "includeAll": false,
+    "current": {
+     "selected": true,
+     "text": [
+      "Hybrid LP-DQN",
+      "Rolling LP",
+      "Reference rule (reads gauge)"
+     ],
+     "value": [
+      "hybrid",
+      "rolling_lp",
+      "reference_gauge"
+     ]
+    },
+    "options": [
+     {
+      "selected": true,
+      "text": "Hybrid LP-DQN",
+      "value": "hybrid"
+     },
+     {
+      "selected": true,
+      "text": "Rolling LP",
+      "value": "rolling_lp"
+     },
+     {
+      "selected": false,
+      "text": "DQN",
+      "value": "dqn"
+     },
+     {
+      "selected": false,
+      "text": "Reference rule (causal)",
+      "value": "reference"
+     },
+     {
+      "selected": true,
+      "text": "Reference rule (reads gauge)",
+      "value": "reference_gauge"
+     },
+     {
+      "selected": false,
+      "text": "Perfect-foresight LP (bound)",
+      "value": "omniscient_lp"
+     }
+    ],
+    "hide": 0,
+    "skipUrlSync": false
+   }
+  ]
+ },
+ "annotations": {
+  "list": []
+ },
+ "links": [
+  {
+   "title": "1 Live plan & what-if",
+   "type": "link",
+   "url": "/d/kg-live",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "2 Results & robustness",
+   "type": "link",
+   "url": "/d/kg-results",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "3 Scenario explorer",
+   "type": "link",
+   "url": "/d/kg-scen",
+   "icon": "dashboard",
+   "targetBlank": false
+  }
+ ],
+ "panels": [
+  {
+   "id": 1,
+   "type": "text",
+   "title": "",
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 4
+   },
+   "transparent": true,
+   "options": {
+    "mode": "markdown",
+    "content": "## Scenario explorer\nPick a **scenario** and the **methods** to compare at the top. Each curve is one full year (2025-10-19 to 2026-10-18) of daily operation, starting at 50% storage. Watch the *storage* chart: good operation stays above the 20% reserve and finishes near the 50% target.  \n_Modelled study dataset (not observed CEB telemetry) - decision support only._"
+   }
+  },
+  {
+   "id": 2,
+   "type": "table",
+   "title": "Year summary for the selected scenario",
+   "description": "Same simulator and safety layer for every method.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 4,
+    "w": 24,
+    "h": 6
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/scenario_kpis",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "scenario_id",
+        "value": "${scenario}"
+       },
+       {
+        "key": "method_id",
+        "value": "${methods:csv}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "method",
+       "text": "Method",
+       "type": "string"
+      },
+      {
+       "selector": "energy_gwh",
+       "text": "Energy (GWh)",
+       "type": "number"
+      },
+      {
+       "selector": "episode_score",
+       "text": "Composite score",
+       "type": "number"
+      },
+      {
+       "selector": "spill_mcm",
+       "text": "Spill (MCM)",
+       "type": "number"
+      },
+      {
+       "selector": "spill_avoidable_mcm",
+       "text": "Avoidable spill",
+       "type": "number"
+      },
+      {
+       "selector": "terminal_storage_mcm",
+       "text": "Year-end MCM",
+       "type": "number"
+      },
+      {
+       "selector": "min_storage_pct",
+       "text": "Lowest storage %",
+       "type": "number"
+      },
+      {
+       "selector": "reserve_breach_pct",
+       "text": "Below reserve %",
+       "type": "number"
+      },
+      {
+       "selector": "unmet_mandatory_days",
+       "text": "River short days",
+       "type": "number"
+      },
+      {
+       "selector": "constraint_satisfaction_pct",
+       "text": "Constraints OK %",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "inspect": false,
+      "filterable": false
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "transparent",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Method"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 230
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Year-end MCM"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 2
+       },
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#f85149",
+           "value": null
+          },
+          {
+           "color": "#d29922",
+           "value": 0.5
+          },
+          {
+           "color": "#3fb950",
+           "value": 0.835
+          }
+         ]
+        }
+       },
+       {
+        "id": "color",
+        "value": {
+         "mode": "thresholds"
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Energy (GWh)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Composite score"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Spill (MCM)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Avoidable spill"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Lowest storage %"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Below reserve %"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "River short days"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Constraints OK %"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+     "show": false
+    }
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {},
+      "renameByName": {},
+      "indexByName": {
+       "Method": 0,
+       "Energy (GWh)": 1,
+       "Composite score": 2,
+       "Spill (MCM)": 3,
+       "Avoidable spill": 4,
+       "Year-end MCM": 5,
+       "Lowest storage %": 6,
+       "Below reserve %": 7,
+       "River short days": 8,
+       "Constraints OK %": 9
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "type": "timeseries",
+   "title": "River inflow (m3/s) - what the system had to handle",
+   "description": "True simulated inflow for the scenario (not known in advance).",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 10,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/scenario/reference",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "scenario_id",
+        "value": "${scenario}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "time",
+       "text": "time",
+       "type": "timestamp_epoch"
+      },
+      {
+       "selector": "inflow_m3s",
+       "text": "River inflow",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m3/s",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 12,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "River inflow"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 20
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 4,
+   "type": "timeseries",
+   "title": "Demand weight (festival peaks: Vesak, Christmas, year-end)",
+   "description": "Above 1 = energy is worth more that day.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 10,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/scenario/reference",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "scenario_id",
+        "value": "${scenario}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "time",
+       "text": "time",
+       "type": "timestamp_epoch"
+      },
+      {
+       "selector": "weight",
+       "text": "Demand weight",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 12,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0.8,
+     "max": 1.25,
+     "decimals": 2
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Demand weight"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 15
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 5,
+   "type": "timeseries",
+   "title": "Storage at end of day (%, moving average)",
+   "description": "Good operation stays above the red dashed line (20% reserve) and finishes near the green dashed line (50% target).",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 18,
+    "w": 24,
+    "h": 10
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/scenario/series",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "scenario_id",
+        "value": "${scenario}"
+       },
+       {
+        "key": "methods",
+        "value": "${methods:csv}"
+       },
+       {
+        "key": "smooth",
+        "value": "${smooth}"
+       },
+       {
+        "key": "metric",
+        "value": "storage_pct"
+       },
+       {
+        "key": "ref_lines",
+        "value": "1"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 0,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0,
+     "max": 100
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Operating reserve (20%)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Year-end target (50%)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": [
+    {
+     "id": "convertFieldType",
+     "options": {
+      "conversions": [
+       {
+        "targetField": "time",
+        "destinationType": "time"
+       }
+      ],
+      "fields": {}
+     }
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "type": "timeseries",
+   "title": "Generation (MWh/day, moving average)",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 28,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/scenario/series",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "scenario_id",
+        "value": "${scenario}"
+       },
+       {
+        "key": "methods",
+        "value": "${methods:csv}"
+       },
+       {
+        "key": "smooth",
+        "value": "${smooth}"
+       },
+       {
+        "key": "metric",
+        "value": "generation_mwh"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "MWh",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 0,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": [
+    {
+     "id": "convertFieldType",
+     "options": {
+      "conversions": [
+       {
+        "targetField": "time",
+        "destinationType": "time"
+       }
+      ],
+      "fields": {}
+     }
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "type": "timeseries",
+   "title": "Turbine release (m3/s, moving average)",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 28,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/scenario/series",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "scenario_id",
+        "value": "${scenario}"
+       },
+       {
+        "key": "methods",
+        "value": "${methods:csv}"
+       },
+       {
+        "key": "smooth",
+        "value": "${smooth}"
+       },
+       {
+        "key": "metric",
+        "value": "release_m3s"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m3/s",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 0,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": [
+    {
+     "id": "convertFieldType",
+     "options": {
+      "conversions": [
+       {
+        "targetField": "time",
+        "destinationType": "time"
+       }
+      ],
+      "fields": {}
+     }
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "type": "timeseries",
+   "title": "Spill over the weir (m3/s, moving average)",
+   "description": "Spill = water lost without generating; mostly unavoidable in floods.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 36,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/scenario/series",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "scenario_id",
+        "value": "${scenario}"
+       },
+       {
+        "key": "methods",
+        "value": "${methods:csv}"
+       },
+       {
+        "key": "smooth",
+        "value": "${smooth}"
+       },
+       {
+        "key": "metric",
+        "value": "spill_m3s"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m3/s",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 0,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": [
+    {
+     "id": "convertFieldType",
+     "options": {
+      "conversions": [
+       {
+        "targetField": "time",
+        "destinationType": "time"
+       }
+      ],
+      "fields": {}
+     }
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "type": "timeseries",
+   "title": "River-release shortfall (m3/s, moving average)",
+   "description": "Environmental/irrigation release that could not be met because the river itself was too low.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 36,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/scenario/series",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "scenario_id",
+        "value": "${scenario}"
+       },
+       {
+        "key": "methods",
+        "value": "${methods:csv}"
+       },
+       {
+        "key": "smooth",
+        "value": "${smooth}"
+       },
+       {
+        "key": "metric",
+        "value": "unmet_release_m3s"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m3/s",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 0,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": [
+    {
+     "id": "convertFieldType",
+     "options": {
+      "conversions": [
+       {
+        "targetField": "time",
+        "destinationType": "time"
+       }
+      ],
+      "fields": {}
+     }
+    }
+   ]
+  }
+ ],
+ "style": "dark",
+ "liveNow": false,
+ "fiscalYearStartMonth": 0,
+ "weekStart": ""
+}

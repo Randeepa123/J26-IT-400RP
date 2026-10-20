@@ -1,0 +1,4784 @@
+{
+ "uid": "kg-live",
+ "title": "1 - Live plan & what-if",
+ "description": "Today's decision and 15-day plan. Change the variables to re-run the model.",
+ "tags": [
+  "kukule",
+  "component3"
+ ],
+ "timezone": "utc",
+ "editable": true,
+ "graphTooltip": 1,
+ "schemaVersion": 39,
+ "version": 1,
+ "refresh": "30s",
+ "time": {
+  "from": "now/d",
+  "to": "now/d+15d"
+ },
+ "templating": {
+  "list": [
+   {
+    "type": "textbox",
+    "name": "storage_pct",
+    "label": "Starting storage (%)",
+    "query": "60",
+    "current": {
+     "text": "60",
+     "value": "60"
+    },
+    "options": [
+     {
+      "selected": true,
+      "text": "60",
+      "value": "60"
+     }
+    ],
+    "hide": 0
+   },
+   {
+    "type": "custom",
+    "name": "inflow_scale",
+    "label": "Inflow vs forecast (x)",
+    "query": "0.3 (very dry) : 0.3,0.5 : 0.5,0.7 : 0.7,1.0 (as forecast) : 1,1.3 : 1.3,1.6 : 1.6,2.0 : 2,2.5 (very wet) : 2.5",
+    "multi": false,
+    "includeAll": false,
+    "current": {
+     "selected": true,
+     "text": "1.0 (as forecast)",
+     "value": "1"
+    },
+    "options": [
+     {
+      "selected": false,
+      "text": "0.3 (very dry)",
+      "value": "0.3"
+     },
+     {
+      "selected": false,
+      "text": "0.5",
+      "value": "0.5"
+     },
+     {
+      "selected": false,
+      "text": "0.7",
+      "value": "0.7"
+     },
+     {
+      "selected": true,
+      "text": "1.0 (as forecast)",
+      "value": "1"
+     },
+     {
+      "selected": false,
+      "text": "1.3",
+      "value": "1.3"
+     },
+     {
+      "selected": false,
+      "text": "1.6",
+      "value": "1.6"
+     },
+     {
+      "selected": false,
+      "text": "2.0",
+      "value": "2"
+     },
+     {
+      "selected": false,
+      "text": "2.5 (very wet)",
+      "value": "2.5"
+     }
+    ],
+    "hide": 0,
+    "skipUrlSync": false
+   },
+   {
+    "type": "custom",
+    "name": "p90_scale",
+    "label": "Forecast spread (x)",
+    "query": "0.5 : 0.5,1.0 : 1,1.5 : 1.5,2.0 : 2",
+    "multi": false,
+    "includeAll": false,
+    "current": {
+     "selected": true,
+     "text": "1.0",
+     "value": "1"
+    },
+    "options": [
+     {
+      "selected": false,
+      "text": "0.5",
+      "value": "0.5"
+     },
+     {
+      "selected": true,
+      "text": "1.0",
+      "value": "1"
+     },
+     {
+      "selected": false,
+      "text": "1.5",
+      "value": "1.5"
+     },
+     {
+      "selected": false,
+      "text": "2.0",
+      "value": "2"
+     }
+    ],
+    "hide": 0,
+    "skipUrlSync": false
+   },
+   {
+    "type": "custom",
+    "name": "demand_scale",
+    "label": "Demand vs forecast (x)",
+    "query": "0.8 : 0.8,0.9 : 0.9,1.0 : 1,1.1 : 1.1,1.2 : 1.2,1.3 : 1.3",
+    "multi": false,
+    "includeAll": false,
+    "current": {
+     "selected": true,
+     "text": "1.0",
+     "value": "1"
+    },
+    "options": [
+     {
+      "selected": false,
+      "text": "0.8",
+      "value": "0.8"
+     },
+     {
+      "selected": false,
+      "text": "0.9",
+      "value": "0.9"
+     },
+     {
+      "selected": true,
+      "text": "1.0",
+      "value": "1"
+     },
+     {
+      "selected": false,
+      "text": "1.1",
+      "value": "1.1"
+     },
+     {
+      "selected": false,
+      "text": "1.2",
+      "value": "1.2"
+     },
+     {
+      "selected": false,
+      "text": "1.3",
+      "value": "1.3"
+     }
+    ],
+    "hide": 0,
+    "skipUrlSync": false
+   },
+   {
+    "type": "custom",
+    "name": "units",
+    "label": "Units available",
+    "query": "2 units : 2,1 unit : 1,0 (outage) : 0",
+    "multi": false,
+    "includeAll": false,
+    "current": {
+     "selected": true,
+     "text": "2 units",
+     "value": "2"
+    },
+    "options": [
+     {
+      "selected": true,
+      "text": "2 units",
+      "value": "2"
+     },
+     {
+      "selected": false,
+      "text": "1 unit",
+      "value": "1"
+     },
+     {
+      "selected": false,
+      "text": "0 (outage)",
+      "value": "0"
+     }
+    ],
+    "hide": 0,
+    "skipUrlSync": false
+   },
+   {
+    "type": "custom",
+    "name": "method",
+    "label": "Method",
+    "query": "Hybrid LP-DQN : hybrid,DQN : dqn,Rolling LP : rolling_lp,Reference rule : reference",
+    "multi": false,
+    "includeAll": false,
+    "current": {
+     "selected": true,
+     "text": "Hybrid LP-DQN",
+     "value": "hybrid"
+    },
+    "options": [
+     {
+      "selected": true,
+      "text": "Hybrid LP-DQN",
+      "value": "hybrid"
+     },
+     {
+      "selected": false,
+      "text": "DQN",
+      "value": "dqn"
+     },
+     {
+      "selected": false,
+      "text": "Rolling LP",
+      "value": "rolling_lp"
+     },
+     {
+      "selected": false,
+      "text": "Reference rule",
+      "value": "reference"
+     }
+    ],
+    "hide": 0,
+    "skipUrlSync": false
+   },
+   {
+    "type": "custom",
+    "name": "source",
+    "label": "Source",
+    "query": "What-if inputs : whatif,Live files (inbox) : live",
+    "multi": false,
+    "includeAll": false,
+    "current": {
+     "selected": true,
+     "text": "What-if inputs",
+     "value": "whatif"
+    },
+    "options": [
+     {
+      "selected": true,
+      "text": "What-if inputs",
+      "value": "whatif"
+     },
+     {
+      "selected": false,
+      "text": "Live files (inbox)",
+      "value": "live"
+     }
+    ],
+    "hide": 0,
+    "skipUrlSync": false
+   }
+  ]
+ },
+ "annotations": {
+  "list": []
+ },
+ "links": [
+  {
+   "title": "1 Live plan & what-if",
+   "type": "link",
+   "url": "/d/kg-live",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "2 Results & robustness",
+   "type": "link",
+   "url": "/d/kg-results",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "3 Scenario explorer",
+   "type": "link",
+   "url": "/d/kg-scen",
+   "icon": "dashboard",
+   "targetBlank": false
+  }
+ ],
+ "panels": [
+  {
+   "id": 1,
+   "type": "text",
+   "title": "",
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 4
+   },
+   "transparent": true,
+   "options": {
+    "mode": "markdown",
+    "content": "## Kukule Ganga - release & generation plan\n**Change any value in the bar above and every panel re-runs the model.** *Starting storage*, *inflow vs forecast* (wet/dry), *demand vs forecast*, *units available* and the *method* are the inputs. *Source = Live files* plans from the daily-runner inbox (`data/live_inputs`).  \n_Modelled study dataset (not observed CEB telemetry) - decision support only._"
+   }
+  },
+  {
+   "id": 2,
+   "type": "row",
+   "title": "Today's decision",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 4,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 3,
+   "type": "stat",
+   "title": "Turbine release today",
+   "description": "Recommended turbine discharge for day 1 of the plan.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "release_m3s",
+       "text": "release_m3s",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m3/s",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#58a6ff",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 1
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^release_m3s$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 44
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 4,
+   "type": "stat",
+   "title": "Generation today",
+   "description": "Expected energy for day 1 (station maximum 1,680 MWh/day).",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 4,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "generation_mwh",
+       "text": "generation_mwh",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "MWh",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#58a6ff",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^generation_mwh$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 44
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 5,
+   "type": "stat",
+   "title": "Storage at end of day",
+   "description": "Active storage after day 1. Red < 20% reserve, amber < 50% year-end target, green otherwise.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 8,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "end_storage_pct",
+       "text": "end_storage_pct",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#f85149",
+        "value": null
+       },
+       {
+        "color": "#d29922",
+        "value": 20
+       },
+       {
+        "color": "#3fb950",
+        "value": 50
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^end_storage_pct$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 44
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 6,
+   "type": "stat",
+   "title": "Pond level",
+   "description": "Pond level after day 1. Hard floor 204.00 masl, full supply level 206.00 masl.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "level_masl",
+       "text": "level_masl",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "lengthm",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#f85149",
+        "value": null
+       },
+       {
+        "color": "#d29922",
+        "value": 204.35
+       },
+       {
+        "color": "#3fb950",
+        "value": 204.9
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 2
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^level_masl$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 44
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 7,
+   "type": "stat",
+   "title": "Mandatory river release",
+   "description": "Environmental flow (2 m3/s) plus the seasonal irrigation release; served first, never counted as spill.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "mandatory_m3s",
+       "text": "mandatory_m3s",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m3/s",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#8b949e",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 1
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^mandatory_m3s$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 44
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 8,
+   "type": "stat",
+   "title": "Alert status",
+   "description": "OK = no warnings; WATCH = flood risk or plan ends below target; ALERT = reserve or river-release shortfall.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 20,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "alert_level",
+       "text": "alert_level",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#3fb950",
+        "value": null
+       },
+       {
+        "color": "#d29922",
+        "value": 1
+       },
+       {
+        "color": "#f85149",
+        "value": 2
+       }
+      ]
+     },
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "0": {
+         "text": "OK",
+         "color": "#3fb950",
+         "index": 0
+        },
+        "1": {
+         "text": "WATCH",
+         "color": "#d29922",
+         "index": 1
+        },
+        "2": {
+         "text": "ALERT",
+         "color": "#f85149",
+         "index": 2
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^alert_level$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 44
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 9,
+   "type": "stat",
+   "title": "What the model is warning about",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 10,
+    "w": 24,
+    "h": 3
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "alert_text",
+       "text": "alert_text",
+       "type": "string"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#8b949e",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^alert_text$/",
+     "values": false
+    },
+    "colorMode": "none",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 14,
+     "valueSize": 22
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 10,
+   "type": "stat",
+   "title": "Energy over the next 15 days",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 13,
+    "w": 6,
+    "h": 4
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "plan_energy_mwh",
+       "text": "plan_energy_mwh",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "MWh",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#58a6ff",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^plan_energy_mwh$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 36
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 11,
+   "type": "stat",
+   "title": "Lowest storage in the plan",
+   "description": "Never below the 20% operating reserve unless the river release forces it.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 6,
+    "y": 13,
+    "w": 6,
+    "h": 4
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "min_storage_pct",
+       "text": "min_storage_pct",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#f85149",
+        "value": null
+       },
+       {
+        "color": "#d29922",
+        "value": 20
+       },
+       {
+        "color": "#3fb950",
+        "value": 50
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^min_storage_pct$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 36
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 12,
+   "type": "stat",
+   "title": "Days below the 20% reserve",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 13,
+    "w": 6,
+    "h": 4
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "reserve_breach_days",
+       "text": "reserve_breach_days",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#3fb950",
+        "value": null
+       },
+       {
+        "color": "#d29922",
+        "value": 1
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^reserve_breach_days$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 36
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 13,
+   "type": "stat",
+   "title": "Hard-floor breaches (204.00 masl)",
+   "description": "Must be 0: the safety layer never lets the pond go below the floor.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 18,
+    "y": 13,
+    "w": 6,
+    "h": 4
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "floor_breach_days",
+       "text": "floor_breach_days",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#3fb950",
+        "value": null
+       },
+       {
+        "color": "#f85149",
+        "value": 1
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^floor_breach_days$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 36
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 14,
+   "type": "row",
+   "title": "15-day plan",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 17,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 15,
+   "type": "timeseries",
+   "title": "Turbine release vs forecast inflow (m3/s)",
+   "description": "The plan releases water through the turbines and always keeps the river release. The dashed line is the median inflow forecast (the P90 flood risk is summarised by the alert status).",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 18,
+    "w": 12,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "time",
+       "text": "time",
+       "type": "timestamp_epoch"
+      },
+      {
+       "selector": "inflow_p50_m3s",
+       "text": "Forecast inflow (median)",
+       "type": "number"
+      },
+      {
+       "selector": "release_m3s",
+       "text": "Turbine release",
+       "type": "number"
+      },
+      {
+       "selector": "spill_m3s",
+       "text": "Spill",
+       "type": "number"
+      },
+      {
+       "selector": "mandatory_m3s",
+       "text": "River release",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m3/s",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 12,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Forecast inflow (median)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Turbine release"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 3
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 15
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Spill"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.drawStyle",
+        "value": "bars"
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 70
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "River release"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 1
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 16,
+   "type": "timeseries",
+   "title": "Storage vs reserve and year-end target (%)",
+   "description": "Active storage after each day. It should stay above the reserve line and finish near the target.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 18,
+    "w": 12,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "time",
+       "text": "time",
+       "type": "timestamp_epoch"
+      },
+      {
+       "selector": "storage_pct",
+       "text": "Storage at end of day",
+       "type": "number"
+      },
+      {
+       "selector": "reserve_pct",
+       "text": "Operating reserve (20%)",
+       "type": "number"
+      },
+      {
+       "selector": "target_pct",
+       "text": "Year-end target (50%)",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 12,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0,
+     "max": 100
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Storage at end of day"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 3
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 20
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Operating reserve (20%)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Year-end target (50%)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 17,
+   "type": "timeseries",
+   "title": "Daily generation (MWh) and demand weight",
+   "description": "Energy is worth more on high-demand days (weight > 1: festivals, weekdays). The plan shifts water towards them within the pond's limits.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 27,
+    "w": 12,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "time",
+       "text": "time",
+       "type": "timestamp_epoch"
+      },
+      {
+       "selector": "generation_mwh",
+       "text": "Generation",
+       "type": "number"
+      },
+      {
+       "selector": "demand_weight",
+       "text": "Demand weight (right axis)",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "MWh",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 12,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Generation"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.drawStyle",
+        "value": "bars"
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 70
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Demand weight (right axis)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 3
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.axisPlacement",
+        "value": "right"
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 18,
+   "type": "timeseries",
+   "title": "Pond level (masl) vs hard floor and full supply level",
+   "description": "Pond water level after each day.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 27,
+    "w": 12,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "time",
+       "text": "time",
+       "type": "timestamp_epoch"
+      },
+      {
+       "selector": "level_masl",
+       "text": "Pond level",
+       "type": "number"
+      },
+      {
+       "selector": "floor_masl",
+       "text": "Hard floor 204.00",
+       "type": "number"
+      },
+      {
+       "selector": "fsl_masl",
+       "text": "Full supply level 206.00",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "lengthm",
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "drawStyle": "line",
+      "lineWidth": 2,
+      "fillOpacity": 12,
+      "showPoints": "never",
+      "spanNulls": true,
+      "axisPlacement": "auto",
+      "lineInterpolation": "linear",
+      "gradientMode": "none",
+      "barAlignment": 0,
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 203.8,
+     "max": 206.2,
+     "decimals": 2
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Pond level"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 3
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 15
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hard floor 204.00"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Full supply level 206.00"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 2
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true,
+     "calcs": []
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 19,
+   "type": "row",
+   "title": "Method comparison on these inputs",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 36,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 20,
+   "type": "barchart",
+   "title": "Day-1 turbine release by method (m3/s)",
+   "description": "What each method would release today.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 37,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/methods_chart",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "metric",
+        "value": "day1_release_m3s"
+       },
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m3/s",
+     "decimals": 1,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0,
+      "gradientMode": "none"
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "method",
+    "orientation": "horizontal",
+    "stacking": "normal",
+    "showValue": "always",
+    "barWidth": 0.8,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": 0,
+    "xTickLabelSpacing": 0,
+    "fullHighlight": false,
+    "legend": {
+     "showLegend": false,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "text": {
+     "valueSize": 14
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 21,
+   "type": "barchart",
+   "title": "Energy over the 15-day plan (MWh)",
+   "description": "Energy differs by only a few percent between methods; the differences that matter are storage and safety.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 8,
+    "y": 37,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/methods_chart",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "metric",
+        "value": "plan_energy_mwh"
+       },
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "MWh",
+     "decimals": 0,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0,
+      "gradientMode": "none"
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "method",
+    "orientation": "horizontal",
+    "stacking": "normal",
+    "showValue": "always",
+    "barWidth": 0.8,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": 0,
+    "xTickLabelSpacing": 0,
+    "fullHighlight": false,
+    "legend": {
+     "showLegend": false,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "text": {
+     "valueSize": 14
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 22,
+   "type": "barchart",
+   "title": "Storage at end of the plan (%)",
+   "description": "Year-end target is 50%. The reference rule drains the pond to the reserve.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 37,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/methods_chart",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "metric",
+        "value": "final_storage_pct"
+       },
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "decimals": 0,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0,
+      "gradientMode": "none"
+     },
+     "min": 0,
+     "max": 100
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "method",
+    "orientation": "horizontal",
+    "stacking": "normal",
+    "showValue": "always",
+    "barWidth": 0.8,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": 0,
+    "xTickLabelSpacing": 0,
+    "fullHighlight": false,
+    "legend": {
+     "showLegend": false,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "text": {
+     "valueSize": 14
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 23,
+   "type": "table",
+   "title": "Safety and efficiency check by method",
+   "description": "Every method runs through the same safety layer: floor breaches must be 0.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 45,
+    "w": 24,
+    "h": 7
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan/methods",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "method",
+       "text": "Method",
+       "type": "string"
+      },
+      {
+       "selector": "day1_release_m3s",
+       "text": "Day-1 release (m3/s)",
+       "type": "number"
+      },
+      {
+       "selector": "plan_energy_mwh",
+       "text": "Energy 15 d (MWh)",
+       "type": "number"
+      },
+      {
+       "selector": "final_storage_pct",
+       "text": "End storage (%)",
+       "type": "number"
+      },
+      {
+       "selector": "min_storage_pct",
+       "text": "Lowest storage (%)",
+       "type": "number"
+      },
+      {
+       "selector": "avoidable_spill_mcm",
+       "text": "Avoidable spill (MCM)",
+       "type": "number"
+      },
+      {
+       "selector": "reserve_breach_days",
+       "text": "Days below reserve",
+       "type": "number"
+      },
+      {
+       "selector": "unmet_days",
+       "text": "River-release shortfall days",
+       "type": "number"
+      },
+      {
+       "selector": "floor_breach_days",
+       "text": "Floor breaches",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "inspect": false,
+      "filterable": false
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "transparent",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Floor breaches"
+      },
+      "properties": [
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#3fb950",
+           "value": null
+          },
+          {
+           "color": "#f85149",
+           "value": 1
+          }
+         ]
+        }
+       },
+       {
+        "id": "color",
+        "value": {
+         "mode": "thresholds"
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Days below reserve"
+      },
+      "properties": [
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#3fb950",
+           "value": null
+          },
+          {
+           "color": "#d29922",
+           "value": 1
+          }
+         ]
+        }
+       },
+       {
+        "id": "color",
+        "value": {
+         "mode": "thresholds"
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "River-release shortfall days"
+      },
+      "properties": [
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#3fb950",
+           "value": null
+          },
+          {
+           "color": "#d29922",
+           "value": 1
+          }
+         ]
+        }
+       },
+       {
+        "id": "color",
+        "value": {
+         "mode": "thresholds"
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Energy 15 d (MWh)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Day-1 release (m3/s)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+     "show": false
+    }
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {},
+      "renameByName": {},
+      "indexByName": {
+       "Method": 0,
+       "Day-1 release (m3/s)": 1,
+       "Energy 15 d (MWh)": 2,
+       "End storage (%)": 3,
+       "Lowest storage (%)": 4,
+       "Avoidable spill (MCM)": 5,
+       "Days below reserve": 6,
+       "River-release shortfall days": 7,
+       "Floor breaches": 8
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 24,
+   "type": "table",
+   "title": "15-day schedule (selected method)",
+   "description": "The exact numbers behind the charts.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 52,
+    "w": 24,
+    "h": 10
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/plan",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "storage_pct",
+        "value": "${storage_pct}"
+       },
+       {
+        "key": "inflow_scale",
+        "value": "${inflow_scale}"
+       },
+       {
+        "key": "p90_scale",
+        "value": "${p90_scale}"
+       },
+       {
+        "key": "demand_scale",
+        "value": "${demand_scale}"
+       },
+       {
+        "key": "units",
+        "value": "${units}"
+       },
+       {
+        "key": "method",
+        "value": "${method}"
+       },
+       {
+        "key": "source",
+        "value": "${source}"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "date",
+       "text": "Date",
+       "type": "string"
+      },
+      {
+       "selector": "day",
+       "text": "Day",
+       "type": "number"
+      },
+      {
+       "selector": "release_m3s",
+       "text": "Release (m3/s)",
+       "type": "number"
+      },
+      {
+       "selector": "spill_m3s",
+       "text": "Spill (m3/s)",
+       "type": "number"
+      },
+      {
+       "selector": "mandatory_m3s",
+       "text": "River release (m3/s)",
+       "type": "number"
+      },
+      {
+       "selector": "storage_pct",
+       "text": "Storage (%)",
+       "type": "number"
+      },
+      {
+       "selector": "level_masl",
+       "text": "Level (masl)",
+       "type": "number"
+      },
+      {
+       "selector": "generation_mwh",
+       "text": "Generation (MWh)",
+       "type": "number"
+      },
+      {
+       "selector": "demand_weight",
+       "text": "Demand weight",
+       "type": "number"
+      },
+      {
+       "selector": "inflow_p50_m3s",
+       "text": "Inflow median (m3/s)",
+       "type": "number"
+      },
+      {
+       "selector": "inflow_p90_m3s",
+       "text": "Inflow P90 (m3/s)",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "inspect": false,
+      "filterable": false
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "transparent",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Storage (%)"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "percent"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#f85149",
+           "value": null
+          },
+          {
+           "color": "#d29922",
+           "value": 20
+          },
+          {
+           "color": "#3fb950",
+           "value": 50
+          }
+         ]
+        }
+       },
+       {
+        "id": "color",
+        "value": {
+         "mode": "thresholds"
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Level (masl)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 2
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Release (m3/s)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Spill (m3/s)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "River release (m3/s)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Generation (MWh)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Demand weight"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 2
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Inflow median (m3/s)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Inflow P90 (m3/s)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Day"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 60
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+     "show": false
+    }
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {},
+      "renameByName": {},
+      "indexByName": {
+       "Date": 0,
+       "Day": 1,
+       "Release (m3/s)": 2,
+       "Spill (m3/s)": 3,
+       "River release (m3/s)": 4,
+       "Storage (%)": 5,
+       "Level (masl)": 6,
+       "Generation (MWh)": 7,
+       "Demand weight": 8,
+       "Inflow median (m3/s)": 9,
+       "Inflow P90 (m3/s)": 10
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 25,
+   "type": "row",
+   "title": "Live operations (daily runner)",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 62,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 26,
+   "type": "stat",
+   "title": "Input files",
+   "description": "Validation of data/live_inputs (forecasts + state.json).",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 63,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/live/status",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "inbox_status",
+       "text": "inbox_status",
+       "type": "string"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#3fb950",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "VALID": {
+         "text": "VALID",
+         "color": "#3fb950",
+         "index": 0
+        },
+        "REJECTED": {
+         "text": "REJECTED",
+         "color": "#f85149",
+         "index": 1
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^inbox_status$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 30
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 27,
+   "type": "stat",
+   "title": "Minutes since last plan",
+   "description": "Time since the daily runner last produced a plan.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 4,
+    "y": 63,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/live/status",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "minutes_since_last_plan",
+       "text": "minutes_since_last_plan",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#3fb950",
+        "value": null
+       },
+       {
+        "color": "#d29922",
+        "value": 1500
+       },
+       {
+        "color": "#f85149",
+        "value": 2880
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^minutes_since_last_plan$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 36
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 28,
+   "type": "stat",
+   "title": "Plans made",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 8,
+    "y": 63,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/live/status",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "plans_made",
+       "text": "plans_made",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#58a6ff",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^plans_made$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 36
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 29,
+   "type": "stat",
+   "title": "Inputs rejected",
+   "description": "Bad or stale input files are rejected (and logged) instead of being used.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 63,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/live/status",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "plans_rejected",
+       "text": "plans_rejected",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#3fb950",
+        "value": null
+       },
+       {
+        "color": "#d29922",
+        "value": 1
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^plans_rejected$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 36
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 30,
+   "type": "stat",
+   "title": "Last recommended release",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 63,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/live/status",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "last_release_m3s",
+       "text": "last_release_m3s",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m3/s",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#58a6ff",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 1
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^last_release_m3s$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 36
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 31,
+   "type": "stat",
+   "title": "Last recommended generation",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 20,
+    "y": 63,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/live/status",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "last_generation_mwh",
+       "text": "last_generation_mwh",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "MWh",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#58a6ff",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^last_generation_mwh$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 36
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 32,
+   "type": "stat",
+   "title": "Input check message",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 67,
+    "w": 24,
+    "h": 3
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/live/status",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "inbox_message",
+       "text": "inbox_message",
+       "type": "string"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#8b949e",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^inbox_message$/",
+     "values": false
+    },
+    "colorMode": "none",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 14,
+     "valueSize": 18
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 33,
+   "type": "barchart",
+   "title": "Accepted plans: recommended release and expected storage (one group per plan)",
+   "description": "One group of bars per daily-runner check (outputs/live/decision_log.csv); rejected inputs have no bars.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 70,
+    "w": 12,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/live/log",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "limit",
+        "value": "12"
+       },
+       {
+        "key": "order",
+        "value": "asc"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "timestamp",
+       "text": "Plan time",
+       "type": "string"
+      },
+      {
+       "selector": "status",
+       "text": "Status",
+       "type": "string"
+      },
+      {
+       "selector": "turbine_release_m3s",
+       "text": "Recommended release (m3/s)",
+       "type": "number"
+      },
+      {
+       "selector": "expected_end_storage_pct",
+       "text": "Expected end storage (%)",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "decimals": 1,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Recommended release (m3/s)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Expected end storage (%)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "Plan time",
+    "orientation": "vertical",
+    "stacking": "none",
+    "showValue": "auto",
+    "barWidth": 0.9,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": -45,
+    "legend": {
+     "showLegend": true,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    }
+   },
+   "transformations": [
+    {
+     "id": "filterByValue",
+     "options": {
+      "type": "exclude",
+      "match": "any",
+      "filters": [
+       {
+        "fieldName": "Status",
+        "config": {
+         "id": "equal",
+         "options": {
+          "value": "REJECTED"
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": 34,
+   "type": "table",
+   "title": "Decision log (newest first)",
+   "description": "PLANNED = accepted inputs and a new plan; REJECTED = bad or stale input (reason shown); previous plan stays valid.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 70,
+    "w": 12,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/live/log",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "limit",
+        "value": "30"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "timestamp",
+       "text": "Time",
+       "type": "string"
+      },
+      {
+       "selector": "status",
+       "text": "Status",
+       "type": "string"
+      },
+      {
+       "selector": "turbine_release_m3s",
+       "text": "Release (m3/s)",
+       "type": "number"
+      },
+      {
+       "selector": "generation_mwh",
+       "text": "Generation (MWh)",
+       "type": "number"
+      },
+      {
+       "selector": "storage_pct",
+       "text": "Start storage (%)",
+       "type": "number"
+      },
+      {
+       "selector": "message",
+       "text": "Reason / note",
+       "type": "string"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "inspect": false,
+      "filterable": false
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "transparent",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Status"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 105
+       },
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "PLANNED": {
+            "text": "PLANNED",
+            "color": "#3fb950",
+            "index": 0
+           },
+           "REJECTED": {
+            "text": "REJECTED",
+            "color": "#f85149",
+            "index": 1
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Time"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 160
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reason / note"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 420
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Release (m3/s)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Generation (MWh)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Start storage (%)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 0
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+     "show": false
+    }
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {},
+      "renameByName": {},
+      "indexByName": {
+       "Time": 0,
+       "Status": 1,
+       "Release (m3/s)": 2,
+       "Generation (MWh)": 3,
+       "Start storage (%)": 4,
+       "Reason / note": 5
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "style": "dark",
+ "liveNow": false,
+ "fiscalYearStartMonth": 0,
+ "weekStart": ""
+}

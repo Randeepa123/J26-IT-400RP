@@ -1,0 +1,3591 @@
+{
+ "uid": "kg-results",
+ "title": "2 - Results & robustness",
+ "description": "Method comparison, seeds, adaptation, training.",
+ "tags": [
+  "kukule",
+  "component3"
+ ],
+ "timezone": "utc",
+ "editable": true,
+ "graphTooltip": 1,
+ "schemaVersion": 39,
+ "version": 1,
+ "refresh": "",
+ "time": {
+  "from": "now-6h",
+  "to": "now"
+ },
+ "templating": {
+  "list": []
+ },
+ "annotations": {
+  "list": []
+ },
+ "links": [
+  {
+   "title": "1 Live plan & what-if",
+   "type": "link",
+   "url": "/d/kg-live",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "2 Results & robustness",
+   "type": "link",
+   "url": "/d/kg-results",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "3 Scenario explorer",
+   "type": "link",
+   "url": "/d/kg-scen",
+   "icon": "dashboard",
+   "targetBlank": false
+  }
+ ],
+ "panels": [
+  {
+   "id": 1,
+   "type": "text",
+   "title": "",
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 4
+   },
+   "transparent": true,
+   "options": {
+    "mode": "markdown",
+    "content": "## Results & robustness\nAll methods are tested on the same 9 stress scenarios x 3 forecast-noise seeds (27 cases), through the same safety layer. The **hybrid LP-DQN** keeps the pond healthier and handles the drought best; raw energy differs by under 1% between the good methods (the pond holds only about 0.4 day of flow), so the story is *storage, drought handling and robustness*.  \n_Modelled study dataset (not observed CEB telemetry) - decision support only._"
+   }
+  },
+  {
+   "id": 2,
+   "type": "row",
+   "title": "Headline",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 4,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 3,
+   "type": "stat",
+   "title": "Hybrid score",
+   "description": "Higher is better (energy minus penalties for spill, reserve, river shortfall, year-end shortfall).",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/scoreboard",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "method",
+        "value": "Hybrid LP-DQN"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "episode_score",
+       "text": "episode_score",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#3fb950",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 1
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^episode_score$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 40
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 4,
+   "type": "stat",
+   "title": "Rolling LP score",
+   "description": "The strong forecast-driven LP benchmark.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 4,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/scoreboard",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "method",
+        "value": "Rolling LP"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "episode_score",
+       "text": "episode_score",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#58a6ff",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 1
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^episode_score$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 40
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 5,
+   "type": "stat",
+   "title": "Upper-bound score",
+   "description": "Knows the future inflow: not deployable, shows the ceiling.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 8,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/scoreboard",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "method",
+        "value": "Perfect-foresight LP (bound)"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "episode_score",
+       "text": "episode_score",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#bc8cff",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 1
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^episode_score$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 40
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 6,
+   "type": "stat",
+   "title": "Hybrid year-end MCM",
+   "description": "Target 0.835 MCM (50%).",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/scoreboard",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "method",
+        "value": "Hybrid LP-DQN"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "terminal_storage_mcm",
+       "text": "terminal_storage_mcm",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#f85149",
+        "value": null
+       },
+       {
+        "color": "#d29922",
+        "value": 0.5
+       },
+       {
+        "color": "#3fb950",
+        "value": 0.835
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 2
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^terminal_storage_mcm$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 40
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 7,
+   "type": "stat",
+   "title": "Hybrid constraints met",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/scoreboard",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "method",
+        "value": "Hybrid LP-DQN"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "constraint_satisfaction_pct",
+       "text": "constraint_satisfaction_pct",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#f85149",
+        "value": null
+       },
+       {
+        "color": "#d29922",
+        "value": 95
+       },
+       {
+        "color": "#3fb950",
+        "value": 98.5
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 1
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^constraint_satisfaction_pct$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 40
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 8,
+   "type": "stat",
+   "title": "Safety violations",
+   "description": "Across all evaluation runs of every method: 0 floor breaches and 0 mass-balance violations.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 20,
+    "y": 5,
+    "w": 4,
+    "h": 5
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/constraint_audit",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "method",
+        "value": "Hybrid LP-DQN"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "selector": "floor_breach_days",
+       "text": "floor_breach_days",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#3fb950",
+        "value": null
+       },
+       {
+        "color": "#f85149",
+        "value": 1
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "/^floor_breach_days$/",
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 15,
+     "valueSize": 40
+    },
+    "wideLayout": true
+   },
+   "transformations": []
+  },
+  {
+   "id": 9,
+   "type": "row",
+   "title": "Method scoreboard (mean of 27 cases)",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 10,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 10,
+   "type": "barchart",
+   "title": "Composite score (higher is better)",
+   "description": "Demand-weighted energy minus penalties for spill, reserve breaches, river-release shortfall and year-end shortfall.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 11,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/chart/by_method",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "metric",
+        "value": "episode_score"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "decimals": 1,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0,
+      "gradientMode": "none"
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "method",
+    "orientation": "horizontal",
+    "stacking": "normal",
+    "showValue": "always",
+    "barWidth": 0.8,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": 0,
+    "xTickLabelSpacing": 0,
+    "fullHighlight": false,
+    "legend": {
+     "showLegend": false,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "text": {
+     "valueSize": 14
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 11,
+   "type": "barchart",
+   "title": "Storage left at year end (MCM, target 0.835)",
+   "description": "The old DQN ended the year empty; every v2 method keeps the reserve, the rolling LP and hybrid also approach the 50% target.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 8,
+    "y": 11,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/chart/by_method",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "metric",
+        "value": "terminal_storage_mcm"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "decimals": 2,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0,
+      "gradientMode": "none"
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "method",
+    "orientation": "horizontal",
+    "stacking": "normal",
+    "showValue": "always",
+    "barWidth": 0.8,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": 0,
+    "xTickLabelSpacing": 0,
+    "fullHighlight": false,
+    "legend": {
+     "showLegend": false,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "text": {
+     "valueSize": 14
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 12,
+   "type": "barchart",
+   "title": "Avoidable spill (MCM)",
+   "description": "Water spilled while the turbines could have taken it (lower is better).",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 11,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/chart/by_method",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "metric",
+        "value": "spill_avoidable_mcm"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "decimals": 2,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0,
+      "gradientMode": "none"
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "method",
+    "orientation": "horizontal",
+    "stacking": "normal",
+    "showValue": "always",
+    "barWidth": 0.8,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": 0,
+    "xTickLabelSpacing": 0,
+    "fullHighlight": false,
+    "legend": {
+     "showLegend": false,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "text": {
+     "valueSize": 14
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 13,
+   "type": "barchart",
+   "title": "Days with river-release shortfall (mean per case)",
+   "description": "Environmental / irrigation release that could not be met (mostly in the drought scenario).",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 19,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/chart/by_method",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "metric",
+        "value": "unmet_mandatory_days"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "decimals": 1,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0,
+      "gradientMode": "none"
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "method",
+    "orientation": "horizontal",
+    "stacking": "normal",
+    "showValue": "always",
+    "barWidth": 0.8,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": 0,
+    "xTickLabelSpacing": 0,
+    "fullHighlight": false,
+    "legend": {
+     "showLegend": false,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "text": {
+     "valueSize": 14
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 14,
+   "type": "barchart",
+   "title": "Days below the 20% reserve (% of days)",
+   "description": "",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 8,
+    "y": 19,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/chart/by_method",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "metric",
+        "value": "reserve_breach_pct"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "decimals": 1,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0,
+      "gradientMode": "none"
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "method",
+    "orientation": "horizontal",
+    "stacking": "normal",
+    "showValue": "always",
+    "barWidth": 0.8,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": 0,
+    "xTickLabelSpacing": 0,
+    "fullHighlight": false,
+    "legend": {
+     "showLegend": false,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "text": {
+     "valueSize": 14
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 15,
+   "type": "barchart",
+   "title": "Decision time (ms per decision)",
+   "description": "All methods decide in a few milliseconds - fast enough for real-time use.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 19,
+    "w": 8,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/chart/by_method",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "metric",
+        "value": "decision_latency_ms_mean"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "decimals": 2,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0,
+      "gradientMode": "none"
+     },
+     "min": 0
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "method",
+    "orientation": "horizontal",
+    "stacking": "normal",
+    "showValue": "always",
+    "barWidth": 0.8,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": 0,
+    "xTickLabelSpacing": 0,
+    "fullHighlight": false,
+    "legend": {
+     "showLegend": false,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "text": {
+     "valueSize": 14
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 16,
+   "type": "table",
+   "title": "Full scoreboard",
+   "description": "Mean over 9 scenarios x 3 forecast-noise seeds, initial storage 50%.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 27,
+    "w": 24,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/scoreboard",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "method",
+       "text": "Method",
+       "type": "string"
+      },
+      {
+       "selector": "energy_gwh",
+       "text": "Energy (GWh/yr)",
+       "type": "number"
+      },
+      {
+       "selector": "storage_adjusted_energy_gwh",
+       "text": "Energy + stored water (GWh)",
+       "type": "number"
+      },
+      {
+       "selector": "episode_score",
+       "text": "Composite score",
+       "type": "number"
+      },
+      {
+       "selector": "spill_mcm",
+       "text": "Spill (MCM)",
+       "type": "number"
+      },
+      {
+       "selector": "spill_avoidable_mcm",
+       "text": "Avoidable spill (MCM)",
+       "type": "number"
+      },
+      {
+       "selector": "terminal_storage_mcm",
+       "text": "Year-end storage (MCM)",
+       "type": "number"
+      },
+      {
+       "selector": "terminal_target_met_pct",
+       "text": "Year-end target met (%)",
+       "type": "number"
+      },
+      {
+       "selector": "constraint_satisfaction_pct",
+       "text": "Constraints satisfied (%)",
+       "type": "number"
+      },
+      {
+       "selector": "reserve_breach_pct",
+       "text": "Days below reserve (%)",
+       "type": "number"
+      },
+      {
+       "selector": "unmet_mandatory_days",
+       "text": "River shortfall days",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "inspect": false,
+      "filterable": false
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "transparent",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Method"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 230
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Energy (GWh/yr)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Energy + stored water (GWh)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Composite score"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Spill (MCM)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Avoidable spill (MCM)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Year-end storage (MCM)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 2
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Year-end target met (%)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Constraints satisfied (%)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Days below reserve (%)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "River shortfall days"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+     "show": false
+    }
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {},
+      "renameByName": {},
+      "indexByName": {
+       "Method": 0,
+       "Energy (GWh/yr)": 1,
+       "Energy + stored water (GWh)": 2,
+       "Composite score": 3,
+       "Spill (MCM)": 4,
+       "Avoidable spill (MCM)": 5,
+       "Year-end storage (MCM)": 6,
+       "Year-end target met (%)": 7,
+       "Constraints satisfied (%)": 8,
+       "Days below reserve (%)": 9,
+       "River shortfall days": 10
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 17,
+   "type": "row",
+   "title": "Where each method wins or loses (composite score by scenario)",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 36,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 18,
+   "type": "table",
+   "title": "Scenario x method heat-map (composite score)",
+   "description": "Green = better. The El Nino drought separates the methods most; in normal scenarios they are close.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 37,
+    "w": 24,
+    "h": 12
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/heatmap",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "scenario",
+       "text": "scenario",
+       "type": "string"
+      },
+      {
+       "selector": "method",
+       "text": "method",
+       "type": "string"
+      },
+      {
+       "selector": "episode_score",
+       "text": "episode_score",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "center",
+      "cellOptions": {
+       "type": "color-background",
+       "mode": "gradient"
+      }
+     },
+     "decimals": 1,
+     "color": {
+      "mode": "continuous-RdYlGr"
+     },
+     "min": -230,
+     "max": 60,
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "transparent",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "scenario\\method"
+      },
+      "properties": [
+       {
+        "id": "displayName",
+        "value": "Scenario"
+       },
+       {
+        "id": "custom.width",
+        "value": 300
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "auto"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+     "show": false
+    }
+   },
+   "transformations": [
+    {
+     "id": "groupingToMatrix",
+     "options": {
+      "columnField": "method",
+      "rowField": "scenario",
+      "valueField": "episode_score",
+      "emptyValue": "null"
+     }
+    },
+    {
+     "id": "sortBy",
+     "options": {
+      "fields": {},
+      "sort": [
+       {
+        "field": "scenario\\method"
+       }
+      ]
+     }
+    },
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {},
+      "renameByName": {},
+      "indexByName": {
+       "scenario\\method": 0,
+       "Hybrid LP-DQN": 1,
+       "Rolling LP": 2,
+       "DQN": 3,
+       "Reference rule (reads gauge)": 4,
+       "Reference rule (causal)": 5,
+       "Perfect-foresight LP (bound)": 6
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 19,
+   "type": "row",
+   "title": "Robustness across training seeds (5 hybrid seeds, 4 DQN seeds)",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 49,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 20,
+   "type": "table",
+   "title": "Mean and spread across training seeds",
+   "description": "Standard deviation across independently trained models: the hybrid is steady, the plain DQN varies more.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 50,
+    "w": 12,
+    "h": 7
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/multiseed",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "method",
+       "text": "Method",
+       "type": "string"
+      },
+      {
+       "selector": "n_seeds",
+       "text": "Seeds",
+       "type": "number"
+      },
+      {
+       "selector": "episode_score_mean",
+       "text": "Score (mean)",
+       "type": "number"
+      },
+      {
+       "selector": "score_std",
+       "text": "Score (std)",
+       "type": "number"
+      },
+      {
+       "selector": "storage_adjusted_energy_gwh_mean",
+       "text": "Energy (GWh, mean)",
+       "type": "number"
+      },
+      {
+       "selector": "energy_std",
+       "text": "Energy (std)",
+       "type": "number"
+      },
+      {
+       "selector": "unmet_mandatory_days_mean",
+       "text": "Shortfall days",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "inspect": false,
+      "filterable": false
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "transparent",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Method"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 210
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Seeds"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 60
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Score (mean)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 2
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Score (std)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 2
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Energy (GWh, mean)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 2
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Energy (std)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 2
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Shortfall days"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 2
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+     "show": false
+    }
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {},
+      "renameByName": {},
+      "indexByName": {
+       "Method": 0,
+       "Seeds": 1,
+       "Score (mean)": 2,
+       "Score (std)": 3,
+       "Energy (GWh, mean)": 4,
+       "Energy (std)": 5,
+       "Shortfall days": 6
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 21,
+   "type": "table",
+   "title": "Paired test against the rolling LP (positive = better)",
+   "description": "Hybrid beats the rolling LP in all 5 seeds on energy and river shortfall; plain DQN does not.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 50,
+    "w": 12,
+    "h": 7
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/paired_tests",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "method",
+       "text": "Method",
+       "type": "string"
+      },
+      {
+       "selector": "metric",
+       "text": "Metric",
+       "type": "string"
+      },
+      {
+       "selector": "mean_diff_vs_rolling_lp",
+       "text": "Mean difference",
+       "type": "number"
+      },
+      {
+       "selector": "t_test_p(seeds)",
+       "text": "p-value (seeds)",
+       "type": "number"
+      },
+      {
+       "selector": "win_rate_cases_%",
+       "text": "Cases won (%)",
+       "type": "number"
+      },
+      {
+       "selector": "seeds_better_than_LP",
+       "text": "Seeds better",
+       "type": "number"
+      },
+      {
+       "selector": "significant_5pct",
+       "text": "Significant (5%)",
+       "type": "string"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "inspect": false,
+      "filterable": false
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "transparent",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Mean difference"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 3
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "p-value (seeds)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 4
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Cases won (%)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Significant (5%)"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 120
+       },
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "yes": {
+            "text": "yes",
+            "color": "#3fb950",
+            "index": 0
+           },
+           "no": {
+            "text": "no",
+            "color": "#8b949e",
+            "index": 1
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Method"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 130
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+     "show": false
+    }
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {},
+      "renameByName": {},
+      "indexByName": {
+       "Method": 0,
+       "Metric": 1,
+       "Mean difference": 2,
+       "p-value (seeds)": 3,
+       "Cases won (%)": 4,
+       "Seeds better": 5,
+       "Significant (5%)": 6
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 22,
+   "type": "barchart",
+   "title": "Composite score of every trained model (one bar per training seed)",
+   "description": "Each bar is one independently trained model on the same 27 test cases.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 57,
+    "w": 24,
+    "h": 8
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/seed_points",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "method",
+       "text": "method",
+       "type": "string"
+      },
+      {
+       "selector": "seed_label",
+       "text": "seed_label",
+       "type": "string"
+      },
+      {
+       "selector": "episode_score",
+       "text": "episode_score",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "decimals": 1,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (causal)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#8b949e"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Reference rule (reads gauge)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#d29922"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "seed_label\\method",
+    "orientation": "vertical",
+    "stacking": "none",
+    "showValue": "auto",
+    "barWidth": 0.9,
+    "groupWidth": 0.8,
+    "legend": {
+     "showLegend": true,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "xTickLabelRotation": 0
+   },
+   "transformations": [
+    {
+     "id": "groupingToMatrix",
+     "options": {
+      "columnField": "method",
+      "rowField": "seed_label",
+      "valueField": "episode_score",
+      "emptyValue": "null"
+     }
+    }
+   ]
+  },
+  {
+   "id": 23,
+   "type": "row",
+   "title": "Policy adaptation (regime shift: drought + biased forecasts from day 150)",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 65,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 24,
+   "type": "barchart",
+   "title": "Composite score after the regime shift (higher is better)",
+   "description": "Hybrid with online fine-tuning vs frozen hybrid vs the rolling LP.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 66,
+    "w": 10,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/chart/by_method",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": [
+       {
+        "key": "metric",
+        "value": "episode_score"
+       },
+       {
+        "key": "source",
+        "value": "adaptation"
+       }
+      ]
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "",
+     "decimals": 1,
+     "color": {
+      "mode": "palette-classic"
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0,
+      "gradientMode": "none"
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid (frozen)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#2f8f46"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid (adapted)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Rolling LP"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#58a6ff"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Perfect-foresight LP (bound)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#bc8cff"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "method",
+    "orientation": "horizontal",
+    "stacking": "normal",
+    "showValue": "always",
+    "barWidth": 0.8,
+    "groupWidth": 0.8,
+    "xTickLabelRotation": 0,
+    "xTickLabelSpacing": 0,
+    "fullHighlight": false,
+    "legend": {
+     "showLegend": false,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "single"
+    },
+    "text": {
+     "valueSize": 14
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 25,
+   "type": "table",
+   "title": "Fine-tuning rounds (accepted only if safe)",
+   "description": "A fine-tuned model is deployed only if it helps on the last 60 days and does not lose more than 6 points on the guard scenarios.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 10,
+    "y": 66,
+    "w": 14,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/adaptation_events",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "day",
+       "text": "Day",
+       "type": "number"
+      },
+      {
+       "selector": "recent_old",
+       "text": "Recent score (current)",
+       "type": "number"
+      },
+      {
+       "selector": "recent_new",
+       "text": "Recent score (fine-tuned)",
+       "type": "number"
+      },
+      {
+       "selector": "guard_old",
+       "text": "Guard set (current)",
+       "type": "number"
+      },
+      {
+       "selector": "guard_new",
+       "text": "Guard set (fine-tuned)",
+       "type": "number"
+      },
+      {
+       "selector": "accepted",
+       "text": "Accepted",
+       "type": "string"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "inspect": false,
+      "filterable": false
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "transparent",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Accepted"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 100
+       },
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "true": {
+            "text": "true",
+            "color": "#3fb950",
+            "index": 0
+           },
+           "false": {
+            "text": "false",
+            "color": "#8b949e",
+            "index": 1
+           },
+           "True": {
+            "text": "True",
+            "color": "#3fb950",
+            "index": 2
+           },
+           "False": {
+            "text": "False",
+            "color": "#8b949e",
+            "index": 3
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Recent score (current)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Recent score (fine-tuned)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Guard set (current)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Guard set (fine-tuned)"
+      },
+      "properties": [
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+     "show": false
+    }
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {},
+      "renameByName": {},
+      "indexByName": {
+       "Day": 0,
+       "Recent score (current)": 1,
+       "Recent score (fine-tuned)": 2,
+       "Guard set (current)": 3,
+       "Guard set (fine-tuned)": 4,
+       "Accepted": 5
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 26,
+   "type": "row",
+   "title": "Training progress and safety audit",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 75,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 27,
+   "type": "trend",
+   "title": "Validation score during training (mean of seeds, with lowest/highest seed)",
+   "description": "Validation score during training; hybrid (green) versus plain DQN (red), solid = mean over training seeds, dashed = lowest and highest seed.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 76,
+    "w": 14,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/training_summary",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "decimals": 0,
+     "custom": {
+      "lineWidth": 2,
+      "fillOpacity": 0,
+      "showPoints": "never",
+      "spanNulls": true
+     },
+     "color": {
+      "mode": "palette-classic"
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN (mean)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 3
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN (lowest seed)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 1
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Hybrid LP-DQN (highest seed)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#3fb950"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 1
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN (mean)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 3
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN (lowest seed)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 1
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "DQN (highest seed)"
+      },
+      "properties": [
+       {
+        "id": "color",
+        "value": {
+         "mode": "fixed",
+         "fixedColor": "#f85149"
+        }
+       },
+       {
+        "id": "custom.lineWidth",
+        "value": 1
+       },
+       {
+        "id": "custom.fillOpacity",
+        "value": 0
+       },
+       {
+        "id": "custom.lineStyle",
+        "value": {
+         "fill": "dash",
+         "dash": [
+          8,
+          6
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "xField": "steps",
+    "legend": {
+     "showLegend": true,
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   },
+   "transformations": []
+  },
+  {
+   "id": 28,
+   "type": "table",
+   "title": "Hard-constraint audit over all evaluation runs",
+   "description": "Every method, every scenario: the 204.00 masl floor was never breached and water balance always closed.",
+   "datasource": {
+    "type": "yesoreyeram-infinity-datasource",
+    "uid": "kukule-api"
+   },
+   "gridPos": {
+    "x": 14,
+    "y": 76,
+    "w": 10,
+    "h": 9
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "datasource": {
+      "type": "yesoreyeram-infinity-datasource",
+      "uid": "kukule-api"
+     },
+     "type": "json",
+     "source": "url",
+     "url": "http://host.docker.internal:8765/table/constraint_audit",
+     "format": "table",
+     "parser": "backend",
+     "root_selector": "",
+     "url_options": {
+      "method": "GET",
+      "data": "",
+      "body_type": "none",
+      "headers": [],
+      "params": []
+     },
+     "columns": [
+      {
+       "selector": "method",
+       "text": "Method",
+       "type": "string"
+      },
+      {
+       "selector": "runs",
+       "text": "Runs",
+       "type": "number"
+      },
+      {
+       "selector": "floor_breach_days",
+       "text": "Floor breach days",
+       "type": "number"
+      },
+      {
+       "selector": "mass_balance_violation_days",
+       "text": "Mass-balance violation days",
+       "type": "number"
+      }
+     ]
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "inspect": false,
+      "filterable": false
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "transparent",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Floor breach days"
+      },
+      "properties": [
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#3fb950",
+           "value": null
+          },
+          {
+           "color": "#f85149",
+           "value": 1
+          }
+         ]
+        }
+       },
+       {
+        "id": "color",
+        "value": {
+         "mode": "thresholds"
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Mass-balance violation days"
+      },
+      "properties": [
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#3fb950",
+           "value": null
+          },
+          {
+           "color": "#f85149",
+           "value": 1
+          }
+         ]
+        }
+       },
+       {
+        "id": "color",
+        "value": {
+         "mode": "thresholds"
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Method"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 230
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+     "show": false
+    }
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {},
+      "renameByName": {},
+      "indexByName": {
+       "Method": 0,
+       "Runs": 1,
+       "Floor breach days": 2,
+       "Mass-balance violation days": 3
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "style": "dark",
+ "liveNow": false,
+ "fiscalYearStartMonth": 0,
+ "weekStart": ""
+}
