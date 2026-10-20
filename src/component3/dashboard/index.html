@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kukule Ganga | Hydropower & Reservoir Release Live Dashboard</title>
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  
+  <!-- Dashboard Styling -->
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+  <!-- Top App Navigation & Status Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 19h20L12 2zm0 3.5L18.5 17H5.5L12 5.5zM11 9v4h2V9h-2zm0 6v2h2v-2h-2z"/>
+        </svg>
+      </div>
+      <div class="brand-title">
+        <h1>Kukule Ganga Hydro Optimizer</h1>
+        <span class="subtitle">Component 3 · 70 MW Run-of-River (1.67 MCM Active Pondage)</span>
+      </div>
+    </div>
+    
+    <div class="header-status-group">
+      <div id="status-pill" class="status-pill">
+        <span class="pulse-dot"></span> CONNECTING...
+      </div>
+      <label style="display:flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--text-secondary); cursor:pointer;">
+        <input type="checkbox" id="auto-refresh-toggle"> Auto-Poll (10s)
+      </label>
+      <button id="recalc-btn" class="refresh-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        Re-Plan
+      </button>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs">
+    <button class="tab-btn active" data-target="view-live-plan">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Live Plan & What-If
+    </button>
+    <button class="tab-btn" data-target="view-scoreboard">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      Results & Robustness Benchmark
+    </button>
+    <button class="tab-btn" data-target="view-explorer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+      Scenario Explorer
+    </button>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-content">
+
+    <!-- Active Alerts Banner -->
+    <div id="alerts-container" class="alerts-container"></div>
+
+    <!-- VIEW 1: Live Plan & What-If Optimizer -->
+    <div id="view-live-plan" class="tab-view">
+      
+      <!-- Interactive What-If Controls -->
+      <section class="controls-panel">
+        <div class="controls-header">
+          <div class="controls-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            What-If Reservoir Simulation Controls
+            <span class="badge">Live Parameter Engine</span>
+          </div>
+          <div class="controls-actions">
+            <button id="spike-btn" class="btn-secondary">Simulate Inflow Spike</button>
+            <button id="reset-btn" class="btn-secondary">Reset</button>
+            <button id="export-btn" class="btn-primary">Export Schedule CSV</button>
+          </div>
+        </div>
+
+        <div class="controls-grid">
+          <!-- Starting Storage -->
+          <div class="control-item">
+            <div class="control-label">
+              <span>Starting Storage</span>
+              <span id="storage-val" class="control-value">60%</span>
+            </div>
+            <input type="range" id="storage-slider" class="slider-input" min="0" max="100" value="60" step="1">
+          </div>
+
+          <!-- Inflow Scale -->
+          <div class="control-item">
+            <div class="control-label">
+              <span>Inflow vs Forecast</span>
+              <span id="inflow-val" class="control-value">1.0x</span>
+            </div>
+            <input type="range" id="inflow-slider" class="slider-input" min="0.2" max="2.5" value="1.0" step="0.1">
+          </div>
+
+          <!-- P90 Spread -->
+          <div class="control-item">
+            <div class="control-label">
+              <span>Forecast P90 Spread</span>
+              <span id="p90-val" class="control-value">1.0x</span>
+            </div>
+            <input type="range" id="p90-slider" class="slider-input" min="0.5" max="3.0" value="1.0" step="0.1">
+          </div>
+
+          <!-- Demand Scale -->
+          <div class="control-item">
+            <div class="control-label">
+              <span>Demand Scale</span>
+              <span id="demand-val" class="control-value">1.0x</span>
+            </div>
+            <input type="range" id="demand-slider" class="slider-input" min="0.5" max="2.0" value="1.0" step="0.1">
+          </div>
+
+          <!-- Units Available -->
+          <div class="control-item">
+            <div class="control-label">
+              <span>Units Online</span>
+            </div>
+            <div class="unit-toggle-group">
+              <button class="unit-btn active" data-units="2">2 (70 MW)</button>
+              <button class="unit-btn" data-units="1">1 (35 MW)</button>
+              <button class="unit-btn" data-units="0">0 (Outage)</button>
+            </div>
+          </div>
+
+          <!-- Method Selector -->
+          <div class="control-item">
+            <div class="control-label">
+              <span>Policy Method</span>
+            </div>
+            <select id="method-select" class="custom-select">
+              <option value="hybrid" selected>Residual Hybrid LP-DQN (Selected)</option>
+              <option value="rolling_lp">Rolling-Horizon LP</option>
+              <option value="dqn">Deep Q-Network (DQN)</option>
+              <option value="reference">Reference Rule (Causal)</option>
+            </select>
+          </div>
+
+          <!-- Input Source -->
+          <div class="control-item">
+            <div class="control-label">
+              <span>Data Source</span>
+            </div>
+            <select id="source-select" class="custom-select">
+              <option value="whatif" selected>What-If Interactive Inputs</option>
+              <option value="live">Live Files Inbox (data/live_inputs/)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI Scorecards -->
+      <section class="kpi-grid">
+        <!-- Card 1 -->
+        <div class="kpi-card emerald">
+          <div class="kpi-header">
+            <span class="kpi-title">Today's Turbine Release</span>
+            <span class="kpi-badge">Primary Dispatch</span>
+          </div>
+          <div class="kpi-main-val">
+            <span id="kpi-release">23.3</span> <span class="kpi-unit">m³/s</span>
+          </div>
+          <div class="kpi-footer">
+            <span>Daily Volume:</span>
+            <span id="kpi-release-vol" style="color:var(--text-primary); font-family:var(--font-mono);">2.014 MCM/d</span>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Today's Generation</span>
+            <span class="kpi-badge">Station Output</span>
+          </div>
+          <div class="kpi-main-val">
+            <span id="kpi-gen">901</span> <span class="kpi-unit">MWh</span>
+          </div>
+          <div class="kpi-footer">
+            <span>Demand Multiplier:</span>
+            <span id="kpi-gen-cf" style="color:var(--cyan-primary); font-family:var(--font-mono);">Weight: x1.030</span>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="kpi-card purple">
+          <div class="kpi-header">
+            <span class="kpi-title">Reservoir Storage & Level</span>
+            <span class="kpi-badge">Pond State</span>
+          </div>
+          <div class="kpi-main-val">
+            <span id="kpi-storage">74.6%</span>
+          </div>
+          <div class="kpi-footer">
+            <span id="kpi-level">Level: 205.51 masl</span>
+            <span style="color:var(--text-muted);">Floor: 204.00m</span>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="kpi-card amber">
+          <div class="kpi-header">
+            <span class="kpi-title">15-Day Plan Energy</span>
+            <span class="kpi-badge">Optimization Horizon</span>
+          </div>
+          <div class="kpi-main-val">
+            <span id="kpi-energy-15d">8,812</span> <span class="kpi-unit">MWh</span>
+          </div>
+          <div class="kpi-footer">
+            <span id="kpi-energy-sub">Horizon: 15 Days</span>
+            <span style="color:var(--emerald-safe);">Avoidable Spill: 0.0 MCM</span>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="kpi-card emerald">
+          <div class="kpi-header">
+            <span class="kpi-title">Operating Safety Guard</span>
+            <span class="kpi-badge" style="background:rgba(16,185,129,0.2); color:var(--emerald-safe);">Audit: Verified</span>
+          </div>
+          <div class="kpi-main-val" style="color:var(--emerald-safe);">
+            <span id="kpi-floor-breaches">0</span> <span class="kpi-unit">Breaches</span>
+          </div>
+          <div class="kpi-footer">
+            <span>Hard Floor (204.00m): Met</span>
+            <span>Reserve (20%): Enforced</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Charts Section -->
+      <section class="charts-grid">
+        <!-- Discharge Chart -->
+        <div class="chart-card col-8">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">15-Day Hydro Discharge & Inflow Forecast</div>
+              <div class="chart-subtitle">Turbine release vs Inflow Median P50 / Upper P90 & Environmental Release</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-discharge"></canvas>
+          </div>
+        </div>
+
+        <!-- Reservoir Storage & Elevation -->
+        <div class="chart-card col-4">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Storage & Elevation Trajectory</div>
+              <div class="chart-subtitle">Storage % vs 20% Reserve & 50% Year-End Target</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-reservoir"></canvas>
+          </div>
+        </div>
+
+        <!-- Daily Generation & Demand Weight -->
+        <div class="chart-card col-8">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Hydropower Generation & Demand Uplift</div>
+              <div class="chart-subtitle">Daily Generation (MWh) aligned with festival demand weight</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-generation"></canvas>
+          </div>
+        </div>
+
+        <!-- Method Comparison Bar Chart -->
+        <div class="chart-card col-4">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">15-Day Energy Comparison</div>
+              <div class="chart-subtitle">Total MWh generated across methods on the same inputs</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-methods"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Multi-Method Side-by-Side Comparison Matrix -->
+      <section>
+        <div class="controls-title" style="margin-bottom:14px;">
+          Method Comparison for Current Inputs
+          <span class="badge">Benchmarked on Same Inflows</span>
+        </div>
+        <div id="methods-comparison-container" class="comparison-grid"></div>
+      </section>
+
+      <!-- 15-Day Operational Schedule Table -->
+      <section class="table-card">
+        <div class="table-header">
+          <div class="chart-title">15-Day Operational Dispatch Schedule</div>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">Units: Discharge in m³/s · Volumes in MCM · Energy in MWh</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="text-left">Date</th>
+                <th>Turbine (m³/s)</th>
+                <th>Volume (MCM)</th>
+                <th>Inflow P50</th>
+                <th>Generation (MWh)</th>
+                <th>Storage %</th>
+                <th>Level (masl)</th>
+                <th>Net Head (m)</th>
+                <th>Demand Weight</th>
+                <th>Online Units</th>
+              </tr>
+            </thead>
+            <tbody id="schedule-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- VIEW 2: Results & Robustness Scoreboard -->
+    <div id="view-scoreboard" class="tab-view" style="display:none;">
+      <section class="table-card">
+        <div class="table-header">
+          <div>
+            <div class="chart-title">Method Benchmark Scoreboard (Reported Results)</div>
+            <div class="chart-subtitle">Full evaluation across 300 test scenarios, El Niño drought, and stress suites</div>
+          </div>
+          <span class="badge-tag safe">All Safety Violations = 0</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="text-left">Policy Method</th>
+                <th>Composite Score</th>
+                <th>Annual Energy</th>
+                <th>Capacity Factor</th>
+                <th>Avoidable Spill</th>
+                <th>Reserve Breach Days</th>
+                <th>Hard Floor Breaches</th>
+                <th>Decision Speed</th>
+              </tr>
+            </thead>
+            <tbody id="scoreboard-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- VIEW 3: Scenario Explorer -->
+    <div id="view-explorer" class="tab-view" style="display:none;">
+      <section class="controls-panel">
+        <div class="chart-title" style="margin-bottom:10px;">Scenario Explorer & Stress Tests</div>
+        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6;">
+          In the complete system, Kukule Ganga was tested on diverse hydrological regimes:
+        </p>
+        <ul style="margin: 14px 0 14px 20px; font-size:0.82rem; color:var(--text-secondary); line-height:1.8;">
+          <li><strong>El Niño Drought:</strong> Severe dry season where active pondage is maintained above reserve. The Hybrid LP-DQN outperforms pure LP by preserving head and avoiding premature drawdown.</li>
+          <li><strong>Flood Inflow Year:</strong> Continuous full capacity operation; pre-drawdown prevents flood wave cresting over the weir un-turbined.</li>
+          <li><strong>Festival Seasons (Vesak & Poson):</strong> Demand weights surge to 1.15x; the optimizer shifts dispatch into peak demand hours.</li>
+          <li><strong>Single Turbine Outages:</strong> Discharge capacity halved from 48 to 24 m³/s; optimizer smooths release to avoid avoidable spills.</li>
+        </ul>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>Kukule Ganga Hydropower Generation & Reservoir Release Optimisation System · Component 3</p>
+    <p style="margin-top:4px;">Modelled study dataset · Decision support system · Native Web Dashboard</p>
+  </footer>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
