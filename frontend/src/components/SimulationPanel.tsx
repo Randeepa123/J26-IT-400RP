@@ -1,0 +1,21 @@
+import { useEffect, useState } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { ArrowRight, FlaskConical, Sparkles } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { request } from '@/lib/api'
+import type { Feature, Health, RecordsResponse, Simulation } from '@/lib/types'
+import { friendly, value } from '@/lib/format'
+import { ChartSkeleton, ErrorNotice, Panel } from './ResearchUI'
+
+export default function SimulationPanel({health}:{health:Health}){
+  const query=useQuery({queryKey:['features'],queryFn:({signal})=>request<RecordsResponse<Feature>>('/simulation/features',undefined,signal)})
+  const [values,setValues]=useState<Record<string,number>>({})
+  const [timestamp,setTimestamp]=useState((health.dataset_end||'').replace(' ','T').slice(0,16))
+  useEffect(()=>{if(query.data)setValues(Object.fromEntries(query.data.data.map(f=>[f.name,f.default])))},[query.data])
+  const mutation=useMutation({mutationFn:()=>request<Simulation>('/simulate',undefined,undefined,{timestamp,features:values})})
+  return <div className="simulation-layout"><Panel title="Explore a grid scenario" eyebrow="MODEL INFERENCE" description="Change environmental inputs and compare the models under the same conditions.">
+    {query.error?<ErrorNotice error={query.error}/>:query.isPending?<ChartSkeleton/>:<form onSubmit={e=>{e.preventDefault();mutation.mutate()}} className="scenario-form"><label className="form-field full-width">Scenario date & time <Input type="datetime-local" required value={timestamp} min={String(health.configuration.test_start||'').replace(' ','T').slice(0,16)} max={(health.dataset_end||'').replace(' ','T').slice(0,16)} onChange={e=>setTimestamp(e.target.value)}/><small>Local Asia/Colombo time · within the historical deployment period</small></label><div className="form-grid">{query.data?.data.map(f=><label className="form-field" key={f.name}>{friendly(f.name)}<span className="input-unit">{f.unit}</span>{f.name==='is_holiday'?<select value={values[f.name]??f.default} onChange={e=>setValues({...values,[f.name]:Number(e.target.value)})}><option value={0}>Regular day</option><option value={1}>Public holiday</option></select>:<Input type="number" step="any" min={f.minimum} max={f.maximum} required value={values[f.name]??f.default} onChange={e=>setValues({...values,[f.name]:e.target.valueAsNumber})}/>}<small>{f.effect} · observed range {value(f.minimum,1)}–{value(f.maximum,1)}</small></label>)}</div><Button type="submit" disabled={mutation.isPending} className="run-simulation"><Sparkles size={16}/>{mutation.isPending?'Running model inference…':'Run prediction simulation'}<ArrowRight size={16}/></Button><p className="footnote">This scenario uses the frozen model active at the selected time. It never updates the models or historical evaluation data. Use Generation Forecast for future dates.</p></form>}
+    {mutation.error&&<ErrorNotice error={mutation.error}/>}
+  </Panel><div><Panel title="Prediction comparison" eyebrow="SCENARIO RESULTS"><div aria-live="polite">{mutation.data?<><div className="result-card"><span>Static baseline</span><strong>{value(mutation.data.static_generation_mw)} <small>MW</small></strong></div><div className="result-card result-adapted"><span>Cause-matched adapted</span><strong>{value(mutation.data.adapted_generation_mw)} <small>MW</small></strong></div><div className="result-difference"><span>Adapted minus static</span><strong>{value(mutation.data.difference_mw)} MW <small>({value(mutation.data.difference_percent)}%)</small></strong></div><p className="strategy-note">Active strategy: <strong>{mutation.data.strategy}</strong></p>{mutation.data.validation.map(v=><p key={v} className="footnote result-note">{v}</p>)}</>:<div className="simulation-empty"><span><FlaskConical size={28}/></span><h3>A scenario, explained.</h3><p>Set your inputs to see how the static and adapted models respond.</p></div>}</div></Panel><div className="research-note"><span className="mini-label">A RESEARCH LENS</span><h3>Adaptation follows the cause.</h3><p>Abrupt changes trigger a hard reset. Gradual shifts use decayed reweighting. Structural shifts introduce solar features.</p></div></div></div>
+}
