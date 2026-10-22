@@ -1,0 +1,13 @@
+export type Model = 'static' | 'adapted'
+export interface Health { ready:boolean; alive:boolean; observations:number; dataset_start:string|null; dataset_end:string|null; drift_points:number; configuration:{train_start?:string;train_end?:string;test_start?:string;test_end?:string;feature_names?:string[];protocol?:string; [key:string]:unknown}; data_quality:Record<string,number>; warnings:string[] }
+export interface Regime {regime:string;start:string;end:string}
+export interface Metric {regime:string;observations:number;static_mape:number|null;adapted_mape:number|null;static_rmse_mw:number|null;adapted_rmse_mw:number|null;improvement_pp:number|null;relative_improvement_percent:number|null;status:string;start:string|null;end:string|null;excluded:number}
+export interface Drift {drift_date:string;drift_type:string;available_at?:string;regime:string|null;strategy:string|null;match_status:string;historical_event:string|null;event_source:string|null;notes:string|null;confidence:number|null}
+export interface Recovery {drift_date:string;drift_type:string;strategy:string|null;regime:string|null;available_at:string;recovery_timestamp:string|null;lag_days:number|null;status:string;threshold_percent:number;rolling_days:number;sustained_days:number;minimum_daily_observations:number;verification_observations:number}
+export interface Feature {name:string;unit:string;default:number;minimum:number;maximum:number;required:boolean;effect:string}
+export interface Simulation {timestamp:string;static_generation_mw:number;adapted_generation_mw:number;difference_mw:number;difference_percent:number|null;strategy:string;validation:string[]}
+export interface Forecast {horizon_hours:24|168;count:number;forecast_origin:string;data_as_of:string;start:string;end:string;adapted_strategy:string;feature_method:string;assumptions:string[];warnings:string[];data:{timestamp:string;static_generation_mw:number;adapted_generation_mw:number;assumed_features:Record<string,number>}[]}
+export interface SeriesRow {timestamp:string;actual_generation_mw:number;static:number;adapted:number;regime:string;static_ape:number|null;adapted_ape:number|null;static_rolling_mape:number|null;adapted_rolling_mape:number|null}
+export interface Series {observations:number;displayed_points:number;summary:{static:{mape:number|null;rmse:number|null;excluded:number};adapted:{mape:number|null;rmse:number|null;excluded:number};peak_solar_mw:number|null};data:SeriesRow[];methodology:string}
+export interface RecordsResponse<T> {data:T[];methodology:string}
+export interface Filters {start:string;end:string;regimes:string[];classification:string;match:string;model:Model}
