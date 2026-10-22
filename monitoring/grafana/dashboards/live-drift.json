@@ -1,0 +1,1855 @@
+{
+  "uid": "grid-live-drift",
+  "title": "Grid \u00b7 Synthetic Live Drift & Adaptation",
+  "tags": [
+    "synthetic",
+    "ADWIN",
+    "Ridge",
+    "live-demo"
+  ],
+  "schemaVersion": 40,
+  "version": 3,
+  "timezone": "Asia/Colombo",
+  "editable": false,
+  "refresh": "3s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "3s",
+      "6s",
+      "15s",
+      "30s",
+      "1m"
+    ]
+  },
+  "annotations": {
+    "list": [
+      {
+        "name": "ADWIN drift detected",
+        "enable": true,
+        "iconColor": "orange",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "demo-prometheus"
+        },
+        "expr": "changes(grid_demo_detections_total[6s]) > 0",
+        "step": "3s",
+        "titleFormat": "ADWIN drift detected",
+        "textFormat": "Synthetic stream event; see /state for exact event records."
+      },
+      {
+        "name": "Ridge model retrained",
+        "enable": true,
+        "iconColor": "cyan",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "demo-prometheus"
+        },
+        "expr": "changes(grid_demo_retrains_total[6s]) > 0",
+        "step": "3s",
+        "titleFormat": "Ridge model retrained",
+        "textFormat": "Synthetic stream event; see /state for exact event records."
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "SYNTHETIC DEMO \u00b7 actual ADWIN detection and Ridge fitting",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 4
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "**One new synthetic labeled sample every 3 seconds.** Predictions are made before the label is used. First injected relationship change: **sample 41 (~2 minutes)**; then every 160 samples (~8 minutes): **abrupt \u2192 gradual \u2192 incremental \u2192 structural**, repeating. Isolated generation spikes, missing temperature, negative solar readings and demand surges are also injected. ADWIN watches prediction error, not the injected regime flag. After detection, collect 24 new labels (72 seconds), fit Ridge on the latest 48 observations, then refit 24 labels later to complete recovery.\n\n**Separate demonstration model: no PUCSL live feed, no production-model updates, no 30-day classification protocol.** Metrics use the latest 20 pre-update predictions. Refresh/scrape: 3 seconds; display can lag by two cycles. Injection labels are generator truth; ADWIN does not classify drift types. Flagged samples are excluded from training/detection, but remain in error metrics. Restart stream to replay."
+      }
+    },
+    {
+      "id": 2,
+      "title": "Samples received",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_sample",
+          "legendFormat": "Samples received",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 3,
+      "title": "ADWIN detections",
+      "type": "stat",
+      "gridPos": {
+        "x": 4,
+        "y": 4,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_detections_total",
+          "legendFormat": "ADWIN detections",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 4,
+      "title": "Completed Ridge fits",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 4,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_retrains_total",
+          "legendFormat": "Completed Ridge fits",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 5,
+      "title": "Active model version",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_model_version",
+          "legendFormat": "Active model version",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 6,
+      "title": "Adaptive rolling MAPE",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 4,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_adaptive_mape_percent",
+          "legendFormat": "Adaptive rolling MAPE",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 7,
+      "title": "Age of latest sample",
+      "type": "stat",
+      "gridPos": {
+        "x": 20,
+        "y": 4,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_seconds_since_update",
+          "legendFormat": "Age of latest sample",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 8,
+      "title": "Generation: actual vs frozen vs adaptive",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 29,
+        "w": 16,
+        "h": 9
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_actual_mw",
+          "legendFormat": "Actual synthetic generation",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "B",
+          "expr": "grid_demo_static_prediction_mw",
+          "legendFormat": "Frozen Ridge prediction",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "C",
+          "expr": "grid_demo_adaptive_prediction_mw",
+          "legendFormat": "Adaptive Ridge prediction",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "powerMW",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "Adaptation state",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 16,
+        "y": 29,
+        "w": 8,
+        "h": 9
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "1: waiting for labels after ADWIN detection. 2: first fit activated; collecting labels for final recovery fit. Training itself lasts milliseconds; completed fits and version record it.",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_status",
+          "legendFormat": "State",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 2,
+            "fillOpacity": 25,
+            "showPoints": "always",
+            "pointSize": 3
+          },
+          "min": 0,
+          "max": 2,
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Monitoring",
+                  "color": "green"
+                },
+                "1": {
+                  "text": "Collecting labels",
+                  "color": "orange"
+                },
+                "2": {
+                  "text": "Recovery",
+                  "color": "blue"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "title": "Rolling MAPE \u00b7 last 20 predictions",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 38,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_static_mape_percent",
+          "legendFormat": "Frozen",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "B",
+          "expr": "grid_demo_adaptive_mape_percent",
+          "legendFormat": "Adaptive",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "title": "Rolling RMSE \u00b7 last 20 predictions",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 38,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_static_rmse_mw",
+          "legendFormat": "Frozen",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "B",
+          "expr": "grid_demo_adaptive_rmse_mw",
+          "legendFormat": "Adaptive",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "powerMW",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "title": "Per-sample absolute prediction error",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 46,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_static_absolute_error_mw",
+          "legendFormat": "Frozen error",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "B",
+          "expr": "grid_demo_adaptive_absolute_error_mw",
+          "legendFormat": "Adaptive error",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "powerMW",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "title": "Detector evidence \u00b7 bounded absolute error / 1000",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 46,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "ADWIN detects distribution changes; this mean is not a probability or a classification confidence score. Recovery resets the detector on the new model residuals.",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_detector_mean_error",
+          "legendFormat": "ADWIN mean error",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 14,
+      "title": "Synthetic temperature input",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 54,
+        "w": 8,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_temperature_c",
+          "legendFormat": "Temperature",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 15,
+      "title": "Synthetic solar input",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 8,
+        "y": 54,
+        "w": 8,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_solar_mw",
+          "legendFormat": "Solar",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "powerMW",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 16,
+      "title": "Synthetic demand input",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 16,
+        "y": 54,
+        "w": 8,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_demand_index",
+          "legendFormat": "Demand index",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 17,
+      "title": "Model version and injected regime",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 61,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "Regime is shown for explanation only and is never passed to the model or detector.",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_model_version",
+          "legendFormat": "Active model version",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "B",
+          "expr": "grid_demo_prediction_model_version",
+          "legendFormat": "Version used for this prediction",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "C",
+          "expr": "grid_demo_synthetic_regime",
+          "legendFormat": "Injected regime (generator only)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 18,
+      "title": "Training execution time",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 61,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "Actual measured Ridge fitting duration; held until the next fit. No fabricated multi-second training animation.",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_training_ms",
+          "legendFormat": "Last completed fit",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 19,
+      "title": "Stream availability",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 69,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "Both should be 1. A missing series means the target is unavailable or has not been scraped yet.",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "up{job=\"synthetic-grid\"}",
+          "legendFormat": "Prometheus scrape successful",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "B",
+          "expr": "(time() - grid_demo_last_sample_timestamp_seconds) < bool 12",
+          "legendFormat": "Producer fresh (<12s)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 20,
+      "title": "ADWIN window and training observations",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 69,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_detector_window_samples",
+          "legendFormat": "ADWIN observations",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "B",
+          "expr": "grid_demo_training_window_samples",
+          "legendFormat": "Training window",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 21,
+      "title": "Latest input \u00b7 JSON",
+      "type": "logs",
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 16
+      },
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "demo-json"
+      },
+      "description": "Latest sample fetched every 3 seconds. Match sample and timestamp across panels. Inputs include the exact normalized model features; output metrics use pre-update predictions.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "demo-json"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "http://stream:8010/io",
+          "url_options": {
+            "method": "GET"
+          },
+          "parser": "backend",
+          "format": "logs",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "timestamp",
+              "text": "timestamp",
+              "type": "timestamp"
+            },
+            {
+              "selector": "input_json",
+              "text": "body",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "showTime": false,
+        "showLabels": false,
+        "showCommonLabels": false,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": true,
+        "enableLogDetails": true,
+        "dedupStrategy": "none",
+        "sortOrder": "Descending"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
+    },
+    {
+      "id": 22,
+      "title": "Latest output \u00b7 JSON",
+      "type": "logs",
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 16
+      },
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "demo-json"
+      },
+      "description": "Latest sample fetched every 3 seconds. Match sample and timestamp across panels. Inputs include the exact normalized model features; output metrics use pre-update predictions.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "demo-json"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "http://stream:8010/io",
+          "url_options": {
+            "method": "GET"
+          },
+          "parser": "backend",
+          "format": "logs",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "timestamp",
+              "text": "timestamp",
+              "type": "timestamp"
+            },
+            {
+              "selector": "output_json",
+              "text": "body",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "showTime": false,
+        "showLabels": false,
+        "showCommonLabels": false,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": true,
+        "enableLogDetails": true,
+        "dedupStrategy": "none",
+        "sortOrder": "Descending"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
+    },
+    {
+      "id": 23,
+      "title": "Injected drift type \u00b7 generator truth",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 8,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_injected_drift_type",
+          "legendFormat": "Injected type",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Stable",
+                  "color": "green"
+                },
+                "1": {
+                  "text": "Abrupt",
+                  "color": "red"
+                },
+                "2": {
+                  "text": "Gradual",
+                  "color": "orange"
+                },
+                "3": {
+                  "text": "Incremental",
+                  "color": "yellow"
+                },
+                "4": {
+                  "text": "Structural",
+                  "color": "purple"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 24,
+      "title": "Latest unusual reading \u00b7 generator truth",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 24,
+        "w": 8,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_injected_anomaly_type",
+          "legendFormat": "Injected anomaly",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "None"
+                },
+                "1": {
+                  "text": "Generation spike"
+                },
+                "2": {
+                  "text": "Missing temperature"
+                },
+                "3": {
+                  "text": "Negative solar"
+                },
+                "4": {
+                  "text": "Demand surge"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 25,
+      "title": "Samples excluded from learning \u00b7 quality checks",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 24,
+        "w": 8,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_learning_excluded_total",
+          "legendFormat": "Excluded samples",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 26,
+      "title": "Unusual samples and quality flags",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 77,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "Anomaly codes: 1 generation spike; 2 missing temperature; 3 negative solar; 4 demand surge. Flagging uses observations, not generator labels.",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_injected_anomaly_type",
+          "legendFormat": "Injected anomaly code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "B",
+          "expr": "grid_demo_quality_flag",
+          "legendFormat": "Observed quality flag",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 27,
+      "title": "Injected concept change \u00b7 generator truth",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 77,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "demo-prometheus"
+      },
+      "description": "Gradual drift mixes old/new concepts over 64 samples; incremental drift ramps over 120. Structural drift changes the solar relationship.",
+      "interval": "3s",
+      "maxDataPoints": 1800,
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "grid_demo_injected_offset_mw",
+          "legendFormat": "Generation offset",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        },
+        {
+          "refId": "B",
+          "expr": "grid_demo_injected_solar_coefficient_change",
+          "legendFormat": "Solar coefficient change",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "demo-prometheus"
+          },
+          "interval": "3s",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "powerMW",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "showPoints": "always",
+            "pointSize": 3
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    }
+  ]
+}
