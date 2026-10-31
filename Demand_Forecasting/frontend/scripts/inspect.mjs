@@ -1,0 +1,13 @@
+import { chromium } from '@playwright/test'
+const browser=await chromium.launch({headless:true,channel:process.env.PLAYWRIGHT_BROWSER_CHANNEL||(process.platform==='win32'?'chrome':undefined)})
+const page=await browser.newPage({viewport:{width:1440,height:1080}})
+page.on('pageerror',error=>console.log('PAGE ERROR',error.stack))
+page.on('console',message=>{if(message.type()==='error')console.log('CONSOLE ERROR',message.text())})
+page.on('response',r=>{if(r.status()>=400)console.log('HTTP ERROR',r.status(),r.url())})
+await page.goto('http://127.0.0.1:5173/',{waitUntil:'networkidle'})
+await page.evaluate(()=>document.fonts.ready)
+console.log('Page title:',await page.title())
+console.log('Charts:',await page.locator('.echart').count())
+console.log('Body excerpt:',(await page.locator('body').innerText()).slice(-1200))
+await page.screenshot({path:'test-results/inspected-desktop.png',fullPage:true})
+await browser.close()

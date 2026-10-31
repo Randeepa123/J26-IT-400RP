@@ -1,0 +1,11 @@
+apiVersion: 1
+datasources:
+  - name: Demo JSON
+    uid: demo-json
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    editable: false
+    jsonData:
+      auth_method: none
+      allowedHosts:
+        - http://stream:8010
